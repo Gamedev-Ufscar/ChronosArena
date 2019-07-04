@@ -1,0 +1,32 @@
+{
+    "name": "PhotonUnityNetworking.Editor",
+    "references": [
+        "PhotonRealtime",
+        "PhotonUnityNetworking"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Android",
+        "Editor",
+        "iOS",
+        "LinuxStandalone32",
+        "LinuxStandalone64",
+        "LinuxStandaloneUniversal",
+        "Lumin",
+        "macOSStandalone",
+        "PS4",
+        "Switch",
+        "WSA",
+        "WebGL",
+        "WindowsStandalone32",
+        "WindowsStandalone64",
+        "XboxOne"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
