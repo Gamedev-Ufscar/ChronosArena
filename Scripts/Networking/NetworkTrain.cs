@@ -23,12 +23,17 @@ public class NetworkTrain : MonoBehaviour
         }
 
         PV.RPC("RPC_SendClick", RpcTarget.OthersBuffered, GameOverseer.GO.myConfirm);
-        PV.RPC("RPC_hoverPos", RpcTarget.OthersBuffered, GameOverseer.GO.sentCard, GameOverseer.GO.hoveringCard, 
-                                                        GameOverseer.GO.hoveringCardPos, GameOverseer.GO.hoveringCardLocalPos);
 
-        if (GameOverseer.GO.cardIndex != -1)
+
+        if (GameOverseer.GO.hoveringCard != -1) {
+            PV.RPC("RPC_hoverPos", RpcTarget.OthersBuffered, GameOverseer.GO.sentCard, GameOverseer.GO.hoveringCard,
+                                                            GameOverseer.GO.hoveringCardPos, GameOverseer.GO.hoveringCardLocalPos);
+        }
+
+        if (GameOverseer.GO.cardsTBSCount > 0)
         {
-            PV.RPC("RPC_sendCard", RpcTarget.OthersBuffered, GameOverseer.GO.cardToBeSent, GameOverseer.GO.cardIndex, GameOverseer.GO.isOver);
+            PV.RPC("RPC_sendCard", RpcTarget.OthersBuffered, GameOverseer.GO.cardsToBeSent, GameOverseer.GO.cardsTBSCount);
+            GameOverseer.GO.cardsTBSCount = 0;
         }
 
         // Reset bool signals
@@ -67,8 +72,9 @@ public class NetworkTrain : MonoBehaviour
     }
 
     [PunRPC]
-    public void RPC_sendCard(Card packageCard, int cardIndex, bool isOver)
+    public void RPC_sendCard(int[] cardsSent, int count)
     {
-        
+        GameOverseer.GO.cardsReceived = cardsSent;
+        GameOverseer.GO.cardsReceivedCount = count;
     }
 }

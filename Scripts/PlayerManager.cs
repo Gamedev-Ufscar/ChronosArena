@@ -11,23 +11,28 @@ public class PlayerManager : MonoBehaviour
     public int protection = 0;
     public int initialCardCount = 0;
     public List<Card> cardList = new List<Card>();
-    public List<int> attackDisableList = new List<int>();
-    public List<int> chargeDisableList = new List<int>();
+    public List<CardTypes> attackDisableList = new List<CardTypes>();
+    public List<CardTypes> chargeDisableList = new List<CardTypes>();
     public GameObject myHand;
     public GameObject prefabCard;
 
     // Start is called before the first frame update
     void Start()
     {
+        InitializeDeck();
+        CreatePlayer();
+        CreateTrain(); 
+    }
+
+    void InitializeDeck()
+    {
         // Initialize Deck
         for (int i = 0; i < initialCardCount; i++)
         {
             cardList.Add(HeroDecks.HD.RobotoDeck(i));
-            GameOverseer.GO.cardToBeSent = cardList[i];
-            GameOverseer.GO.cardIndex = i;
+            GameOverseer.GO.cardsToBeSent[GameOverseer.GO.cardsTBSCount] = cardList[i].id;
+            GameOverseer.GO.cardsTBSCount++;
         }
-        CreatePlayer();
-        CreateTrain(); 
     }
 
     private void CreateCard(int index)
@@ -36,7 +41,7 @@ public class PlayerManager : MonoBehaviour
         card.transform.parent = myHand.transform;
         card.GetComponent<CardInHand>().deckManager = card.transform.parent.GetComponent<DeckManager>();
         card.GetComponent<CardInHand>().cardIndex = index;
-        card.GetComponent<CardInHand>().thisCard = cardList[index];
+        //card.GetComponent<CardInHand>().thisCard = cardList[index];
     }
 
     private void UpdateHand()

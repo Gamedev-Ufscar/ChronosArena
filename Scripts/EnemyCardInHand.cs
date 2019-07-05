@@ -6,6 +6,7 @@ public class EnemyCardInHand : MonoBehaviour
 {
     public DeckManager deckManager;
     public int cardIndex;
+    public int thisCard;
     public Canvas canvas;
     public Vector3 adaptedEnemyHoverPos;
     public GameObject cardPrefab;

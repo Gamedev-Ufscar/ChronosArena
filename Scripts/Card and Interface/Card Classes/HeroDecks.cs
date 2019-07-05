@@ -41,6 +41,8 @@ public class HeroDecks : MonoBehaviour
             case 0:
                 Attack robotoAttack = new Attack();
                 robotoAttack.name = "Ataque Robotico";
+                robotoAttack.type = CardTypes.Attack;
+                robotoAttack.id = 0;
                 robotoAttack.damage = 2;
                 robotoAttack.limitMax = 2;
                 return robotoAttack;
@@ -48,12 +50,16 @@ public class HeroDecks : MonoBehaviour
             case 1:
                 Defense robotoDefense = new Defense();
                 robotoDefense.name = "Defesa Robotica";
+                robotoDefense.type = CardTypes.Defense;
+                robotoDefense.id = 1;
                 robotoDefense.protection = 2;
                 return robotoDefense;
 
             case 2:
                 Charge robotoCharge = new Charge();
                 robotoCharge.name = "Carga Robotica";
+                robotoCharge.type = CardTypes.Charge;
+                robotoCharge.id = 2;
                 robotoCharge.charge = 1;
                 return robotoCharge;
 

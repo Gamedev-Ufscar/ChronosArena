@@ -7,8 +7,8 @@ public abstract class Card
     public string name;
     public int id;
     public Sprite image;
-    public bool isPlayable;
-    public int type;
+    public bool isPlayable = true;
+    public CardTypes type;
 
     public abstract void effect();
 
@@ -32,7 +32,7 @@ public interface Limit
     int limitMax { get; set; }
 
     void raiseLimit(int amount, PlayerManager target);
-    void disableCards(List<int> disables, List<Card> playerHand);
+    void disableCards(List<CardTypes> disables, List<Card> playerHand);
 
 }
 

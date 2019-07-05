@@ -37,5 +37,8 @@ MonoBehaviour:
   - RPC_hoverPos
   - RPC_SendState
   - RPC_sendCard
+  - stopRPC_sendCard
+  - RPCstop_sendCard
+  - RPC_stopSendCard
   DisableAutoOpenWizard: 1
   ShowSettings: 1

@@ -14,7 +14,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
 
     public GameObject cardPrefab;
     public Sprite cardSprite;
-    public Card thisCard;
+    public int thisCard;
 
     private bool outOfHand = false;
     private bool cardBeingHeld = false;
@@ -87,7 +87,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
 
     public void HoldCard()
     {
-        Debug.Log(thisCard.name);
+        Debug.Log(HeroDecks.HD.RobotoDeck(thisCard).name);
         // Determine initial offset
         if (cardBeingHeld == false)
         {

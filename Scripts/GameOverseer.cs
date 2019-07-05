@@ -27,12 +27,10 @@ public class GameOverseer : MonoBehaviour
     public bool enemySentCard = false;
 
     // Deck transfer
-    public Card cardToBeSent = null;
-    public int cardIndex = -1;
-    public bool isOver = false;
-    public Card cardReceived = null;
-    public int enemyCardIndex = -1;
-    public bool enemyIsOver = false;
+    public int[] cardsToBeSent = new int[100];
+    public int cardsTBSCount = 0;
+    public int[] cardsReceived = new int[100];
+    public int cardsReceivedCount = 0;
 
     // Singleton management (THERE CAN BE ONLY ONE!!!)
     private void OnEnable()

@@ -29,9 +29,9 @@ public class Attack : Card, Damage, Limit
         }
     }
 
-    public void disableCards(List<int> disables, List<Card> playerHand) {
+    public void disableCards(List<CardTypes> disables, List<Card> playerHand) {
         foreach (Card c in playerHand) {
-            foreach (int d in disables)
+            foreach (CardTypes d in disables)
             {
                 if (c.type == d)
                 {
@@ -86,11 +86,11 @@ public class Charge : Card, ChargeInterface, Limit
         }
     }
 
-    public void disableCards(List<int> disables, List<Card> playerHand)
+    public void disableCards(List<CardTypes> disables, List<Card> playerHand)
     {
         foreach (Card c in playerHand)
         {
-            foreach (int d in disables)
+            foreach (CardTypes d in disables)
             {
                 if (c.type == d)
                 {
