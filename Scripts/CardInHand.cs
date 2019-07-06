@@ -150,6 +150,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     // Summon board card
     public void Summon()
     {
+        GameOverseer.GO.myCardPlayed = HeroDecks.HD.RobotoDeck(thisCard);
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zValue));
         //Debug.Log(v);
         GameObject g = Instantiate(cardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));

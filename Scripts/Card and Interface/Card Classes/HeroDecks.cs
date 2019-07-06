@@ -5,6 +5,8 @@ using UnityEngine;
 public class HeroDecks : MonoBehaviour
 {
     public static HeroDecks HD;
+    public PlayerManager myManager;
+    public PlayerManager enemyManager;
 
 
     private void OnEnable()
@@ -21,6 +23,9 @@ public class HeroDecks : MonoBehaviour
                 HeroDecks.HD = this;
             }
         }
+
+        HeroDecks.HD.myManager = GameObject.Find("Player Manager").GetComponent<PlayerManager>();
+        HeroDecks.HD.enemyManager = GameObject.Find("Enemy Manager").GetComponent<PlayerManager>();
     }
 
     // Start is called before the first frame update

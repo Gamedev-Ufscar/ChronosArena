@@ -6,7 +6,6 @@ public class Attack : Card, Damage, Limit
 {
 
     public int damage { get; set; }
-    public PlayerManager target { get; set; }
 
     public void causeDamage(int damage, PlayerManager target) {
         if (damage - target.protection >= 0)
@@ -41,32 +40,34 @@ public class Attack : Card, Damage, Limit
         }
     }
 
-    public override void effect ()
+    public override void effect (PlayerManager user, PlayerManager enemy)
     {
-        causeDamage(damage, target);
-        raiseLimit(1, target);
+        causeDamage(damage, enemy);
+        raiseLimit(1, user);
     }
 }
+
 
 public class Defense : Card, Protection
 {
     public int protection { get; set; }
 
-    public void protect(int protection) {
-        hero.protection = this.protection;
+    public void protect(int protection, PlayerManager target)
+    {
+        target.protection = this.protection;
     }
 
-    public override void effect()
+    public override void effect(PlayerManager user, PlayerManager enemy)
     {
-        protect(protection);
+        protect(protection, user);
     }
 }
+
 
 public class Charge : Card, ChargeInterface, Limit
 {
 
     public int charge { get; set; }
-    public PlayerManager target { get; set; }
     public void raiseCharge(int charge, PlayerManager target) {
         target.Charge += charge;
     }
@@ -100,19 +101,48 @@ public class Charge : Card, ChargeInterface, Limit
         }
     }
 
-    public override void effect()
+    public override void effect(PlayerManager user, PlayerManager enemy)
     {
-        raiseCharge(charge, target);
-        raiseLimit(1, target);
+        raiseCharge(charge, user);
+        raiseLimit(1, user);
     }
 }
 
+
 public class Nullification : Card, NullInterface
 {
-    public int[] nullificationList { get; set; }
+    public CardTypes[] nullificationList { get; set; }
 
-    public override void effect()
+    public void myNullify()
     {
-        
+        for (int i = 0; i <= nullificationList.Length; i++)
+        {
+            if (GameOverseer.GO.enemyCardPlayed.type == nullificationList[i])
+            {
+                GameOverseer.GO.enemyCardPlayed.isPlayable = false;
+            }
+        }
+    }
+
+    public void enemyNullify()
+    {
+        for (int i = 0; i <= nullificationList.Length; i++)
+        {
+            if (GameOverseer.GO.myCardPlayed.type == nullificationList[i])
+            {
+                GameOverseer.GO.myCardPlayed.isPlayable = false;
+            }
+        }
+    }
+
+    public override void effect(PlayerManager user, PlayerManager enemy)
+    {
+        if (user == HeroDecks.HD.myManager)
+        {
+            myNullify();
+        } else
+        {
+            enemyNullify();
+        }
     }
 }

@@ -22,14 +22,19 @@ public class NetworkTrain : MonoBehaviour
             GameOverseer.GO.changingStates = false;
         }
 
+        // Send Confirm
         PV.RPC("RPC_SendClick", RpcTarget.OthersBuffered, GameOverseer.GO.myConfirm);
 
-
+        // Send hovering card
         if (GameOverseer.GO.hoveringCard != -1) {
             PV.RPC("RPC_hoverPos", RpcTarget.OthersBuffered, GameOverseer.GO.sentCard, GameOverseer.GO.hoveringCard,
                                                             GameOverseer.GO.hoveringCardPos, GameOverseer.GO.hoveringCardLocalPos);
+        } else
+        {
+            PV.RPC("RPC_ecoHoverPos", RpcTarget.OthersBuffered);
         }
 
+        // Send initial cards
         if (GameOverseer.GO.cardsTBSCount > 0)
         {
             PV.RPC("RPC_sendCard", RpcTarget.OthersBuffered, GameOverseer.GO.cardsToBeSent, GameOverseer.GO.cardsTBSCount);
@@ -69,6 +74,12 @@ public class NetworkTrain : MonoBehaviour
             GameOverseer.GO.enemyHoveringCardPos = hoverPos;
             GameOverseer.GO.enemyHoveringCardLocalPos = hoverLocalPos;
         }
+    }
+
+    [PunRPC]
+    public void RPC_ecoHoverPos()
+    {
+        GameOverseer.GO.enemyHoveringCard = -1;
     }
 
     [PunRPC]

@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
+    public int HP = 10;
+    public int Charge = 0;
+    public int protection = 0;
+    public int initialCardCount = 0;
+    public List<Card> cardList = new List<Card>();
+    public List<CardTypes> attackDisableList = new List<CardTypes>();
+    public List<CardTypes> chargeDisableList = new List<CardTypes>();
     public GameObject myHand;
     public GameObject prefabCard;
     public bool enemyCreated = false;

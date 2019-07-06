@@ -57,6 +57,7 @@ public class EnemyCardInHand : MonoBehaviour
     // Summon board card
     public void Summon()
     {
+        GameOverseer.GO.enemyCardPlayed = HeroDecks.HD.RobotoDeck(thisCard);
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(adaptedEnemyHoverPos.x, adaptedEnemyHoverPos.y, zValue));
         GameObject g = Instantiate(cardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.up));
         g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.EnemyCard);

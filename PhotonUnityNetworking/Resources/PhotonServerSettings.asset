@@ -40,5 +40,6 @@ MonoBehaviour:
   - stopRPC_sendCard
   - RPCstop_sendCard
   - RPC_stopSendCard
+  - RPC_ecoHoverPos
   DisableAutoOpenWizard: 1
   ShowSettings: 1
