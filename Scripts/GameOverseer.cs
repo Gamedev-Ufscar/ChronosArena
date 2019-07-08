@@ -87,19 +87,12 @@ public class GameOverseer : MonoBehaviour
                 case GameState.Revelation:
                     state = GameState.Effects;
                     Debug.Log("Effects state");
-                    GameOverseer.GO.myCardPlayed.priority = cardPriority(GameOverseer.GO.myCardPlayed);
-                    GameOverseer.GO.enemyCardPlayed.priority = cardPriority(GameOverseer.GO.enemyCardPlayed);
-                    if (GameOverseer.GO.myCardPlayed.priority < GameOverseer.GO.enemyCardPlayed.priority)
-                    {
-                        GameOverseer.GO.enemyCardPlayed.effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager);
-                        if (GameOverseer.GO.myCardPlayed.isPlayable) 
-                            GameOverseer.GO.myCardPlayed.effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager);
-                    } else
-                    {
-                        GameOverseer.GO.myCardPlayed.effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager);
-                        if (GameOverseer.GO.enemyCardPlayed.isPlayable)
-                            GameOverseer.GO.enemyCardPlayed.effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager);
-                    }
+                    activateCards();
+                    break;
+
+                case GameState.Effects:
+                    state = GameState.Purchase;
+                    Debug.Log("Purchase state");
                     break;
 
             }
@@ -109,6 +102,23 @@ public class GameOverseer : MonoBehaviour
 
         }
 
+    }
+    public void activateCards()
+    {
+        GameOverseer.GO.myCardPlayed.priority = cardPriority(GameOverseer.GO.myCardPlayed);
+        GameOverseer.GO.enemyCardPlayed.priority = cardPriority(GameOverseer.GO.enemyCardPlayed);
+        if (GameOverseer.GO.myCardPlayed.priority < GameOverseer.GO.enemyCardPlayed.priority)
+        {
+            GameOverseer.GO.enemyCardPlayed.effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager);
+            if (GameOverseer.GO.myCardPlayed.isPlayable)
+                GameOverseer.GO.myCardPlayed.effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager);
+        }
+        else
+        {
+            GameOverseer.GO.myCardPlayed.effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager);
+            if (GameOverseer.GO.enemyCardPlayed.isPlayable)
+                GameOverseer.GO.enemyCardPlayed.effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager);
+        }
     }
 
     int cardPriority(Card card)

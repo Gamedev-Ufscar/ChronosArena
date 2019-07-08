@@ -68,6 +68,16 @@ public class HeroDecks : MonoBehaviour
                 robotoCharge.charge = 1;
                 return robotoCharge;
 
+            case 3:
+                Nullification robotoNull = new Nullification();
+                robotoNull.name = "Anulacao Robotica";
+                robotoNull.type = CardTypes.Nullification;
+                robotoNull.id = 3;
+                robotoNull.nullificationList = new CardTypes[4];
+                robotoNull.nullificationList[0] = CardTypes.Charge; robotoNull.nullificationList[1] = CardTypes.Skill;
+                robotoNull.nullificationList[2] = CardTypes.Ultimate; robotoNull.nullificationList[3] = CardTypes.NeutralSkill;
+                return robotoNull;
+
             default:
                 return null;
         }

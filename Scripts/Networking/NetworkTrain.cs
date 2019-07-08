@@ -6,6 +6,7 @@ using UnityEngine;
 public class NetworkTrain : MonoBehaviour
 {
     PhotonView PV;
+    float time = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -13,32 +14,51 @@ public class NetworkTrain : MonoBehaviour
         PV = GetComponent<PhotonView>();
     }
 
+    private void Awake()
+    {
+        Application.runInBackground = true;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        // Send State
-        if (GameOverseer.GO.changingStates == true) {
-            PV.RPC("RPC_SendState", RpcTarget.OthersBuffered, GameOverseer.GO.state);
-            GameOverseer.GO.changingStates = false;
-        }
-
-        // Send Confirm
-        PV.RPC("RPC_SendClick", RpcTarget.OthersBuffered, GameOverseer.GO.myConfirm);
-
         // Send hovering card
-        if (GameOverseer.GO.hoveringCard != -1) {
+        if (GameOverseer.GO.hoveringCard != -1 || GameOverseer.GO.sentCard) {
+            Debug.Log("HoveringCard: " + GameOverseer.GO.hoveringCard + ", sentCard: " + GameOverseer.GO.sentCard);
             PV.RPC("RPC_hoverPos", RpcTarget.OthersBuffered, GameOverseer.GO.sentCard, GameOverseer.GO.hoveringCard,
                                                             GameOverseer.GO.hoveringCardPos, GameOverseer.GO.hoveringCardLocalPos);
-        } else
-        {
+        }
+        else {
             PV.RPC("RPC_ecoHoverPos", RpcTarget.OthersBuffered);
         }
 
-        // Send initial cards
-        if (GameOverseer.GO.cardsTBSCount > 0)
-        {
-            PV.RPC("RPC_sendCard", RpcTarget.OthersBuffered, GameOverseer.GO.cardsToBeSent, GameOverseer.GO.cardsTBSCount);
-            GameOverseer.GO.cardsTBSCount = 0;
+        if (time >= 0.1f) {
+            // Send State
+            if (GameOverseer.GO.changingStates == true)
+            {
+                PV.RPC("RPC_SendState", RpcTarget.OthersBuffered, GameOverseer.GO.state);
+                GameOverseer.GO.changingStates = false;
+            }
+
+            // Send Confirm
+            PV.RPC("RPC_SendClick", RpcTarget.OthersBuffered, GameOverseer.GO.myConfirm);
+
+            // Send initial cards
+            if (GameOverseer.GO.cardsTBSCount > 0)
+            {
+                PV.RPC("RPC_sendCard", RpcTarget.OthersBuffered, GameOverseer.GO.cardsToBeSent, GameOverseer.GO.cardsTBSCount);
+            }
+
+            if (GameOverseer.GO.cardsReceivedCount > 0)
+            {
+                PV.RPC("RPC_confirmedSendCard", RpcTarget.OthersBuffered);
+                GameOverseer.GO.cardsReceivedCount = 0;
+            }
+
+            // Time stuff
+            time = 0f;
+        } else {
+            time += Time.deltaTime;
         }
 
         // Reset bool signals
@@ -50,6 +70,7 @@ public class NetworkTrain : MonoBehaviour
     {
         GameOverseer.GO.state = myState;
         GameOverseer.GO.myConfirm = false;
+        if (myState == GameState.Effects) { GameOverseer.GO.activateCards(); }
     }
 
     [PunRPC]
@@ -65,6 +86,7 @@ public class NetworkTrain : MonoBehaviour
 
         if (sentCard)
         {
+            Debug.Log("Received enemySentCard, it's " + hoverCard);
             GameOverseer.GO.enemySentCard = sentCard;
         }
 
@@ -87,5 +109,11 @@ public class NetworkTrain : MonoBehaviour
     {
         GameOverseer.GO.cardsReceived = cardsSent;
         GameOverseer.GO.cardsReceivedCount = count;
+    }
+
+    [PunRPC]
+    public void RPC_confirmedSendCard()
+    {
+        GameOverseer.GO.cardsTBSCount = 0;
     }
 }

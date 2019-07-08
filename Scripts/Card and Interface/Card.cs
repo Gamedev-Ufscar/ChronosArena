@@ -29,7 +29,7 @@ public interface Limit
     int limitMax { get; set; }
 
     void raiseLimit(int amount, PlayerManager target);
-    void disableCards(List<CardTypes> disables, List<Card> playerHand);
+    void disableCards(List<CardTypes> disables, Card[] playerHand);
 
 }
 

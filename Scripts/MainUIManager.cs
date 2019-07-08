@@ -12,6 +12,9 @@ public class MainUIManager : MonoBehaviour
     public PlayerManager myManager;
     public PlayerManager enemyManager;
 
+    public Text countdown;
+    private float clock = 0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +24,9 @@ public class MainUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        countdown.text = clock.ToString();
+        clock += Time.deltaTime;
+
         myHealthbar.maxValue = 10;
         myHealthbar.minValue = 0;
         myHealthbar.value = myManager.HP;

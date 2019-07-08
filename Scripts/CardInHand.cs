@@ -43,8 +43,9 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
 
         if (outOfHand == true && Input.GetMouseButtonUp(0) && GameOverseer.GO.state == GameState.Choice)
         {
-            Summon();
+            Debug.Log("Activated sentCard");
             GameOverseer.GO.sentCard = true;
+            Summon();
             outOfHand = false;
         }
     }
@@ -152,7 +153,6 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     {
         GameOverseer.GO.myCardPlayed = HeroDecks.HD.RobotoDeck(thisCard);
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zValue));
-        //Debug.Log(v);
         GameObject g = Instantiate(cardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));
         g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard);
 
