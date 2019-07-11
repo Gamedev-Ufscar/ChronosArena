@@ -34,17 +34,20 @@ public class PlayerManager : MonoBehaviour
         if (gameObject.name == "Enemy Manager" && GameOverseer.GO.cardsReceivedCount > 0 && enemyCreated == false)
         {
             Debug.Log("Activating enemy");
+            InitializeEnemyDeck();
             CreateEnemy();
             enemyCreated = true;
         }
     }
 
+    // PLAYER INITIALIZATION
     void InitializeDeck()
     {
         // Initialize Deck
         for (int i = 0; i < initialCardCount; i++)
         {
-            cardList[i] = HeroDecks.HD.RobotoDeck(i);
+            cardList[i] = HeroDecks.HD.heroCard(-1, i);
+            //Debug.Log(cardList[i].name + " = " + i);
             GameOverseer.GO.cardsToBeSent[GameOverseer.GO.cardsTBSCount] = cardList[i].id;
             GameOverseer.GO.cardsTBSCount++;
         }
@@ -55,8 +58,8 @@ public class PlayerManager : MonoBehaviour
         GameObject card = Instantiate(prefabCard, new Vector3(507f, -286.2f), Quaternion.identity);
         card.transform.parent = myHand.transform;
         card.GetComponent<CardInHand>().deckManager = card.transform.parent.GetComponent<DeckManager>();
-        card.GetComponent<CardInHand>().cardIndex = index;
-        card.GetComponent<CardInHand>().thisCard = index;
+        card.GetComponent<CardInHand>().cardIndex = index; // THIS NEEDS TO BE RANDOMIZED LATER!!!
+        card.GetComponent<CardInHand>().thisCard = cardList[index].id;
     }
 
     private void CreatePlayer()
@@ -70,19 +73,25 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private void CreateTrain()
+
+    // ENEMY INITIALIZATION
+    void InitializeEnemyDeck()
     {
-        Debug.Log("Creating train");
-        PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
+        // Initialize Deck
+        for (int i = 0; i < GameOverseer.GO.cardsReceivedCount; i++)
+        {
+            cardList[i] = HeroDecks.HD.heroCard(-1, GameOverseer.GO.cardsReceived[i]);
+        }
     }
 
-    private void EnemyCreateCard(int i)
+    private void EnemyCreateCard(int index)
     {
         GameObject card = Instantiate(prefabCard, new Vector3(-557f, 288.1f), Quaternion.identity);
         card.transform.parent = myHand.transform;
         card.GetComponent<EnemyCardInHand>().deckManager = card.transform.parent.GetComponent<DeckManager>();
-        card.GetComponent<EnemyCardInHand>().cardIndex = i;
-        card.GetComponent<EnemyCardInHand>().thisCard = GameOverseer.GO.cardsReceived[i];
+        card.GetComponent<EnemyCardInHand>().cardIndex = index; // THIS NEEDS TO BE RANDOMIZED LATER!!!
+        //Debug.Log("EnemyCreateCard: " + cardList[index].id);
+        card.GetComponent<EnemyCardInHand>().thisCard = cardList[index].id;
     }
 
     void CreateEnemy()
@@ -96,5 +105,13 @@ public class PlayerManager : MonoBehaviour
             EnemyCreateCard(i);
         }
 
+    }
+
+
+    // TRAIN CREATION
+    private void CreateTrain()
+    {
+        Debug.Log("Creating train");
+        PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
     }
 }

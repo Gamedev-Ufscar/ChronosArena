@@ -13,7 +13,6 @@ public class MainUIManager : MonoBehaviour
     public PlayerManager enemyManager;
 
     public Text countdown;
-    private float clock = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -24,8 +23,7 @@ public class MainUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        countdown.text = clock.ToString();
-        clock += Time.deltaTime;
+        countdown.text = " State: " + (int)GameOverseer.GO.state;
 
         myHealthbar.maxValue = 10;
         myHealthbar.minValue = 0;

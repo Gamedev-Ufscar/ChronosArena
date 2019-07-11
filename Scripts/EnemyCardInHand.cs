@@ -35,7 +35,7 @@ public class EnemyCardInHand : MonoBehaviour
             gameObject.GetComponent<Canvas>().overrideSorting = true;
 
             // Summonar carta
-            if (/*transform.localScale == new Vector3(2 * 0.8665f, 2 * 1.177f, 1f) && */GameOverseer.GO.enemySentCard == true && GameOverseer.GO.state == GameState.Choice)
+            if (GameOverseer.GO.enemySentCard == true && GameOverseer.GO.state == GameState.Choice)
             {
                 GameOverseer.GO.enemySentCard = false;
                 Debug.Log("Enemy card summoned " + cardIndex);
@@ -56,11 +56,15 @@ public class EnemyCardInHand : MonoBehaviour
     // Summon board card
     public void Summon()
     {
-        GameOverseer.GO.enemyCardPlayed = HeroDecks.HD.RobotoDeck(thisCard);
+        GameOverseer.GO.enemyCardPlayed = thisCard;
+        Debug.Log("TesteInim " + HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.myCardPlayed].name);
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(adaptedEnemyHoverPos.x, adaptedEnemyHoverPos.y, zValue));
         GameObject g = Instantiate(cardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.up));
+        g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
+        g.GetComponent<CardInBoard>().thisCard = thisCard;
+        g.GetComponent<CardInBoard>().owner = HeroDecks.HD.enemyManager;
         g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.EnemyCard);
 
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }

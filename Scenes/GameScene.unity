@@ -1002,6 +1002,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a4ed6c21e017624d9d490efd1d73310, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  thisCardInHand: {fileID: 0}
 --- !u!65 &252858586
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2405,7 +2406,7 @@ MonoBehaviour:
   HP: 10
   Charge: 0
   protection: 0
-  initialCardCount: 4
+  initialCardCount: 5
   attackDisableList: 01000000040000000500000006000000
   chargeDisableList: 03000000
   myHand: {fileID: 1482968706}
@@ -3528,6 +3529,10 @@ MonoBehaviour:
   - {x: 155, y: 288.1}
   - {x: 55, y: 288.1}
   - {x: -45, y: 288.1}
+  - {x: -145, y: 288.1}
+  - {x: -245, y: 288.1}
+  - {x: -345, y: 288.1}
+  - {x: -445, y: 288.1}
   holdingCard: 0
 --- !u!1 &1462725574
 GameObject:
@@ -3684,6 +3689,10 @@ MonoBehaviour:
   - {x: -155, y: -286.2}
   - {x: -55, y: -286.2}
   - {x: 45, y: -286.2}
+  - {x: 145, y: -286.2}
+  - {x: 245, y: -286.2}
+  - {x: 345, y: -286.2}
+  - {x: 445, y: -286.2}
   holdingCard: 0
 --- !u!224 &1515871648 stripped
 RectTransform:
@@ -4654,8 +4663,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67bb6602ee2ec674fbc661c9d773398b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myManager: {fileID: 0}
-  enemyManager: {fileID: 0}
+  myManager: {fileID: 849935354}
+  enemyManager: {fileID: 1271537073}
 --- !u!4 &1978425089
 Transform:
   m_ObjectHideFlags: 0
