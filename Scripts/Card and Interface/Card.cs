@@ -9,18 +9,15 @@ public abstract class Card
     public Sprite image;
     public bool isPlayable = true;
     public CardTypes type;
+    public int priority = -1;
 
-    public abstract void effect();
-
-    [HideInInspector]
-    public PlayerManager hero;
+    public abstract void effect(PlayerManager user, PlayerManager enemy);
 
 }
 
 public interface Damage
 {
     int damage { get; set; }
-    PlayerManager target { get; set; }
 
     void causeDamage(int damage, PlayerManager target);
     
@@ -32,7 +29,7 @@ public interface Limit
     int limitMax { get; set; }
 
     void raiseLimit(int amount, PlayerManager target);
-    void disableCards(List<CardTypes> disables, List<Card> playerHand);
+    void disableCards(List<CardTypes> disables, Card[] playerHand);
 
 }
 
@@ -46,7 +43,7 @@ public interface Protection
 {
     int protection { get; set; }
 
-    void protect(int protection);
+    void protect(int protection, PlayerManager target);
 
 }
 
@@ -58,5 +55,5 @@ public interface Skill
 
 public interface NullInterface
 {
-    int[] nullificationList { get; set; }
+    CardTypes[] nullificationList { get; set; }
 }

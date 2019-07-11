@@ -27,10 +27,14 @@ public class GameOverseer : MonoBehaviour
     public bool enemySentCard = false;
 
     // Deck transfer
-    public int[] cardsToBeSent = new int[100];
+    public int[] cardsToBeSent = new int[15];
     public int cardsTBSCount = 0;
-    public int[] cardsReceived = new int[100];
+    public int[] cardsReceived = new int[15];
     public int cardsReceivedCount = 0;
+
+    // Playing cards
+    public Card myCardPlayed;
+    public Card enemyCardPlayed;
 
     // Singleton management (THERE CAN BE ONLY ONE!!!)
     private void OnEnable()
@@ -80,6 +84,17 @@ public class GameOverseer : MonoBehaviour
                     Debug.Log("Revelation state");
                     break;
 
+                case GameState.Revelation:
+                    state = GameState.Effects;
+                    Debug.Log("Effects state");
+                    activateCards();
+                    break;
+
+                case GameState.Effects:
+                    state = GameState.Purchase;
+                    Debug.Log("Purchase state");
+                    break;
+
             }
 
             myConfirm = false;
@@ -87,5 +102,36 @@ public class GameOverseer : MonoBehaviour
 
         }
 
+    }
+    public void activateCards()
+    {
+        GameOverseer.GO.myCardPlayed.priority = cardPriority(GameOverseer.GO.myCardPlayed);
+        GameOverseer.GO.enemyCardPlayed.priority = cardPriority(GameOverseer.GO.enemyCardPlayed);
+        if (GameOverseer.GO.myCardPlayed.priority < GameOverseer.GO.enemyCardPlayed.priority)
+        {
+            GameOverseer.GO.enemyCardPlayed.effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager);
+            if (GameOverseer.GO.myCardPlayed.isPlayable)
+                GameOverseer.GO.myCardPlayed.effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager);
+        }
+        else
+        {
+            GameOverseer.GO.myCardPlayed.effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager);
+            if (GameOverseer.GO.enemyCardPlayed.isPlayable)
+                GameOverseer.GO.enemyCardPlayed.effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager);
+        }
+    }
+
+    int cardPriority(Card card)
+    {
+        if (card.type == CardTypes.Nullification)
+        {
+            return 3;
+        } else if (card.type == CardTypes.Defense)
+        {
+            return 2;
+        } else
+        {
+            return 0;
+        }
     }
 }

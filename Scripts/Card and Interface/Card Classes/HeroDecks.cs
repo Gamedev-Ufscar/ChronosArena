@@ -5,6 +5,8 @@ using UnityEngine;
 public class HeroDecks : MonoBehaviour
 {
     public static HeroDecks HD;
+    public PlayerManager myManager;
+    public PlayerManager enemyManager;
 
 
     private void OnEnable()
@@ -21,6 +23,9 @@ public class HeroDecks : MonoBehaviour
                 HeroDecks.HD = this;
             }
         }
+
+        HeroDecks.HD.myManager = GameObject.Find("Player Manager").GetComponent<PlayerManager>();
+        HeroDecks.HD.enemyManager = GameObject.Find("Enemy Manager").GetComponent<PlayerManager>();
     }
 
     // Start is called before the first frame update
@@ -62,6 +67,16 @@ public class HeroDecks : MonoBehaviour
                 robotoCharge.id = 2;
                 robotoCharge.charge = 1;
                 return robotoCharge;
+
+            case 3:
+                Nullification robotoNull = new Nullification();
+                robotoNull.name = "Anulacao Robotica";
+                robotoNull.type = CardTypes.Nullification;
+                robotoNull.id = 3;
+                robotoNull.nullificationList = new CardTypes[4];
+                robotoNull.nullificationList[0] = CardTypes.Charge; robotoNull.nullificationList[1] = CardTypes.Skill;
+                robotoNull.nullificationList[2] = CardTypes.Ultimate; robotoNull.nullificationList[3] = CardTypes.NeutralSkill;
+                return robotoNull;
 
             default:
                 return null;
