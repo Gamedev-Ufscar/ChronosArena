@@ -91,12 +91,29 @@ public class HeroDecks : MonoBehaviour
                 return robotoNull;
 
             case 4:
-                DamageSkill robotoBoom = new DamageSkill();
+                return RobotoDeck(3);
+
+
+            case 5:
+                BasicSkill robotoBoom = new BasicSkill();
                 robotoBoom.name = "Boom Robotico";
                 robotoBoom.type = CardTypes.Skill;
-                robotoBoom.id = 4;
+                robotoBoom.id = 5;
                 robotoBoom.damage = 4;
+                robotoBoom.protection = 0;
+                robotoBoom.charge = 0;
                 return robotoBoom;
+
+            case 6:
+                BasicSkill robotoUlti = new BasicSkill();
+                robotoUlti.name = "Mecha Robotico";
+                robotoUlti.type = CardTypes.Ultimate;
+                robotoUlti.id = 6;
+                robotoUlti.cost = 2;
+                robotoUlti.damage = 2;
+                robotoUlti.protection = 2;
+                robotoUlti.charge = 0;
+                return robotoUlti;
 
             default:
                 return null;

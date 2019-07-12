@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardInBoard : MonoBehaviour
 {
@@ -22,11 +23,12 @@ public class CardInBoard : MonoBehaviour
 
     public void Resett()
     {
-        if (owner.cardList[thisCard].type != CardTypes.Skill && owner.cardList[thisCard].type != CardTypes.NeutralSkill) {
+        if (owner.cardList[thisCard].type != CardTypes.Skill && owner.cardList[thisCard].type != CardTypes.NeutralSkill) { 
             thisCardInHand.SetActive(true);
-            if (owner.name == "Player Manager") {
+            if (owner.name == "Player Manager" && thisCardInHand.GetComponent<CardInHand>() != null) {
                 thisCardInHand.GetComponent<CardInHand>().zoomCard = false;
                 thisCardInHand.GetComponent<CardInHand>().moveCard = false;
+                thisCardInHand.GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
             } else {
                 GameOverseer.GO.enemyHoveringCard = -1;
             }

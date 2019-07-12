@@ -152,9 +152,11 @@ public class Nullification : Card, NullInterface
 }
 
 
-public class DamageSkill : Card, Damage
+public class BasicSkill : Card, Damage, Protection, ChargeInterface
 {
     public int damage { get; set; }
+    public int protection { get; set; }
+    public int charge { get; set; }
 
     public void causeDamage(int damage, PlayerManager target)
     {
@@ -164,9 +166,21 @@ public class DamageSkill : Card, Damage
         }
     }
 
+    public void protect(int protection, PlayerManager target)
+    {
+        target.protection = this.protection;
+    }
+
+    public void raiseCharge(int charge, PlayerManager target)
+    {
+        target.Charge += charge;
+    }
+
     public override void effect(PlayerManager user, PlayerManager enemy)
     {
         causeDamage(damage, enemy);
-        Debug.Log(user.gameObject.name + "'s DamageSkill");
+        protect(protection, user);
+        raiseCharge(charge, user);
+        Debug.Log(user.gameObject.name + "'s BasicSkill");
     }
 }

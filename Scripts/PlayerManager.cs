@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public int HP = 10;
-    public int Charge = 0;
+    public int Charge = 2;
     public int protection = 0;
     public int initialCardCount = 0;
     public Card[] cardList = new Card[15];
@@ -15,6 +15,7 @@ public class PlayerManager : MonoBehaviour
     public List<CardTypes> chargeDisableList = new List<CardTypes>();
     public GameObject myHand;
     public GameObject prefabCard;
+    public GameObject prefabUlti;
     public bool enemyCreated = false;
 
     // Start is called before the first frame update
@@ -48,18 +49,32 @@ public class PlayerManager : MonoBehaviour
         {
             cardList[i] = HeroDecks.HD.heroCard(-1, i);
             //Debug.Log(cardList[i].name + " = " + i);
-            GameOverseer.GO.cardsToBeSent[GameOverseer.GO.cardsTBSCount] = cardList[i].id;
+            GameOverseer.GO.cardsToBeSent[GameOverseer.GO.cardsTBSCount] = i;
             GameOverseer.GO.cardsTBSCount++;
         }
+
+        // Ulti
+        cardList[initialCardCount] = HeroDecks.HD.heroCard(-1, initialCardCount);
+        GameOverseer.GO.ultiToBeSent = initialCardCount;
     }
 
-    private void CreateCard(int index)
+    public GameObject CreateCard(int index)
     {
         GameObject card = Instantiate(prefabCard, new Vector3(507f, -286.2f), Quaternion.identity);
         card.transform.parent = myHand.transform;
         card.GetComponent<CardInHand>().deckManager = card.transform.parent.GetComponent<DeckManager>();
         card.GetComponent<CardInHand>().cardIndex = index; // THIS NEEDS TO BE RANDOMIZED LATER!!!
-        card.GetComponent<CardInHand>().thisCard = cardList[index].id;
+        card.GetComponent<CardInHand>().thisCard = index;
+        return card;
+    }
+
+    private void CreateUlti(int index)
+    {
+        GameObject card = Instantiate(prefabUlti, new Vector3(507f, -286.2f), Quaternion.identity);
+        card.transform.parent = myHand.transform;
+        card.GetComponent<UltimateCard>().deckManager = card.transform.parent.GetComponent<DeckManager>();
+        card.GetComponent<UltimateCard>().cardIndex = 101;
+        card.GetComponent<UltimateCard>().thisCard = index;
     }
 
     private void CreatePlayer()
@@ -71,6 +86,8 @@ public class PlayerManager : MonoBehaviour
         {
             CreateCard(i);
         }
+        myHand.GetComponent<DeckManager>().cardAmount = initialCardCount;
+        CreateUlti(initialCardCount);
     }
 
 
@@ -84,14 +101,15 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private void EnemyCreateCard(int index)
+    public GameObject EnemyCreateCard(int index)
     {
         GameObject card = Instantiate(prefabCard, new Vector3(-557f, 288.1f), Quaternion.identity);
         card.transform.parent = myHand.transform;
         card.GetComponent<EnemyCardInHand>().deckManager = card.transform.parent.GetComponent<DeckManager>();
         card.GetComponent<EnemyCardInHand>().cardIndex = index; // THIS NEEDS TO BE RANDOMIZED LATER!!!
         //Debug.Log("EnemyCreateCard: " + cardList[index].id);
-        card.GetComponent<EnemyCardInHand>().thisCard = cardList[index].id;
+        card.GetComponent<EnemyCardInHand>().thisCard = index;
+        return card;
     }
 
     void CreateEnemy()
@@ -100,11 +118,11 @@ public class PlayerManager : MonoBehaviour
 
         // Creating Cards
 
-        for (int i = 0; i < GameOverseer.GO.cardsReceivedCount; i++)
-        {
+        for (int i = 0; i < GameOverseer.GO.cardsReceivedCount; i++) {
             EnemyCreateCard(i);
         }
-
+        myHand.GetComponent<DeckManager>().cardAmount = GameOverseer.GO.cardsReceivedCount;
+        CreateUlti(GameOverseer.GO.ultiReceived);
     }
 
 
@@ -114,4 +132,5 @@ public class PlayerManager : MonoBehaviour
         Debug.Log("Creating train");
         PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
     }
+
 }

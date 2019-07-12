@@ -21,6 +21,9 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     private Vector2 center = new Vector2(0f, 0f);
     private float zValue = 12f;
 
+    [HideInInspector]
+    public GameObject ultiCard;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,8 +53,11 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         }
 
         // Se não é jogável, fica BEM escuro
-        if (HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable != 0) {
+        if (HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable > 0) {
             GetComponent<Image>().color = new Color(0.3f, 0.3f, 0.3f);
+        } else if (GetComponent<Image>().color == new Color(0.3f, 0.3f, 0.3f))
+        {
+            GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
         }
     }
 
@@ -146,16 +152,19 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     public void Summon()
     {
         GameOverseer.GO.myCardPlayed = thisCard;
-        Debug.Log("Teste " + HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed].name);
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zValue));
         GameObject g = Instantiate(cardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));
-        g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
         g.GetComponent<CardInBoard>().thisCard = thisCard;
         g.GetComponent<CardInBoard>().owner = HeroDecks.HD.myManager;
         g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard);
-
         deckManager.holdingCard = false;
-        gameObject.SetActive(false);
+        if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed].type != CardTypes.Ultimate) { 
+            g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
+            gameObject.SetActive(false);
+        } else {
+            g.GetComponent<CardInBoard>().thisCardInHand = ultiCard;
+            Destroy(gameObject);
+        }
     }
 
     public void OnTriggerEnter(Collider other)

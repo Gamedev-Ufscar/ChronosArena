@@ -12,6 +12,9 @@ public abstract class Card
     public CardTypes type;
     public int priority = -1;
 
+    // ULTIMATE AND NEUTRAL SKILL ONLY
+    public int cost = -1;
+
     public abstract void effect(PlayerManager user, PlayerManager enemy);
 
 }
