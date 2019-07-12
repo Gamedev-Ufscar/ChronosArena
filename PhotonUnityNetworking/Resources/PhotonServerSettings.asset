@@ -42,5 +42,7 @@ MonoBehaviour:
   - RPC_stopSendCard
   - RPC_ecoHoverPos
   - RPC_confirmedSendCard
+  - RPC_ultiStuff
+  - RPC_ecoUltiStuff
   DisableAutoOpenWizard: 1
   ShowSettings: 1

@@ -18,14 +18,12 @@ public class Attack : Card, Damage, Limit
     public int limitMax { get; set; }
 
     public void raiseLimit(int amount, PlayerManager target) {
-        foreach(Card c in target.cardList)
-        {
-            if (c is Attack)
-            {
+        foreach(Card c in target.cardList) {
+            if (c is Attack) {
                 Attack cc = (Attack)c;
-                cc.limit++;
-                if (cc.limit >= cc.limitMax)
-                {
+                cc.limit += amount;
+                Debug.Log(target.gameObject.name + "'s Attack Limit: " + limit);
+                if (cc.limit >= cc.limitMax) {
                     disableCards(target.attackDisableList, target.cardList);
                 }
             }
@@ -34,11 +32,14 @@ public class Attack : Card, Damage, Limit
 
     public void disableCards(List<CardTypes> disables, Card[] playerHand) {
         foreach (Card c in playerHand) {
-            foreach (CardTypes d in disables)
+            if (c != null)
             {
-                if (c.type == d)
-                {
-                    c.isPlayable = false;
+                foreach (CardTypes d in disables) {
+                    if (c.type == d)
+                    {
+                        c.turnsTillPlayable = 1;
+                        Debug.Log(c.name + " Disabled");
+                    }
                 }
             }
         }
@@ -81,31 +82,28 @@ public class Charge : Card, ChargeInterface, Limit
     public int limit { get; set; }
     public int limitMax { get; set; }
 
-    public void raiseLimit(int amount, PlayerManager target)
-    {
-        foreach (Card c in target.cardList)
-        {
-            if (c is Charge)
-            {
+    public void raiseLimit(int amount, PlayerManager target) {
+        foreach (Card c in target.cardList) {
+            if (c is Charge) {
                 Charge cc = (Charge)c;
-                cc.limit++;
-                if (cc.limit >= cc.limitMax)
-                {
+                cc.limit += amount;
+                if (cc.limit >= cc.limitMax) {
                     disableCards(target.chargeDisableList, target.cardList);
                 }
             }
         }
     }
 
-    public void disableCards(List<CardTypes> disables, Card[] playerHand)
-    {
-        foreach (Card c in playerHand)
-        {
-            foreach (CardTypes d in disables)
+    public void disableCards(List<CardTypes> disables, Card[] playerHand) {
+        foreach (Card c in playerHand) {
+            if (c != null)
             {
-                if (c.type == d)
+                foreach (CardTypes d in disables)
                 {
-                    c.isPlayable = false;
+                    if (c.type == d)
+                    {
+                        c.turnsTillPlayable = 1;
+                    }
                 }
             }
         }
@@ -126,35 +124,63 @@ public class Nullification : Card, NullInterface
 
     public void myNullify()
     {
-        for (int i = 0; i < nullificationList.Length; i++)
-        {
-            if (GameOverseer.GO.enemyCardPlayed.type == nullificationList[i])
-            {
-                GameOverseer.GO.enemyCardPlayed.isPlayable = false;
+        for (int i = 0; i < nullificationList.Length; i++) {
+            if (HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed].type == nullificationList[i]) {
+                HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed].isNullified = true;
             }
         }
     }
 
     public void enemyNullify()
     {
-        for (int i = 0; i < nullificationList.Length; i++)
-        {
-            if (GameOverseer.GO.myCardPlayed.type == nullificationList[i])
-            {
-                GameOverseer.GO.myCardPlayed.isPlayable = false;
+        for (int i = 0; i < nullificationList.Length; i++) {
+            if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed].type == nullificationList[i]) {
+                HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed].isNullified = true;
             }
         }
     }
 
     public override void effect(PlayerManager user, PlayerManager enemy)
     {
-        if (user == HeroDecks.HD.myManager)
-        {
+        if (user == HeroDecks.HD.myManager) {
             myNullify();
-        } else
-        {
+        } else {
             enemyNullify();
         }
         Debug.Log(user.gameObject.name + "'s Nullify");
+    }
+}
+
+
+public class BasicSkill : Card, Damage, Protection, ChargeInterface
+{
+    public int damage { get; set; }
+    public int protection { get; set; }
+    public int charge { get; set; }
+
+    public void causeDamage(int damage, PlayerManager target)
+    {
+        if (damage - target.protection >= 0)
+        {
+            target.HP -= (damage - target.protection);
+        }
+    }
+
+    public void protect(int protection, PlayerManager target)
+    {
+        target.protection = this.protection;
+    }
+
+    public void raiseCharge(int charge, PlayerManager target)
+    {
+        target.Charge += charge;
+    }
+
+    public override void effect(PlayerManager user, PlayerManager enemy)
+    {
+        causeDamage(damage, enemy);
+        protect(protection, user);
+        raiseCharge(charge, user);
+        Debug.Log(user.gameObject.name + "'s BasicSkill");
     }
 }
