@@ -45,7 +45,6 @@ public class NetworkTrain : MonoBehaviour
                 PV.RPC("RPC_ultiStuff", RpcTarget.OthersBuffered, GameOverseer.GO.ultiBuy, (byte)HeroDecks.HD.myManager.Charge);
             }
 
-
             // Send State
             if (GameOverseer.GO.changingStates == true)
             {
@@ -74,7 +73,6 @@ public class NetworkTrain : MonoBehaviour
 
         // Reset bool signals
     }
-
 
     [PunRPC]
     public void RPC_hoverPos(byte hoverCard, bool amIHoveringMyself, Vector2 hoverPos, Vector2 hoverLocalPos)
@@ -109,7 +107,6 @@ public class NetworkTrain : MonoBehaviour
         HeroDecks.HD.enemyManager.Charge = (int)charge;
     }
 
-
     [PunRPC]
     public void RPC_SendState(int myState)
     {
@@ -122,7 +119,6 @@ public class NetworkTrain : MonoBehaviour
     {
         GameOverseer.GO.enemyConfirm = sentButton;
     }
-
 
     [PunRPC]
     public void RPC_sendCard(int[] cardsSent, byte count)
