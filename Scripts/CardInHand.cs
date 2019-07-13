@@ -21,10 +21,14 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     private Vector2 center = new Vector2(0f, 0f);
     private float zValue = 12f;
 
+    [HideInInspector]
+    public GameObject ultiCard;
+
     // Start is called before the first frame update
     void Start()
     {
         // Check PointerHandler for Pointer-related problems
+        GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
     }
 
     // Update is called once per frame
@@ -33,29 +37,28 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         //moveCard = EventSystem.current.IsPointerOverGameObject();
 
         // Moving the card around and stuff
-        if (zoomCard == true || moveCard == true) // Zoom Card = Pointer Over; Move Card = Pointer Down
-        {
+        if (zoomCard == true || moveCard == true) { // Zoom Card = Pointer Over; Move Card = Pointer Down
             ZoomCard();
-        } else
-        {
+        } else {
             ReturnCard();
         }
 
-        if (outOfHand == true && Input.GetMouseButtonUp(0) && GameOverseer.GO.state == GameState.Choice)
-        {
+        // Summon card to board
+        if (outOfHand == true && Input.GetMouseButtonUp(0) && GameOverseer.GO.state == GameState.Choice 
+            && HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable <= 0) {
             Debug.Log("Activated sentCard");
             GameOverseer.GO.sentCard = true;
             Summon();
             outOfHand = false;
         }
-    }
 
-
-    // Custom Card
-
-    public void CustomCard(Sprite cardSprite)
-    {
-
+        // Se não é jogável, fica BEM escuro
+        if (HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable > 0) {
+            GetComponent<Image>().color = new Color(0.3f, 0.3f, 0.3f);
+        } else if (GetComponent<Image>().color == new Color(0.3f, 0.3f, 0.3f))
+        {
+            GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
+        }
     }
 
 
@@ -72,12 +75,11 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         GameOverseer.GO.hoveringCardLocalPos = transform.localPosition;
 
         // Holding down the card
-        if (Input.GetMouseButton(0))
-        {
+        if (Input.GetMouseButton(0)) {
+            //Debug.ClearDeveloperConsole();
+            Debug.Log(HeroDecks.HD.myManager.cardList[thisCard].name);
             HoldCard();
-        }
-        else
-        {
+        } else {
             cardBeingHeld = false;
             deckManager.holdingCard = false;
             transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 5f, 0f),
@@ -88,10 +90,8 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
 
     public void HoldCard()
     {
-        Debug.Log(HeroDecks.HD.RobotoDeck(thisCard).name);
         // Determine initial offset
-        if (cardBeingHeld == false)
-        {
+        if (cardBeingHeld == false) {
             center = transform.position - Input.mousePosition;
         }
 
@@ -122,8 +122,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         if (transform.localPosition.x >= deckManager.cardLocations[cardIndex].x - 1f &&
             transform.localPosition.x <= deckManager.cardLocations[cardIndex].x + 1f &&
             transform.localPosition.y >= deckManager.cardLocations[cardIndex].y - 1f &&
-            transform.localPosition.y <= deckManager.cardLocations[cardIndex].y + 1f)
-        {
+            transform.localPosition.y <= deckManager.cardLocations[cardIndex].y + 1f) {
             gameObject.GetComponent<Canvas>().overrideSorting = false;
             canvas.sortingOrder = 1;
         }
@@ -134,7 +133,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         // If not already holding something, zoom the card
         if (deckManager.holdingCard == false)
         {
-            GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
+            GetComponent<Image>().color = new Color(1f, 1f, 1f);
             transform.localPosition = transform.localPosition + new Vector3(0f, 5f, 0f);
             zoomCard = true;
             canvas.sortingOrder = 3;
@@ -144,20 +143,28 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     public void OnPointerExit(PointerEventData eventData)
     {
 
-        GetComponent<Image>().color = new Color(1f, 1f, 1f);
+        GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
         zoomCard = false;
     }
+
 
     // Summon board card
     public void Summon()
     {
-        GameOverseer.GO.myCardPlayed = HeroDecks.HD.RobotoDeck(thisCard);
+        GameOverseer.GO.myCardPlayed = thisCard;
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zValue));
         GameObject g = Instantiate(cardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));
+        g.GetComponent<CardInBoard>().thisCard = thisCard;
+        g.GetComponent<CardInBoard>().owner = HeroDecks.HD.myManager;
         g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard);
-
         deckManager.holdingCard = false;
-        Destroy(gameObject);
+        if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed].type != CardTypes.Ultimate) { 
+            g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
+            gameObject.SetActive(false);
+        } else {
+            g.GetComponent<CardInBoard>().thisCardInHand = ultiCard;
+            Destroy(gameObject);
+        }
     }
 
     public void OnTriggerEnter(Collider other)
@@ -166,10 +173,8 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         if (other.tag == "Hand")
         {
             outOfHand = false;
-            Debug.Log("Hand Enter " + cardIndex);
         }
     }
-
 
     public void OnTriggerExit(Collider other)
     {
@@ -178,7 +183,6 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         {
             //Summon();
             outOfHand = true;
-            Debug.Log("Hand Exit " + cardIndex);
         }
     }
 

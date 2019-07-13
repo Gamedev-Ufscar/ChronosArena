@@ -1,16 +1,42 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardInBoard : MonoBehaviour
 {
-    private Card thisCard;
     private GameObject slot;
+
+    [HideInInspector]
+    public GameObject thisCardInHand;
+    public int thisCard;
+    public PlayerManager owner;
 
     //public bool isPlayer = true;
 
-    public void Activate(SlotsOnBoard place)
+    // Update is called once per frame
+    void Update()
     {
+        if (GameOverseer.GO.state == GameState.Purchase)
+            Resett();
+    }
+
+    public void Resett()
+    {
+        if (owner.cardList[thisCard].type != CardTypes.Skill && owner.cardList[thisCard].type != CardTypes.NeutralSkill) { 
+            thisCardInHand.SetActive(true);
+            if (owner.name == "Player Manager" && thisCardInHand.GetComponent<CardInHand>() != null) {
+                thisCardInHand.GetComponent<CardInHand>().zoomCard = false;
+                thisCardInHand.GetComponent<CardInHand>().moveCard = false;
+                thisCardInHand.GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
+            } else {
+                GameOverseer.GO.enemyHoveringCard = -1;
+            }
+        }
+        Destroy(gameObject);
+    }
+
+    public void Activate(SlotsOnBoard place) {
         switch (place)
         {
             case SlotsOnBoard.PlayerCard:
