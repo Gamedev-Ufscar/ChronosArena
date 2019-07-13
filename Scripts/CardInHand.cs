@@ -173,7 +173,6 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         if (other.tag == "Hand")
         {
             outOfHand = false;
-            Debug.Log("Hand Enter " + cardIndex);
         }
     }
 
@@ -184,7 +183,6 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         {
             //Summon();
             outOfHand = true;
-            Debug.Log("Hand Exit " + cardIndex);
         }
     }
 

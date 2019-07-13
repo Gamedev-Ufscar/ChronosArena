@@ -22,26 +22,33 @@ public class NetworkTrain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Send hovering card
-        if (GameOverseer.GO.hoveringCard != -1 || GameOverseer.GO.sentCard) {
-            Debug.Log("HoveringCard: " + GameOverseer.GO.hoveringCard + ", sentCard: " + GameOverseer.GO.sentCard);
-            PV.RPC("RPC_hoverPos", RpcTarget.OthersBuffered, GameOverseer.GO.sentCard, GameOverseer.GO.hoveringCard, GameOverseer.GO.amIHoveringMyself,
-                                                            GameOverseer.GO.hoveringCardPos, GameOverseer.GO.hoveringCardLocalPos);
-        }
-        else {
-            PV.RPC("RPC_ecoHoverPos", RpcTarget.OthersBuffered);
+        if (GameOverseer.GO.sentCard == true)
+        {
+            Debug.Log("Sent Card");
+            PV.RPC("RPC_sentCard", RpcTarget.OthersBuffered);
+            GameOverseer.GO.sentCard = false;
         }
 
-        // Send Ulti Purchase
-        if (GameOverseer.GO.state == GameState.Purchase) {
-            PV.RPC("RPC_ultiStuff", RpcTarget.OthersBuffered, GameOverseer.GO.ultiBuy, HeroDecks.HD.myManager.Charge);
-        }
+        if (time >= 0.2f)
+        {
+            // Send hovering card
+            if (GameOverseer.GO.hoveringCard != -1) {
+            Debug.Log("HoveringCard: " + GameOverseer.GO.hoveringCard);
+            PV.RPC("RPC_hoverPos", RpcTarget.OthersBuffered, (byte)GameOverseer.GO.hoveringCard, GameOverseer.GO.amIHoveringMyself,
+                                     (Vector2)GameOverseer.GO.hoveringCardPos, (Vector2)GameOverseer.GO.hoveringCardLocalPos);
+            } else {
+                PV.RPC("RPC_ecoHoverPos", RpcTarget.OthersBuffered);
+            }
 
-        if (time >= 0.1f) {
+            // Send Ulti Purchase
+            if (GameOverseer.GO.state == GameState.Purchase) {
+                PV.RPC("RPC_ultiStuff", RpcTarget.OthersBuffered, GameOverseer.GO.ultiBuy, (byte)HeroDecks.HD.myManager.Charge);
+            }
+
             // Send State
             if (GameOverseer.GO.changingStates == true)
             {
-                PV.RPC("RPC_SendState", RpcTarget.OthersBuffered, GameOverseer.GO.state);
+                PV.RPC("RPC_SendState", RpcTarget.OthersBuffered, (int)GameOverseer.GO.state);
                 GameOverseer.GO.changingStates = false;
             }
 
@@ -50,7 +57,7 @@ public class NetworkTrain : MonoBehaviour
 
             // Send initial cards
             if (GameOverseer.GO.cardsTBSCount > 0) {
-                PV.RPC("RPC_sendCard", RpcTarget.OthersBuffered, GameOverseer.GO.cardsToBeSent, GameOverseer.GO.cardsTBSCount);
+                PV.RPC("RPC_sendCard", RpcTarget.OthersBuffered, GameOverseer.GO.cardsToBeSent, (byte)GameOverseer.GO.cardsTBSCount);
             }
 
             if (GameOverseer.GO.cardsReceivedCount > 0) {
@@ -65,28 +72,26 @@ public class NetworkTrain : MonoBehaviour
         }
 
         // Reset bool signals
-        GameOverseer.GO.sentCard = false;
     }
 
-
     [PunRPC]
-    public void RPC_hoverPos(bool sentCard, int hoverCard, bool amIHoveringMyself, Vector3 hoverPos, Vector3 hoverLocalPos)
+    public void RPC_hoverPos(byte hoverCard, bool amIHoveringMyself, Vector2 hoverPos, Vector2 hoverLocalPos)
     {
-        GameOverseer.GO.enemyHoveringCard = hoverCard;
+        GameOverseer.GO.enemyHoveringCard = (int)hoverCard;
         GameOverseer.GO.isEnemyHoveringHimself = amIHoveringMyself;
         Debug.Log("Is Enemy HH? " + GameOverseer.GO.isEnemyHoveringHimself + ", " + GameOverseer.GO.enemyHoveringCard);
 
-        if (sentCard)
-        {
-            Debug.Log("Received enemySentCard, it's " + hoverCard);
-            GameOverseer.GO.enemySentCard = sentCard;
-        }
-
         if (hoverCard < 100)
         {
-            GameOverseer.GO.enemyHoveringCardPos = hoverPos;
-            GameOverseer.GO.enemyHoveringCardLocalPos = hoverLocalPos;
+            GameOverseer.GO.enemyHoveringCardPos = (Vector3)hoverPos;
+            GameOverseer.GO.enemyHoveringCardLocalPos = (Vector3)hoverLocalPos;
         }
+    }
+    [PunRPC]
+    public void RPC_sentCard()
+    {
+        Debug.Log("Received enemySentCard");
+        GameOverseer.GO.enemySentCard = true;
     }
     [PunRPC]
     public void RPC_ecoHoverPos()
@@ -96,19 +101,18 @@ public class NetworkTrain : MonoBehaviour
 
 
     [PunRPC]
-    public void RPC_ultiStuff(bool ultiBuy, int charge)
+    public void RPC_ultiStuff(bool ultiBuy, byte charge)
     {
         GameOverseer.GO.enemyUltiBuy = ultiBuy;
-        HeroDecks.HD.enemyManager.Charge = charge;
+        HeroDecks.HD.enemyManager.Charge = (int)charge;
     }
 
-
     [PunRPC]
-    public void RPC_SendState(GameState myState)
+    public void RPC_SendState(int myState)
     {
-        GameOverseer.GO.state = myState;
+        GameOverseer.GO.state = (GameState)myState;
         GameOverseer.GO.myConfirm = false;
-        if (myState == GameState.Effects) { GameOverseer.GO.activateCards(); }
+        if (myState == (int)GameState.Effects) { GameOverseer.GO.activateCards(); }
     }
     [PunRPC]
     public void RPC_SendClick(bool sentButton)
@@ -116,9 +120,8 @@ public class NetworkTrain : MonoBehaviour
         GameOverseer.GO.enemyConfirm = sentButton;
     }
 
-
     [PunRPC]
-    public void RPC_sendCard(int[] cardsSent, int count)
+    public void RPC_sendCard(int[] cardsSent, byte count)
     {
         GameOverseer.GO.cardsReceived = cardsSent;
         GameOverseer.GO.cardsReceivedCount = count;

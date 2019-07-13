@@ -99,6 +99,9 @@ public class PlayerManager : MonoBehaviour
         {
             cardList[i] = HeroDecks.HD.heroCard(-1, GameOverseer.GO.cardsReceived[i]);
         }
+
+        // Ulti
+        cardList[GameOverseer.GO.cardsReceivedCount] = HeroDecks.HD.heroCard(-1, GameOverseer.GO.ultiReceived);
     }
 
     public GameObject EnemyCreateCard(int index)
