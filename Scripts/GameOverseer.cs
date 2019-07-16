@@ -12,6 +12,7 @@ public class GameOverseer : MonoBehaviour
     // State stuff
     public GameState state;
     public bool changingStates = false;
+    public bool receivedAState = false;
     public bool myConfirm = false;
     public bool enemyConfirm = false;
     private float stateClock = 0f;
@@ -21,7 +22,7 @@ public class GameOverseer : MonoBehaviour
     public int hoveringCard = -1;
     public Vector3 hoveringCardPos = Vector3.zero;
     public Vector3 hoveringCardLocalPos = Vector3.zero;
-    public bool sentCard = false;
+    public int sentCard = 0;
 
     public bool isEnemyHoveringHimself = false;
     public int enemyHoveringCard = -1;
@@ -42,26 +43,25 @@ public class GameOverseer : MonoBehaviour
     public int ultiReceived;
 
     // Playing cards
-    public int myCardPlayed;
-    public int enemyCardPlayed;
+    [HideInInspector]
+    public int myCardPlayed = -1;
+    [HideInInspector]
+    public int enemyCardPlayed = -1;
 
     // Singleton management (THERE CAN BE ONLY ONE!!!)
     private void OnEnable()
     {
-        if (GO == null)
-        {
+        if (GO == null) {
             GO = this;
-        } else
-        {
-            if (GO != this)
-            {
+        } else {
+            if (GO != this) {
                 Destroy(GO);
                 GO = this;
             }
         }
         enemySentCard = false;
     }
-    
+
 
     // Start is called before the first frame update
     void Start()
@@ -73,7 +73,14 @@ public class GameOverseer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log(GO.enemySentCard);
         stateStuff();
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("MasterClient!");
+        }
+        Debug.Log("Client!");
 
         if (!PhotonNetwork.IsConnectedAndReady || !PhotonNetwork.IsConnected)
         {
@@ -86,7 +93,7 @@ public class GameOverseer : MonoBehaviour
     void stateStuff()
     {
         // State stuff
-        if (myConfirm && enemyConfirm)
+        if ((myConfirm && enemyConfirm) || receivedAState)
         {
             switch (state)
             {
@@ -110,12 +117,15 @@ public class GameOverseer : MonoBehaviour
                 case GameState.Effects:
                     state = GameState.Purchase;
                     Debug.Log("Purchase state");
+                    GO.sentCard = 0;
+                    GO.enemySentCard = false;
                     break;
 
             }
 
+            if (myConfirm && enemyConfirm) { changingStates = true; }
+            receivedAState = false;
             myConfirm = false;
-            changingStates = true;
 
         }
 
@@ -135,23 +145,32 @@ public class GameOverseer : MonoBehaviour
 
     public void reduceUnplayability(Card[] cardList)
     {
-        foreach (Card c in cardList) {
-            if (c != null) {
-                if (c.turnsTillPlayable > 0)
-                    c.turnsTillPlayable--;
+        Debug.Log("Reduce Unplayability");
+        for (int i = 0; i < cardList.Length; i++)
+        {
+            if (cardList[i] != null)
+            {
+                if (cardList[i].turnsTillPlayable > 0)
+                {
+                    cardList[i].turnsTillPlayable--;
+                    Debug.Log(cardList[i].name + " Usável");
+                }
             }
         }
     }
 
     public void resetLimit(Card[] cardList, int cardPlayed)
     {
-        foreach (Card c in cardList) {
-            if (c != null) {
-                if (c.id != cardPlayed) {
-                    if (c is Limit) {
-                        Limit cc = (Limit)c;
-                        cc.limit = 0;
-                    }
+        for (int i = 0; i < cardList.Length; i++)
+        {
+            if (cardList[i] as Limit != null)
+            {
+                if (cardList[i].id != cardPlayed)
+                {
+                    Limit cc = cardList[i] as Limit;
+                    cc.limit = 0;
+                    cardList[i] = cc as Card;
+                    //Debug.Log("Card Limit reset: " + cardList[i].name);
                 }
             }
         }
@@ -161,6 +180,23 @@ public class GameOverseer : MonoBehaviour
     // Effects State
     public void activateCards()
     {
+        for (int e = Mathf.Min(HeroDecks.HD.myManager.cardList[GO.myCardPlayed].minmax / 100, HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].minmax / 100); 
+            e <= Mathf.Max(HeroDecks.HD.myManager.cardList[GO.myCardPlayed].minmax % 100, HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].minmax % 100);
+            e++) {
+            if (!HeroDecks.HD.myManager.cardList[GO.myCardPlayed].isNullified)
+                HeroDecks.HD.myManager.cardList[GO.myCardPlayed].effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager, e);
+            if (!HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].isNullified)
+                HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager, e);
+        }
+
+        HeroDecks.HD.myManager.cardList[GO.myCardPlayed].isNullified = false;
+        HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].isNullified = false;
+        myCardPlayed = -1;
+        enemyCardPlayed = -1;
+    }
+}
+
+/*
         // Set priorities
         HeroDecks.HD.myManager.cardList[GO.myCardPlayed].priority = cardPriority(HeroDecks.HD.myManager.cardList[GO.myCardPlayed]);
         HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].priority = cardPriority(HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed]);
@@ -178,19 +214,4 @@ public class GameOverseer : MonoBehaviour
             if (!HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].isNullified)
                 HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager);
         }
-
-        HeroDecks.HD.myManager.cardList[GO.myCardPlayed].isNullified = false;
-        HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].isNullified = false;
-    }
-
-    int cardPriority(Card card)
-    {
-        if (card.type == CardTypes.Nullification) {
-            return 3;
-        } else if (card.type == CardTypes.Defense) {
-            return 2;
-        } else {
-            return 0;
-        }
-    }
-}
+        */

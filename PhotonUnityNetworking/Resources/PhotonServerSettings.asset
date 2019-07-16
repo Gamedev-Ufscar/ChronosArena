@@ -45,6 +45,7 @@ MonoBehaviour:
   - RPC_ultiStuff
   - RPC_ecoUltiStuff
   - RPC_sentCard
-
+  - RPC_enemySentCard
+  - RPC_ChangedState
   DisableAutoOpenWizard: 1
   ShowSettings: 1

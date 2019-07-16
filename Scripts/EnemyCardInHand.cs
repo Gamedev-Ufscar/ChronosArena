@@ -73,6 +73,7 @@ public class EnemyCardInHand : MonoBehaviour
             g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
         } else {
             g.GetComponent<CardInBoard>().thisCardInHand = ultiCard;
+            Debug.Log("Enemy ult summoned");
         }
         g.GetComponent<CardInBoard>().thisCard = thisCard;
         g.GetComponent<CardInBoard>().owner = HeroDecks.HD.enemyManager;

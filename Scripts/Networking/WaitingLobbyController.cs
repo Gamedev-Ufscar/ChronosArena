@@ -28,7 +28,7 @@ public class WaitingLobbyController : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("Opening lobby");
+            Debug.Log("Opening game");
             PhotonNetwork.LoadLevel(gameSceneIndex);
         }
     }

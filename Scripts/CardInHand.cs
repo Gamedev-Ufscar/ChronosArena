@@ -43,21 +43,23 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
             ReturnCard();
         }
 
-        // Summon card to board
-        if (outOfHand == true && Input.GetMouseButtonUp(0) && GameOverseer.GO.state == GameState.Choice 
-            && HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable <= 0) {
-            Debug.Log("Activated sentCard");
-            GameOverseer.GO.sentCard = true;
-            Summon();
-            outOfHand = false;
-        }
-
-        // Se não é jogável, fica BEM escuro
-        if (HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable > 0) {
-            GetComponent<Image>().color = new Color(0.3f, 0.3f, 0.3f);
-        } else if (GetComponent<Image>().color == new Color(0.3f, 0.3f, 0.3f))
+        if (HeroDecks.HD.myManager.cardList[thisCard] != null)
         {
-            GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
+            // Summon card to board
+            if (outOfHand == true && Input.GetMouseButtonUp(0) && GameOverseer.GO.state == GameState.Choice && GameOverseer.GO.myCardPlayed == -1
+                && HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable <= 0) {
+                Debug.Log("Activated sentCard");
+                GameOverseer.GO.sentCard = 5;
+                Summon();
+                outOfHand = false;
+            }
+
+           // Se não é jogável, fica BEM escuro
+            if (HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable > 0) {
+                GetComponent<Image>().color = new Color(0.3f, 0.3f, 0.3f);
+            } else if (GetComponent<Image>().color == new Color(0.3f, 0.3f, 0.3f)) {
+                GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
+            }
         }
     }
 

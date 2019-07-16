@@ -55,7 +55,8 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     {
         if (bought) {
             GetComponent<Image>().color = new Color(1f, 1f-red, 1f-red);
-        } else if (GameOverseer.GO.state != GameState.Purchase || HeroDecks.HD.myManager.Charge < HeroDecks.HD.myManager.cardList[thisCard].cost) {
+        } else if (GameOverseer.GO.state != GameState.Purchase || 
+            (HeroDecks.HD.myManager.Charge < HeroDecks.HD.myManager.cardList[thisCard].cost && deckManager.gameObject == HeroDecks.HD.myManager.myHand)) {
             GetComponent<Image>().color = new Color(0.3f, 0.3f - red, 0.3f - red);
         } else if (zoomCard) {
             GetComponent<Image>().color = new Color(0.8f, 0.8f - red, 0.8f - red);
@@ -79,6 +80,8 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
         if (GameOverseer.GO.state == GameState.Choice && bought)
         {
             bought = false;
+            GameOverseer.GO.ultiBuy = false;
+            GameOverseer.GO.enemyUltiBuy = false;
             if (deckManager.gameObject == HeroDecks.HD.myManager.myHand) // If Player
             {
                 GameObject card = HeroDecks.HD.myManager.CreateCard(deckManager.cardAmount);
@@ -104,8 +107,8 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
         gameObject.GetComponent<Canvas>().overrideSorting = true;
 
         // Buy the card
-        Debug.Log(deckManager.gameObject.name + ", " + HeroDecks.HD.myManager.myHand.name);
-        if (Input.GetMouseButtonDown(0) && deckManager.gameObject == HeroDecks.HD.myManager.myHand) {
+        //Debug.Log(deckManager.gameObject.name + ", " + HeroDecks.HD.myManager.myHand.name);
+        if (Input.GetMouseButtonDown(0) && deckManager.gameObject == HeroDecks.HD.myManager.myHand && GameOverseer.GO.state == GameState.Purchase) {
             Debug.Log("mouse down");
             if (!bought) {
                 if (HeroDecks.HD.myManager.Charge >= HeroDecks.HD.myManager.cardList[thisCard].cost) {

@@ -10,18 +10,19 @@ public abstract class Card
     public int turnsTillPlayable = 0;
     public bool isNullified = false;
     public CardTypes type;
-    public int priority = -1;
+    public int minmax = 0000;
 
     // ULTIMATE AND NEUTRAL SKILL ONLY
     public int cost = -1;
 
-    public abstract void effect(PlayerManager user, PlayerManager enemy);
+    public abstract void effect(PlayerManager user, PlayerManager enemy, int priority);
 
 }
 
 public interface Damage
 {
     int damage { get; set; }
+    bool isUnblockable { get; set; }
 
     void causeDamage(int damage, PlayerManager target);
     
@@ -51,13 +52,8 @@ public interface Protection
 
 }
 
-public interface Skill
-{
-    void discard();
-
-}
-
 public interface NullInterface
 {
     CardTypes[] nullificationList { get; set; }
+    bool wronged { get; set; }
 }

@@ -23,7 +23,17 @@ public class CardInBoard : MonoBehaviour
 
     public void Resett()
     {
-        if (owner.cardList[thisCard].type != CardTypes.Skill && owner.cardList[thisCard].type != CardTypes.NeutralSkill) { 
+        bool returning = false;
+
+        if (owner.cardList[thisCard].type == CardTypes.Nullification) {
+            Nullification cc = (Nullification)owner.cardList[thisCard];
+            if (cc.wronged == false)
+                returning = true;
+        } else if (owner.cardList[thisCard].type != CardTypes.Skill && owner.cardList[thisCard].type != CardTypes.NeutralSkill) {
+            returning = true;
+        }
+
+        if (returning) {
             thisCardInHand.SetActive(true);
             if (owner.name == "Player Manager" && thisCardInHand.GetComponent<CardInHand>() != null) {
                 thisCardInHand.GetComponent<CardInHand>().zoomCard = false;

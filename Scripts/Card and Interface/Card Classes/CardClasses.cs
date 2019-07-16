@@ -6,11 +6,15 @@ public class Attack : Card, Damage, Limit
 {
 
     public int damage { get; set; }
+    public bool isUnblockable { get; set; }
 
     public void causeDamage(int damage, PlayerManager target) {
-        if (damage - target.protection >= 0)
-        {
-            target.HP -= (damage - target.protection);
+        if (!isUnblockable) {
+            if (damage - target.protection >= 0) {
+                target.HP -= (damage - target.protection);
+            }
+        } else {
+            target.HP -= damage;
         }
     }
 
@@ -18,10 +22,11 @@ public class Attack : Card, Damage, Limit
     public int limitMax { get; set; }
 
     public void raiseLimit(int amount, PlayerManager target) {
-        foreach(Card c in target.cardList) {
-            if (c is Attack) {
-                Attack cc = (Attack)c;
+        for (int i = 0; i < target.cardList.Length; i++) { 
+            if (target.cardList[i] as Attack != null) {
+                Attack cc = target.cardList[i] as Attack;
                 cc.limit += amount;
+                target.cardList[i] = cc as Card;
                 Debug.Log(target.gameObject.name + "'s Attack Limit: " + limit);
                 if (cc.limit >= cc.limitMax) {
                     disableCards(target.attackDisableList, target.cardList);
@@ -31,25 +36,27 @@ public class Attack : Card, Damage, Limit
     }
 
     public void disableCards(List<CardTypes> disables, Card[] playerHand) {
-        foreach (Card c in playerHand) {
-            if (c != null)
-            {
+        for (int i = 0; i < playerHand.Length; i++) {
+            if (playerHand[i] != null) {
                 foreach (CardTypes d in disables) {
-                    if (c.type == d)
-                    {
-                        c.turnsTillPlayable = 1;
-                        Debug.Log(c.name + " Disabled");
+                    if (playerHand[i].type == d) {
+                        playerHand[i].turnsTillPlayable = 1;
+                        Debug.Log(playerHand[i].name + " Disabled");
                     }
                 }
             }
         }
     }
 
-    public override void effect (PlayerManager user, PlayerManager enemy)
+    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
     {
-        causeDamage(damage, enemy);
-        raiseLimit(1, user);
-        Debug.Log(user.gameObject.name + "'s Attack");
+        switch (priority) {
+            case 16:
+                causeDamage(damage, enemy);
+                raiseLimit(1, user);
+                Debug.Log(user.gameObject.name + "'s Attack");
+                break;
+        }
     }
 }
 
@@ -63,10 +70,14 @@ public class Defense : Card, Protection
         target.protection = this.protection;
     }
 
-    public override void effect(PlayerManager user, PlayerManager enemy)
+    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
     {
-        protect(protection, user);
-        Debug.Log(user.gameObject.name + "'s Defense");
+        switch (priority) {
+            case 8:
+                protect(protection, user);
+                Debug.Log(user.gameObject.name + "'s Defense");
+                break;
+        }
     }
 }
 
@@ -83,10 +94,11 @@ public class Charge : Card, ChargeInterface, Limit
     public int limitMax { get; set; }
 
     public void raiseLimit(int amount, PlayerManager target) {
-        foreach (Card c in target.cardList) {
-            if (c is Charge) {
-                Charge cc = (Charge)c;
+        for (int i = 0; i < target.cardList.Length; i++) { 
+            if (target.cardList[i] as Charge != null) {
+                Charge cc = target.cardList[i] as Charge;
                 cc.limit += amount;
+                target.cardList[i] = cc as Card;
                 if (cc.limit >= cc.limitMax) {
                     disableCards(target.chargeDisableList, target.cardList);
                 }
@@ -95,25 +107,27 @@ public class Charge : Card, ChargeInterface, Limit
     }
 
     public void disableCards(List<CardTypes> disables, Card[] playerHand) {
-        foreach (Card c in playerHand) {
-            if (c != null)
-            {
-                foreach (CardTypes d in disables)
-                {
-                    if (c.type == d)
-                    {
-                        c.turnsTillPlayable = 1;
+        for (int i = 0; i < playerHand.Length; i++) {
+            if (playerHand[i] != null) {
+                foreach (CardTypes d in disables) {
+                    if (playerHand[i].type == d) {
+                        playerHand[i].turnsTillPlayable = 1;
+                        Debug.Log(playerHand[i].name + " Disabled");
                     }
                 }
             }
         }
     }
 
-    public override void effect(PlayerManager user, PlayerManager enemy)
+    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
     {
-        raiseCharge(charge, user);
-        raiseLimit(1, user);
-        Debug.Log(user.gameObject.name + "'s Charge");
+        switch (priority) {
+            case 14:
+                raiseCharge(charge, user);
+                raiseLimit(1, user);
+                Debug.Log(user.gameObject.name + "'s Charge");
+                break;
+        }
     }
 }
 
@@ -121,33 +135,42 @@ public class Charge : Card, ChargeInterface, Limit
 public class Nullification : Card, NullInterface
 {
     public CardTypes[] nullificationList { get; set; }
+    public bool wronged { get; set; }
 
     public void myNullify()
     {
+        wronged = true;
         for (int i = 0; i < nullificationList.Length; i++) {
             if (HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed].type == nullificationList[i]) {
                 HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed].isNullified = true;
+                wronged = false;
             }
         }
     }
 
     public void enemyNullify()
     {
+        wronged = true;
         for (int i = 0; i < nullificationList.Length; i++) {
             if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed].type == nullificationList[i]) {
                 HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed].isNullified = true;
+                wronged = false;
             }
         }
     }
 
-    public override void effect(PlayerManager user, PlayerManager enemy)
+    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
     {
-        if (user == HeroDecks.HD.myManager) {
-            myNullify();
-        } else {
-            enemyNullify();
+        switch (priority) {
+            case 4:
+                if (user == HeroDecks.HD.myManager) {
+                    myNullify();
+                } else {
+                    enemyNullify();
+                }
+                Debug.Log(user.gameObject.name + "'s Nullify");
+                break;
         }
-        Debug.Log(user.gameObject.name + "'s Nullify");
     }
 }
 
@@ -155,14 +178,18 @@ public class Nullification : Card, NullInterface
 public class BasicSkill : Card, Damage, Protection, ChargeInterface
 {
     public int damage { get; set; }
+    public bool isUnblockable { get; set; }
     public int protection { get; set; }
     public int charge { get; set; }
 
     public void causeDamage(int damage, PlayerManager target)
     {
-        if (damage - target.protection >= 0)
-        {
-            target.HP -= (damage - target.protection);
+        if (!isUnblockable) {
+            if (damage - target.protection >= 0) {
+                target.HP -= (damage - target.protection);
+            }
+        } else {
+            target.HP -= damage;
         }
     }
 
@@ -176,11 +203,37 @@ public class BasicSkill : Card, Damage, Protection, ChargeInterface
         target.Charge += charge;
     }
 
-    public override void effect(PlayerManager user, PlayerManager enemy)
+    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
     {
-        causeDamage(damage, enemy);
-        protect(protection, user);
-        raiseCharge(charge, user);
-        Debug.Log(user.gameObject.name + "'s BasicSkill");
+        switch (priority)
+        {
+            case 8:
+                protect(protection, user);
+                Debug.Log(user.gameObject.name + "'s BasicSkill");
+                break;
+            case 14:
+                raiseCharge(charge, user);
+                break;
+            case 16:
+                causeDamage(damage, enemy);
+                break;
+        }
+    }
+}
+
+public class SideEffectSkill : Card
+{
+    public int sideEffect { get; set; }
+    public int duration { get; set; }
+
+    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    {
+        switch (priority)
+        {
+            case 17:
+                user.sideList[sideEffect] = duration;
+                Debug.Log(user.gameObject.name + "'s SideEffectSkill");
+                break;
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -11,27 +12,35 @@ public class PlayerManager : MonoBehaviour
     public int protection = 0;
     public int initialCardCount = 0;
     public Card[] cardList = new Card[15];
+    public int[] sideList = new int[12];
     public List<CardTypes> attackDisableList = new List<CardTypes>();
     public List<CardTypes> chargeDisableList = new List<CardTypes>();
     public GameObject myHand;
     public GameObject prefabCard;
     public GameObject prefabUlti;
     public bool enemyCreated = false;
+    public int hero = -1;
+
+    private bool startedGame = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (gameObject.name == "Player Manager")
-        {
-            InitializeDeck();
-            CreatePlayer();
-            CreateTrain();
-        }
+        DontDestroyOnLoad(this.gameObject);
+        CreateTrain();
     }
+
 
     // Update is called once per frame
     void Update()
     {
+        if (gameObject.name == "Player Manager" && SceneManager.GetActiveScene().buildIndex == 2 && !startedGame)
+        {
+            InitializeDeck();
+            CreatePlayer();
+            startedGame = true;
+        }
+
         if (gameObject.name == "Enemy Manager" && GameOverseer.GO.cardsReceivedCount > 0 && enemyCreated == false)
         {
             Debug.Log("Activating enemy");
@@ -102,6 +111,7 @@ public class PlayerManager : MonoBehaviour
 
         // Ulti
         cardList[GameOverseer.GO.cardsReceivedCount] = HeroDecks.HD.heroCard(-1, GameOverseer.GO.ultiReceived);
+        Debug.Log("Enemy Ulti: " + cardList[GameOverseer.GO.cardsReceivedCount].name);
     }
 
     public GameObject EnemyCreateCard(int index)
