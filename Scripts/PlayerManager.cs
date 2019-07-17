@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class PlayerManager : MonoBehaviour
 {
     public int HP = 10;
-    public int Charge = 2;
+    public int Charge = 0;
     public int protection = 0;
     public int initialCardCount = 0;
     public Card[] cardList = new Card[15];
@@ -18,7 +18,6 @@ public class PlayerManager : MonoBehaviour
     public GameObject myHand;
     public GameObject prefabCard;
     public GameObject prefabUlti;
-    public bool enemyCreated = false;
     public int hero = -1;
 
     private bool startedGame = false;
@@ -26,7 +25,7 @@ public class PlayerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        DontDestroyOnLoad(this.gameObject);
+        startedGame = false;
         CreateTrain();
     }
 
@@ -34,37 +33,40 @@ public class PlayerManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameObject.name == "Player Manager" && SceneManager.GetActiveScene().buildIndex == 2 && !startedGame)
-        {
+
+        // Game Initialization
+        if (gameObject.name == "Player Manager" && startedGame == false && hero != -1) {
+            startedGame = true;
+            GameOverseer.GO.myConfirm = false;
+            HeroDecks.HD.myManager = this;
+            myHand = GameObject.Find("Player Cards");
             InitializeDeck();
             CreatePlayer();
-            startedGame = true;
         }
 
-        if (gameObject.name == "Enemy Manager" && GameOverseer.GO.cardsReceivedCount > 0 && enemyCreated == false)
-        {
+        if (gameObject.name == "Enemy Manager" && startedGame == false && hero != -1) {
+            startedGame = true;
+            GameOverseer.GO.enemyConfirm = false;
             Debug.Log("Activating enemy");
-            InitializeEnemyDeck();
+            HeroDecks.HD.enemyManager = this;
+            myHand = GameObject.Find("Enemy Cards");
+            InitializeDeck();
             CreateEnemy();
-            enemyCreated = true;
         }
     }
 
     // PLAYER INITIALIZATION
     void InitializeDeck()
     {
+        //GameOverseer.GO.cardsTBSCount = 0;
         // Initialize Deck
         for (int i = 0; i < initialCardCount; i++)
         {
-            cardList[i] = HeroDecks.HD.heroCard(-1, i);
-            //Debug.Log(cardList[i].name + " = " + i);
-            GameOverseer.GO.cardsToBeSent[GameOverseer.GO.cardsTBSCount] = i;
-            GameOverseer.GO.cardsTBSCount++;
+            cardList[i] = HeroDecks.HD.heroCard(hero, i);
         }
 
         // Ulti
-        cardList[initialCardCount] = HeroDecks.HD.heroCard(-1, initialCardCount);
-        GameOverseer.GO.ultiToBeSent = initialCardCount;
+        cardList[initialCardCount] = HeroDecks.HD.heroCard(hero, initialCardCount);
     }
 
     public GameObject CreateCard(int index)
@@ -88,11 +90,10 @@ public class PlayerManager : MonoBehaviour
 
     private void CreatePlayer()
     {
-        Debug.Log("Creating player");
+        Debug.Log("Creating player, started: " + startedGame);
 
         // Creating Cards
-        for (int i = 0; i < initialCardCount; i++)
-        {
+        for (int i = 0; i < initialCardCount; i++) {
             CreateCard(i);
         }
         myHand.GetComponent<DeckManager>().cardAmount = initialCardCount;
@@ -101,19 +102,6 @@ public class PlayerManager : MonoBehaviour
 
 
     // ENEMY INITIALIZATION
-    void InitializeEnemyDeck()
-    {
-        // Initialize Deck
-        for (int i = 0; i < GameOverseer.GO.cardsReceivedCount; i++)
-        {
-            cardList[i] = HeroDecks.HD.heroCard(-1, GameOverseer.GO.cardsReceived[i]);
-        }
-
-        // Ulti
-        cardList[GameOverseer.GO.cardsReceivedCount] = HeroDecks.HD.heroCard(-1, GameOverseer.GO.ultiReceived);
-        Debug.Log("Enemy Ulti: " + cardList[GameOverseer.GO.cardsReceivedCount].name);
-    }
-
     public GameObject EnemyCreateCard(int index)
     {
         GameObject card = Instantiate(prefabCard, new Vector3(-557f, 288.1f), Quaternion.identity);
@@ -127,15 +115,15 @@ public class PlayerManager : MonoBehaviour
 
     void CreateEnemy()
     {
-        Debug.Log("Creating enemy");
+        Debug.Log("Creating enemy, started: " + startedGame);
 
         // Creating Cards
 
-        for (int i = 0; i < GameOverseer.GO.cardsReceivedCount; i++) {
+        for (int i = 0; i < initialCardCount; i++) {
             EnemyCreateCard(i);
         }
-        myHand.GetComponent<DeckManager>().cardAmount = GameOverseer.GO.cardsReceivedCount;
-        CreateUlti(GameOverseer.GO.ultiReceived);
+        myHand.GetComponent<DeckManager>().cardAmount = initialCardCount;
+        CreateUlti(initialCardCount);
     }
 
 

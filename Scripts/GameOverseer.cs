@@ -1,13 +1,19 @@
 ﻿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // Game Overseer será o meu Singleton
 
 public class GameOverseer : MonoBehaviour
 {
     public static GameOverseer GO;
+
+    // Hero selection
+    public int myHero = -1;
+    public int enemyHero = -1;
 
     // State stuff
     public GameState state;
@@ -35,12 +41,12 @@ public class GameOverseer : MonoBehaviour
     public bool enemyUltiBuy = false;
 
     // Deck transfer
-    public int[] cardsToBeSent = new int[15];
+    /*public int[] cardsToBeSent = new int[15];
     public int cardsTBSCount = 0;
     public int ultiToBeSent;
     public int[] cardsReceived = new int[15];
     public int cardsReceivedCount = 0;
-    public int ultiReceived;
+    public int ultiReceived;*/
 
     // Playing cards
     [HideInInspector]
@@ -49,6 +55,11 @@ public class GameOverseer : MonoBehaviour
     public int enemyCardPlayed = -1;
 
     // Singleton management (THERE CAN BE ONLY ONE!!!)
+    private void Awake()
+    {
+        GameOverseer.GO = this;
+    }
+
     private void OnEnable()
     {
         if (GO == null) {
@@ -68,19 +79,20 @@ public class GameOverseer : MonoBehaviour
     {
         state = GameState.Purchase;
         enemySentCard = false;
+        DontDestroyOnLoad(this.gameObject);
+
+        PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(GO.enemySentCard);
-        stateStuff();
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            Debug.Log("MasterClient!");
+        if (SceneManager.GetActiveScene().buildIndex == 3) { 
+            stateStuff();
+        } else if (SceneManager.GetActiveScene().buildIndex == 2) {
+            heroSelectionStuff();
         }
-        Debug.Log("Client!");
 
         if (!PhotonNetwork.IsConnectedAndReady || !PhotonNetwork.IsConnected)
         {
@@ -90,6 +102,19 @@ public class GameOverseer : MonoBehaviour
         }
     }
 
+
+    // Hero Selection Stuff
+    void heroSelectionStuff()
+    {
+        if ((myConfirm && enemyConfirm) && GO.myHero != -1 && GO.enemyHero != -1)
+        {
+            myConfirm = false;
+            enemyConfirm = false;
+            SceneManager.LoadScene(3);
+        }
+    }
+
+    // State Stuff
     void stateStuff()
     {
         // State stuff
@@ -110,8 +135,18 @@ public class GameOverseer : MonoBehaviour
                 case GameState.Revelation:
                     state = GameState.Effects;
                     Debug.Log("Effects state");
+                    HeroSideEffects.HSE.executeSideEffect(true, HeroDecks.HD.myManager, GO.myCardPlayed);
+                    HeroSideEffects.HSE.executeSideEffect(true, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
                     everyTurn();
                     activateCards();
+                    HeroSideEffects.HSE.executeSideEffect(false, HeroDecks.HD.myManager, GO.myCardPlayed);
+                    HeroSideEffects.HSE.executeSideEffect(false, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
+
+                    // Reset stuff
+                    HeroDecks.HD.myManager.cardList[GO.myCardPlayed].isNullified = false;
+                    HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].isNullified = false;
+                    myCardPlayed = -1;
+                    enemyCardPlayed = -1;
                     break;
 
                 case GameState.Effects:
@@ -130,6 +165,7 @@ public class GameOverseer : MonoBehaviour
         }
 
     }
+
 
     // Every turn stuff
     public void everyTurn()
@@ -189,10 +225,8 @@ public class GameOverseer : MonoBehaviour
                 HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager, e);
         }
 
-        HeroDecks.HD.myManager.cardList[GO.myCardPlayed].isNullified = false;
-        HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].isNullified = false;
-        myCardPlayed = -1;
-        enemyCardPlayed = -1;
+        
+        
     }
 }
 

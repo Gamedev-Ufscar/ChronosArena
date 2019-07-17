@@ -53,15 +53,27 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     // Cores -> 1 (Comprado) / 0.8 (Visualizando) / 0.6 (Nada) / 0.3 (Não comprável)
     void Cores ()
     {
+
         if (bought) {
-            GetComponent<Image>().color = new Color(1f, 1f-red, 1f-red);
-        } else if (GameOverseer.GO.state != GameState.Purchase || 
-            (HeroDecks.HD.myManager.Charge < HeroDecks.HD.myManager.cardList[thisCard].cost && deckManager.gameObject == HeroDecks.HD.myManager.myHand)) {
+            GetComponent<Image>().color = new Color(1f, 1f - red, 1f - red);
+        } else if (GameOverseer.GO.state != GameState.Purchase) {
             GetComponent<Image>().color = new Color(0.3f, 0.3f - red, 0.3f - red);
-        } else if (zoomCard) {
-            GetComponent<Image>().color = new Color(0.8f, 0.8f - red, 0.8f - red);
         } else {
-            GetComponent<Image>().color = new Color(0.6f, 0.6f - red, 0.6f - red);
+            if (HeroDecks.HD.myManager.cardList[thisCard] != null) { 
+                if (HeroDecks.HD.myManager.Charge < HeroDecks.HD.myManager.cardList[thisCard].cost) {
+                    GetComponent<Image>().color = new Color(0.3f, 0.3f - red, 0.3f - red);
+                } else if (zoomCard) {
+                    GetComponent<Image>().color = new Color(0.8f, 0.8f - red, 0.8f - red);
+                } else {
+                    GetComponent<Image>().color = new Color(0.6f, 0.6f - red, 0.6f - red);
+                }
+            } else {
+                if (zoomCard) {
+                    GetComponent<Image>().color = new Color(0.8f, 0.8f - red, 0.8f - red);
+                } else {
+                    GetComponent<Image>().color = new Color(0.6f, 0.6f - red, 0.6f - red);
+                }
+            }
         }
 
         // Se inimigo estiver olhando, fica mais vermelho

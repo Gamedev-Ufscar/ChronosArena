@@ -17,7 +17,8 @@ public class MainUIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        myManager = HeroDecks.HD.myManager;
+        enemyManager = HeroDecks.HD.enemyManager;
     }
 
     // Update is called once per frame

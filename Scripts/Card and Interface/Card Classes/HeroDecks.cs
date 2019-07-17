@@ -9,6 +9,11 @@ public class HeroDecks : MonoBehaviour
     public PlayerManager enemyManager;
 
 
+    private void Awake()
+    {
+        HeroDecks.HD = this;
+    }
+
     private void OnEnable()
     {
         if (HeroDecks.HD == null)
@@ -25,7 +30,10 @@ public class HeroDecks : MonoBehaviour
         }
 
         HeroDecks.HD.myManager = GameObject.Find("Player Manager").GetComponent<PlayerManager>();
+        for (int i = 0; i < myManager.sideList.Length; i++) { myManager.sideList[i] = 0; }
+
         HeroDecks.HD.enemyManager = GameObject.Find("Enemy Manager").GetComponent<PlayerManager>();
+        for (int i = 0; i < enemyManager.sideList.Length; i++) { enemyManager.sideList[i] = 0; }
     }
 
     // Start is called before the first frame update
@@ -210,14 +218,14 @@ public class HeroDecks : MonoBehaviour
                 weakSpot.name = "Ponto Fraco";
                 weakSpot.type = CardTypes.Skill;
                 weakSpot.id = 6;
-                weakSpot.minmax = 0816;
+                weakSpot.minmax = 1717;
                 weakSpot.sideEffect = 0;
-                weakSpot.duration = 1;
+                weakSpot.duration = 2;
                 return weakSpot;
 
             case 7:
                 BasicSkill dexterity = new BasicSkill();
-                dexterity.name = "Mecha Robotico";
+                dexterity.name = "Destreza";
                 dexterity.type = CardTypes.Ultimate;
                 dexterity.id = 6;
                 dexterity.minmax = 0816;

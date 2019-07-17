@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkTrain : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class NetworkTrain : MonoBehaviour
     void Start()
     {
         PV = GetComponent<PhotonView>();
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Awake()
@@ -45,7 +47,7 @@ public class NetworkTrain : MonoBehaviour
             }
 
             // Send Ulti Purchase
-            if (GameOverseer.GO.state == GameState.Purchase) {
+            if (GameOverseer.GO.state == GameState.Purchase && SceneManager.GetActiveScene().buildIndex == 3) {
                 PV.RPC("RPC_ultiStuff", RpcTarget.OthersBuffered, GameOverseer.GO.ultiBuy, (byte)HeroDecks.HD.myManager.Charge);
             }
 
@@ -59,8 +61,13 @@ public class NetworkTrain : MonoBehaviour
             // Send Confirm
             PV.RPC("RPC_SendClick", RpcTarget.OthersBuffered, GameOverseer.GO.myConfirm);
 
+
+            // Send chosen Hero
+            PV.RPC("RPC_SendHero", RpcTarget.OthersBuffered, (byte)GameOverseer.GO.myHero);
+
+
             // Send initial cards
-            if (GameOverseer.GO.cardsTBSCount > 0) {
+            /*if (GameOverseer.GO.cardsTBSCount > 0) {
                 PV.RPC("RPC_sendCard", RpcTarget.OthersBuffered, GameOverseer.GO.cardsToBeSent, (byte)GameOverseer.GO.cardsTBSCount,
                                                                  (byte)GameOverseer.GO.ultiToBeSent);
             }
@@ -68,11 +75,10 @@ public class NetworkTrain : MonoBehaviour
             if (GameOverseer.GO.cardsReceivedCount > 0) {
                 PV.RPC("RPC_confirmedSendCard", RpcTarget.OthersBuffered);
                 GameOverseer.GO.cardsReceivedCount = 0;
-            }
+            }*/
 
             // Reset bool signals
-            if (GameOverseer.GO.sentCard > 0)
-            {
+            if (GameOverseer.GO.sentCard > 0) {
                 GameOverseer.GO.sentCard--;
             }
 
@@ -108,6 +114,12 @@ public class NetworkTrain : MonoBehaviour
         GameOverseer.GO.enemySentCard = true;
     }
 
+    [PunRPC]
+    public void RPC_SendHero(byte myHero)
+    {
+        GameOverseer.GO.enemyHero = (int)myHero;
+    }
+
 
     [PunRPC]
     public void RPC_ultiStuff(bool ultiBuy, byte charge)
@@ -124,22 +136,24 @@ public class NetworkTrain : MonoBehaviour
             GameOverseer.GO.receivedAState = true;
         }
     }
+
+
     [PunRPC]
     public void RPC_SendClick(bool sentButton)
     {
         GameOverseer.GO.enemyConfirm = sentButton;
     }
 
-    [PunRPC]
+    /*[PunRPC]
     public void RPC_sendCard(int[] cardsSent, byte count, byte ultiSent)
     {
         GameOverseer.GO.cardsReceived = cardsSent;
-        GameOverseer.GO.cardsReceivedCount = count;
-        GameOverseer.GO.ultiReceived = ultiSent;
+        GameOverseer.GO.cardsReceivedCount = (int)count;
+        GameOverseer.GO.ultiReceived = (int)ultiSent;
     }
     [PunRPC]
     public void RPC_confirmedSendCard()
     {
         GameOverseer.GO.cardsTBSCount = 0;
-    }
+    }*/
 }
