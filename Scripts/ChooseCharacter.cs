@@ -12,11 +12,13 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
     public int hero = -1;
     public int sideListSize = 0;
     public int handSize;
+    public Sprite profile;
     public HermesScript hermesScript;
 
     // Start is called before the first frame update
     void Start()
     {
+        GetComponent<Image>().sprite = profile;
         GetComponent<Image>().color = new Color(0.55f, 0.55f, 0.55f);
     }
 
@@ -29,6 +31,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
                     hermesScript.hero = hero;
                     hermesScript.sideListSize = sideListSize;
                     hermesScript.handSize = handSize;
+                    hermesScript.profile = profile;
                     GameOverseer.GO.myHero = hero;
                     selectionMode = 1;
                     GetComponent<Image>().color = new Color(1f, 1f, 1f);
@@ -47,6 +50,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
             hermesScript.enemyHero = hero;
             hermesScript.enemySideListSize = sideListSize;
             hermesScript.enemyHandSize = handSize;
+            hermesScript.enemyProfile = profile;
             selectionMode = 2;
             red = 0.2f;
             GetComponent<Image>().color = new Color(GetComponent<Image>().color.r, GetComponent<Image>().color.r - red, GetComponent<Image>().color.r - red);

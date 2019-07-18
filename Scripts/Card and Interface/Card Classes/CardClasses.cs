@@ -221,6 +221,29 @@ public class BasicSkill : Card, Damage, Protection, ChargeInterface
     }
 }
 
+
+public class AutoHealSkill : Card, Damage
+{
+    public int damage { get; set; }
+    public bool isUnblockable { get; set; }
+
+     public void causeDamage(int damage, PlayerManager target)
+    {
+        target.HP -= damage;
+    }
+
+    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    {
+        switch (priority)
+        {
+            case 12:
+                causeDamage(damage, user);
+                break;
+        }
+    }
+}
+
+
 public class SideEffectSkill : Card
 {
     public int sideEffect { get; set; }

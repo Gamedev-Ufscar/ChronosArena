@@ -52,6 +52,9 @@ public class HeroDecks : MonoBehaviour
     {
         switch (hero)
         {
+            case 0:
+                return UgaDeck(id);
+
             case 21:
                 return YuriDeck(id);
 
@@ -135,6 +138,93 @@ public class HeroDecks : MonoBehaviour
                 robotoUlti.protection = 2;
                 robotoUlti.charge = 0;
                 return robotoUlti;
+
+            default:
+                return null;
+        }
+    }
+
+    public Card UgaDeck(int id)
+    {
+        switch (id)
+        {
+            case 0:
+                Attack clubSmack = new Attack();
+                clubSmack.name = "Pancada com Tronco";
+                clubSmack.type = CardTypes.Attack;
+                clubSmack.id = 0;
+                clubSmack.minmax = 1616;
+                clubSmack.damage = 2;
+                clubSmack.isUnblockable = false;
+                clubSmack.limit = 0;
+                clubSmack.limitMax = 2;
+                return clubSmack;
+
+            case 1:
+                Defense clubBlock = new Defense();
+                clubBlock.name = "Defesa com Tronco";
+                clubBlock.type = CardTypes.Defense;
+                clubBlock.id = 2;
+                clubBlock.minmax = 0808;
+                clubBlock.protection = 2;
+                return clubBlock;
+
+            case 2:
+                Charge headScratch = new Charge();
+                headScratch.name = "Coçar a Cabeça";
+                headScratch.type = CardTypes.Charge;
+                headScratch.id = 2;
+                headScratch.minmax = 1414;
+                headScratch.charge = 1;
+                headScratch.limit = 0;
+                headScratch.limitMax = 3;
+                return headScratch;
+
+            case 3:
+                Nullification ugaScream = new Nullification();
+                ugaScream.name = "Grito Uga";
+                ugaScream.type = CardTypes.Nullification;
+                ugaScream.id = 3;
+                ugaScream.minmax = 0404;
+                ugaScream.nullificationList = new CardTypes[4];
+                ugaScream.nullificationList[0] = CardTypes.Charge; ugaScream.nullificationList[1] = CardTypes.Skill;
+                ugaScream.nullificationList[2] = CardTypes.Ultimate; ugaScream.nullificationList[3] = CardTypes.NeutralSkill;
+                return ugaScream;
+
+            case 4:
+                return UgaDeck(3);
+
+
+            case 5:
+                BasicSkill boneSpear = new BasicSkill();
+                boneSpear.name = "Lança de Ossos";
+                boneSpear.type = CardTypes.Skill;
+                boneSpear.id = 5;
+                boneSpear.minmax = 1616;
+                boneSpear.damage = 4;
+                boneSpear.isUnblockable = false;
+                boneSpear.protection = 0;
+                boneSpear.charge = 0;
+                return boneSpear;
+
+            case 6:
+                AutoHealSkill rawMeat = new AutoHealSkill();
+                rawMeat.name = "Carne Crua";
+                rawMeat.type = CardTypes.Skill;
+                rawMeat.id = 6;
+                rawMeat.minmax = 1414;
+                rawMeat.damage = -2;
+                rawMeat.isUnblockable = false;
+                return rawMeat;
+
+            case 7:
+                BugaScream bugaScream = new BugaScream();
+                bugaScream.name = "GRITO BUGA";
+                bugaScream.type = CardTypes.Ultimate;
+                bugaScream.id = 7;
+                bugaScream.minmax = 1617;
+                bugaScream.cost = 2;
+                return bugaScream;
 
             default:
                 return null;

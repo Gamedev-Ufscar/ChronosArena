@@ -27,6 +27,11 @@ public class NetworkTrain : MonoBehaviour
 
         if (time >= 0.2f)
         {
+            // Send shuffle
+            if (GameOverseer.GO.shuffled > 0) {
+                PV.RPC("RPC_Shuffled", RpcTarget.OthersBuffered, GameOverseer.GO.sentDeckList);
+            }
+
 
             // Send hovering card
             if (GameOverseer.GO.hoveringCard != -1) {
@@ -65,21 +70,12 @@ public class NetworkTrain : MonoBehaviour
             // Send chosen Hero
             PV.RPC("RPC_SendHero", RpcTarget.OthersBuffered, (byte)GameOverseer.GO.myHero);
 
-
-            // Send initial cards
-            /*if (GameOverseer.GO.cardsTBSCount > 0) {
-                PV.RPC("RPC_sendCard", RpcTarget.OthersBuffered, GameOverseer.GO.cardsToBeSent, (byte)GameOverseer.GO.cardsTBSCount,
-                                                                 (byte)GameOverseer.GO.ultiToBeSent);
-            }
-
-            if (GameOverseer.GO.cardsReceivedCount > 0) {
-                PV.RPC("RPC_confirmedSendCard", RpcTarget.OthersBuffered);
-                GameOverseer.GO.cardsReceivedCount = 0;
-            }*/
-
             // Reset bool signals
             if (GameOverseer.GO.sentCard > 0) {
                 GameOverseer.GO.sentCard--;
+            }
+            if (GameOverseer.GO.shuffled > 0) {
+                GameOverseer.GO.shuffled--;
             }
 
             // Time stuff
@@ -137,23 +133,16 @@ public class NetworkTrain : MonoBehaviour
         }
     }
 
+    [PunRPC]
+    public void RPC_Shuffled(int[] sentDeckList)
+    {
+        GameOverseer.GO.receivedDeckList = sentDeckList;
+        GameOverseer.GO.enemyShuffled = true;
+    }
 
     [PunRPC]
     public void RPC_SendClick(bool sentButton)
     {
         GameOverseer.GO.enemyConfirm = sentButton;
     }
-
-    /*[PunRPC]
-    public void RPC_sendCard(int[] cardsSent, byte count, byte ultiSent)
-    {
-        GameOverseer.GO.cardsReceived = cardsSent;
-        GameOverseer.GO.cardsReceivedCount = (int)count;
-        GameOverseer.GO.ultiReceived = (int)ultiSent;
-    }
-    [PunRPC]
-    public void RPC_confirmedSendCard()
-    {
-        GameOverseer.GO.cardsTBSCount = 0;
-    }*/
 }

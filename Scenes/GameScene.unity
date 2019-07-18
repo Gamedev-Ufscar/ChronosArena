@@ -1097,7 +1097,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 10
-  Charge: 0
+  Charge: 4
   protection: 0
   initialCardCount: 6
   sideList: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -1575,13 +1575,14 @@ GameObject:
   - component: {fileID: 636083957}
   - component: {fileID: 636083959}
   - component: {fileID: 636083958}
+  - component: {fileID: 636083960}
   m_Layer: 5
   m_Name: Enemy Profile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &636083957
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1638,6 +1639,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 636083956}
   m_CullTransparentMesh: 0
+--- !u!114 &636083960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636083956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce3fe9365626314089e94236ca76cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 0}
 --- !u!1 &650214199
 GameObject:
   m_ObjectHideFlags: 0
@@ -2130,13 +2144,14 @@ GameObject:
   - component: {fileID: 817623387}
   - component: {fileID: 817623389}
   - component: {fileID: 817623388}
+  - component: {fileID: 817623390}
   m_Layer: 5
   m_Name: Player Profile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &817623387
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2193,6 +2208,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817623386}
   m_CullTransparentMesh: 0
+--- !u!114 &817623390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817623386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce3fe9365626314089e94236ca76cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 0}
 --- !u!1 &824755641
 GameObject:
   m_ObjectHideFlags: 0
@@ -2988,7 +3016,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 10
-  Charge: 0
+  Charge: 4
   protection: 0
   initialCardCount: 0
   sideList: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -3062,6 +3090,10 @@ MonoBehaviour:
   enemySentCard: 1
   ultiBuy: 0
   enemyUltiBuy: 0
+  shuffled: 0
+  sentDeckList: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  enemyShuffled: 0
+  receivedDeckList: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
   myCardPlayed: -1
   enemyCardPlayed: -1
 --- !u!4 &1341579211
@@ -3173,6 +3205,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerManager: {fileID: 1335958031}
+  deckList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   cardLocations:
   - {x: 255, y: 288.1}
   - {x: 155, y: 288.1}
@@ -3332,6 +3375,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerManager: {fileID: 263414358}
+  deckList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   cardLocations:
   - {x: -255, y: -286.2}
   - {x: -155, y: -286.2}

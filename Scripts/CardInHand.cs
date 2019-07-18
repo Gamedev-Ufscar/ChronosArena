@@ -154,19 +154,22 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     public void Summon()
     {
         GameOverseer.GO.myCardPlayed = thisCard;
+
+        // Invoke physical card
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zValue));
         GameObject g = Instantiate(cardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));
+
         g.GetComponent<CardInBoard>().thisCard = thisCard;
         g.GetComponent<CardInBoard>().owner = HeroDecks.HD.myManager;
         g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard);
         deckManager.holdingCard = false;
-        if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed].type != CardTypes.Ultimate) { 
-            g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
-            gameObject.SetActive(false);
-        } else {
-            g.GetComponent<CardInBoard>().thisCardInHand = ultiCard;
-            Destroy(gameObject);
+
+        // Preparing to turn this on later
+        g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
+        if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed].type == CardTypes.Ultimate) {
+            g.GetComponent<CardInBoard>().thisUltimateCard = ultiCard;
         }
+        gameObject.SetActive(false);
     }
 
     public void OnTriggerEnter(Collider other)

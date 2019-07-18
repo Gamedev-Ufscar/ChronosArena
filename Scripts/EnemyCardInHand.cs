@@ -67,17 +67,19 @@ public class EnemyCardInHand : MonoBehaviour
     public void Summon()
     {
         GameOverseer.GO.enemyCardPlayed = thisCard;
+
+        // Invoke physical card
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(adaptedEnemyHoverPos.x, adaptedEnemyHoverPos.y, zValue));
         GameObject g = Instantiate(cardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.up));
-        if (HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed].type != CardTypes.Ultimate) { 
-            g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
-        } else {
-            g.GetComponent<CardInBoard>().thisCardInHand = ultiCard;
-            Debug.Log("Enemy ult summoned");
-        }
+
         g.GetComponent<CardInBoard>().thisCard = thisCard;
         g.GetComponent<CardInBoard>().owner = HeroDecks.HD.enemyManager;
         g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.EnemyCard);
+
+        g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
+        if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.enemyCardPlayed].type == CardTypes.Ultimate) {
+            g.GetComponent<CardInBoard>().thisUltimateCard = ultiCard;
+        }
 
         gameObject.SetActive(false);
     }

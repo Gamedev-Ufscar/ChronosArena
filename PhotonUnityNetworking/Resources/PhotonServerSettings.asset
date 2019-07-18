@@ -48,5 +48,6 @@ MonoBehaviour:
   - RPC_enemySentCard
   - RPC_ChangedState
   - RPC_SendHero
+  - RPC_Shuffled
   DisableAutoOpenWizard: 1
   ShowSettings: 1

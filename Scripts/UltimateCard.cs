@@ -96,12 +96,20 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
             GameOverseer.GO.enemyUltiBuy = false;
             if (deckManager.gameObject == HeroDecks.HD.myManager.myHand) // If Player
             {
-                GameObject card = HeroDecks.HD.myManager.CreateCard(deckManager.cardAmount);
+                GameObject card = HeroDecks.HD.myManager.CreateCard(deckManager.activeCardCount, thisCard);
+                card.transform.parent = deckManager.transform;
+                deckManager.deckList[deckManager.cardTotalCount] = card;
+                deckManager.cardTotalCount++;
+                deckManager.activeCardCount++;
                 card.GetComponent<CardInHand>().ultiCard = gameObject;
 
             
             } else if (deckManager.gameObject == HeroDecks.HD.enemyManager.myHand) { // If Enemy
-                GameObject card = HeroDecks.HD.enemyManager.EnemyCreateCard(deckManager.cardAmount);
+                GameObject card = HeroDecks.HD.enemyManager.EnemyCreateCard(deckManager.activeCardCount, thisCard);
+                card.transform.parent = deckManager.transform;
+                deckManager.deckList[deckManager.cardTotalCount] = card;
+                deckManager.cardTotalCount++;
+                deckManager.activeCardCount++;
                 card.GetComponent<EnemyCardInHand>().ultiCard = gameObject;
             }
             gameObject.SetActive(false);

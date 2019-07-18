@@ -40,13 +40,11 @@ public class GameOverseer : MonoBehaviour
     public bool ultiBuy = false;
     public bool enemyUltiBuy = false;
 
-    // Deck transfer
-    /*public int[] cardsToBeSent = new int[15];
-    public int cardsTBSCount = 0;
-    public int ultiToBeSent;
-    public int[] cardsReceived = new int[15];
-    public int cardsReceivedCount = 0;
-    public int ultiReceived;*/
+    // Deck shuffle
+    public int shuffled = 0;
+    public int[] sentDeckList = new int[10];
+    public bool enemyShuffled = false;
+    public int[] receivedDeckList = new int[10];
 
     // Playing cards
     [HideInInspector]
@@ -143,6 +141,8 @@ public class GameOverseer : MonoBehaviour
                     HeroSideEffects.HSE.executeSideEffect(false, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
 
                     // Reset stuff
+                    HeroDecks.HD.myManager.protection = 0;
+                    HeroDecks.HD.enemyManager.protection = 0;
                     HeroDecks.HD.myManager.cardList[GO.myCardPlayed].isNullified = false;
                     HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].isNullified = false;
                     myCardPlayed = -1;
@@ -229,23 +229,3 @@ public class GameOverseer : MonoBehaviour
         
     }
 }
-
-/*
-        // Set priorities
-        HeroDecks.HD.myManager.cardList[GO.myCardPlayed].priority = cardPriority(HeroDecks.HD.myManager.cardList[GO.myCardPlayed]);
-        HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].priority = cardPriority(HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed]);
-
-        // Activate in order Enemy -> Player
-        if (HeroDecks.HD.myManager.cardList[GO.myCardPlayed].priority < HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].priority) {
-            HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager);
-            if (!HeroDecks.HD.myManager.cardList[GO.myCardPlayed].isNullified)
-                HeroDecks.HD.myManager.cardList[GO.myCardPlayed].effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager);
-        }
-
-        // Activate in order Player -> Enemy
-        else {
-            HeroDecks.HD.myManager.cardList[GO.myCardPlayed].effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager);
-            if (!HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].isNullified)
-                HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager);
-        }
-        */

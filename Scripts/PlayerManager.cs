@@ -47,7 +47,6 @@ public class PlayerManager : MonoBehaviour
         if (gameObject.name == "Enemy Manager" && startedGame == false && hero != -1) {
             startedGame = true;
             GameOverseer.GO.enemyConfirm = false;
-            Debug.Log("Activating enemy");
             HeroDecks.HD.enemyManager = this;
             myHand = GameObject.Find("Enemy Cards");
             InitializeDeck();
@@ -55,7 +54,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    // PLAYER INITIALIZATION
+    // GENERAL INITIALIZATION
     void InitializeDeck()
     {
         //GameOverseer.GO.cardsTBSCount = 0;
@@ -69,16 +68,6 @@ public class PlayerManager : MonoBehaviour
         cardList[initialCardCount] = HeroDecks.HD.heroCard(hero, initialCardCount);
     }
 
-    public GameObject CreateCard(int index)
-    {
-        GameObject card = Instantiate(prefabCard, new Vector3(507f, -286.2f), Quaternion.identity);
-        card.transform.parent = myHand.transform;
-        card.GetComponent<CardInHand>().deckManager = card.transform.parent.GetComponent<DeckManager>();
-        card.GetComponent<CardInHand>().cardIndex = index; // THIS NEEDS TO BE RANDOMIZED LATER!!!
-        card.GetComponent<CardInHand>().thisCard = index;
-        return card;
-    }
-
     private void CreateUlti(int index)
     {
         GameObject card = Instantiate(prefabUlti, new Vector3(507f, -286.2f), Quaternion.identity);
@@ -88,41 +77,51 @@ public class PlayerManager : MonoBehaviour
         card.GetComponent<UltimateCard>().thisCard = index;
     }
 
+
+    // PLAYER INITIALIZATION
+    public GameObject CreateCard(int cardIndex, int thisCard)
+    {
+        GameObject card = Instantiate(prefabCard, new Vector3(507f, -286.2f), Quaternion.identity);
+        card.transform.parent = myHand.transform;
+        card.GetComponent<CardInHand>().deckManager = card.transform.parent.GetComponent<DeckManager>();
+        card.GetComponent<CardInHand>().cardIndex = cardIndex; // THIS NEEDS TO BE RANDOMIZED LATER!!!
+        card.GetComponent<CardInHand>().thisCard = thisCard;
+        return card;
+    }
+
     private void CreatePlayer()
     {
-        Debug.Log("Creating player, started: " + startedGame);
-
         // Creating Cards
         for (int i = 0; i < initialCardCount; i++) {
-            CreateCard(i);
+            myHand.GetComponent<DeckManager>().deckList[i] = CreateCard(i, i);
         }
-        myHand.GetComponent<DeckManager>().cardAmount = initialCardCount;
+        myHand.GetComponent<DeckManager>().cardTotalCount = initialCardCount;
+        myHand.GetComponent<DeckManager>().activeCardCount = initialCardCount;
         CreateUlti(initialCardCount);
     }
 
 
     // ENEMY INITIALIZATION
-    public GameObject EnemyCreateCard(int index)
+    public GameObject EnemyCreateCard(int cardIndex, int thisCard)
     {
         GameObject card = Instantiate(prefabCard, new Vector3(-557f, 288.1f), Quaternion.identity);
         card.transform.parent = myHand.transform;
         card.GetComponent<EnemyCardInHand>().deckManager = card.transform.parent.GetComponent<DeckManager>();
-        card.GetComponent<EnemyCardInHand>().cardIndex = index; // THIS NEEDS TO BE RANDOMIZED LATER!!!
+        card.GetComponent<EnemyCardInHand>().cardIndex = cardIndex; // THIS NEEDS TO BE RANDOMIZED LATER!!!
         //Debug.Log("EnemyCreateCard: " + cardList[index].id);
-        card.GetComponent<EnemyCardInHand>().thisCard = index;
+        card.GetComponent<EnemyCardInHand>().thisCard = thisCard;
         return card;
     }
 
     void CreateEnemy()
     {
-        Debug.Log("Creating enemy, started: " + startedGame);
-
         // Creating Cards
 
         for (int i = 0; i < initialCardCount; i++) {
-            EnemyCreateCard(i);
+            myHand.GetComponent<DeckManager>().deckList[i] = EnemyCreateCard(i, i);
         }
-        myHand.GetComponent<DeckManager>().cardAmount = initialCardCount;
+        myHand.GetComponent<DeckManager>().cardTotalCount = initialCardCount;
+        myHand.GetComponent<DeckManager>().activeCardCount = initialCardCount;
         CreateUlti(initialCardCount);
     }
 

@@ -244,7 +244,7 @@ RectTransform:
   m_LocalScale: {x: 1.1999999, y: 1.1999999, z: 1}
   m_Children: []
   m_Father: {fileID: 1475981871}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -392,6 +392,10 @@ MonoBehaviour:
   enemySentCard: 1
   ultiBuy: 0
   enemyUltiBuy: 0
+  shuffled: 0
+  sentDeckList: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  enemyShuffled: 0
+  receivedDeckList: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
   myCardPlayed: -1
   enemyCardPlayed: -1
 --- !u!4 &527729731
@@ -439,11 +443,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1475981871}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 142.3, y: 0}
+  m_AnchoredPosition: {x: 142.3, y: -49}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &927829260
@@ -498,6 +502,7 @@ MonoBehaviour:
   hero: 21
   sideListSize: 1
   handSize: 7
+  profile: {fileID: 21300000, guid: a6c1a87bb077dbd428791d9b11217db9, type: 3}
   hermesScript: {fileID: 983468379}
 --- !u!1 &983468378
 GameObject:
@@ -531,9 +536,11 @@ MonoBehaviour:
   hero: -1
   sideListSize: 0
   handSize: 0
+  profile: {fileID: 0}
   enemyHero: -1
   enemySideListSize: 0
   enemyHandSize: 0
+  enemyProfile: {fileID: 0}
 --- !u!4 &983468380
 Transform:
   m_ObjectHideFlags: 0
@@ -788,6 +795,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1734934302}
+  - {fileID: 1887062560}
   - {fileID: 927829259}
   - {fileID: 413326341}
   m_Father: {fileID: 0}
@@ -888,6 +896,7 @@ MonoBehaviour:
   hero: 155
   sideListSize: 0
   handSize: 6
+  profile: {fileID: 21300000, guid: 4221fc4515c0c654d8ed559de3a2e697, type: 3}
   hermesScript: {fileID: 983468379}
 --- !u!1 &1859617532
 GameObject:
@@ -980,3 +989,95 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1887062559
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1887062560}
+  - component: {fileID: 1887062563}
+  - component: {fileID: 1887062562}
+  - component: {fileID: 1887062561}
+  m_Layer: 5
+  m_Name: Uga
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1887062560
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1887062559}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1475981871}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 142.3, y: 62}
+  m_SizeDelta: {x: 75, y: 75}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1887062561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1887062559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 21300000, guid: 2473b1fa49eb99c45ab97e2db07a91cc, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+--- !u!114 &1887062562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1887062559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b59e95b33778ce4cade0d3e9cbcfe63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hero: 0
+  sideListSize: 0
+  handSize: 7
+  profile: {fileID: 21300000, guid: 2473b1fa49eb99c45ab97e2db07a91cc, type: 3}
+  hermesScript: {fileID: 983468379}
+--- !u!222 &1887062563
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1887062559}
+  m_CullTransparentMesh: 0
