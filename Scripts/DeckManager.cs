@@ -23,8 +23,7 @@ public class DeckManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameOverseer.GO.enemyShuffled && gameObject == HeroDecks.HD.enemyManager.myHand)
-        {
+        if (GameOverseer.GO.enemyShuffled && gameObject == HeroDecks.HD.enemyManager.myHand) {
             GameOverseer.GO.enemyShuffled = false;
             for (int i = 0; i < deckList.Length; i++) {
                 if (deckList[i] != null) {
@@ -35,7 +34,7 @@ public class DeckManager : MonoBehaviour
         }
     }
 
-    public void Shuffle()
+   public void Shuffle()
     {
         int helper = 0, rando = 0;
         for (int i = 0; i < deckList.Length; i++) {
@@ -56,20 +55,20 @@ public class DeckManager : MonoBehaviour
         GameOverseer.GO.shuffled = 3;
     }
 
-        public void recedeDeck(int cardIndex)
+   public void recedeDeck(int cardIndex)
+   {
+        for (int i = 0; i < deckList.Length; i++)
         {
-            for (int i = 0; i < deckList.Length; i++)
-            {
-                if (deckList[i] != null && deckList[i].activeInHierarchy) {
-                    if (gameObject == HeroDecks.HD.myManager.myHand) {
-                        if (deckList[i].GetComponent<CardInHand>().cardIndex > cardIndex) {
-                            deckList[i].GetComponent<CardInHand>().cardIndex--;
-                        }
+            if (deckList[i] != null && deckList[i].activeInHierarchy) {
+                if (gameObject == HeroDecks.HD.myManager.myHand) {
+                    if (deckList[i].GetComponent<CardInHand>().cardIndex > cardIndex) {
+                        deckList[i].GetComponent<CardInHand>().cardIndex--;
                     }
-                    else if (gameObject == HeroDecks.HD.enemyManager.myHand) {
-                        if (deckList[i].GetComponent<EnemyCardInHand>().cardIndex > cardIndex) {
-                            deckList[i].GetComponent<EnemyCardInHand>().cardIndex--;
-                        }
+                }
+                else if (gameObject == HeroDecks.HD.enemyManager.myHand) {
+                    if (deckList[i].GetComponent<EnemyCardInHand>().cardIndex > cardIndex) {
+                        deckList[i].GetComponent<EnemyCardInHand>().cardIndex--;
+                    }
                     }
                 }
             }

@@ -49,5 +49,9 @@ MonoBehaviour:
   - RPC_ChangedState
   - RPC_SendHero
   - RPC_Shuffled
+  - RPC_interfaceSignalSent
+  - RPC_sendInterfaceSignal
+  - RPC_ecoHeroHover
+  - RPC_heroHover
   DisableAutoOpenWizard: 1
   ShowSettings: 1

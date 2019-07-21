@@ -89,6 +89,16 @@ public class PlayerManager : MonoBehaviour
         return card;
     }
 
+    public void RestoreCard(int id) // Restaura thisCard
+    {
+        myHand.GetComponent<DeckManager>().deckList[id].SetActive(true);
+        if (this == HeroDecks.HD.myManager)
+            myHand.GetComponent<DeckManager>().deckList[id].GetComponent<CardInHand>().cardIndex = myHand.GetComponent<DeckManager>().activeCardCount;
+        else if (this == HeroDecks.HD.enemyManager)
+            myHand.GetComponent<DeckManager>().deckList[id].GetComponent<EnemyCardInHand>().cardIndex = myHand.GetComponent<DeckManager>().activeCardCount;
+        myHand.GetComponent<DeckManager>().activeCardCount++;
+    }
+
     private void CreatePlayer()
     {
         // Creating Cards

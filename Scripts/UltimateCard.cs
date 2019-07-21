@@ -33,7 +33,7 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
 
 
         // Moving the card around and stuff
-        if (zoomCard == true || 
+        if ((zoomCard == true && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false) || 
            (GameOverseer.GO.enemyHoveringCard == cardIndex && 
            ((GameOverseer.GO.isEnemyHoveringHimself == true && deckManager.gameObject == HeroDecks.HD.enemyManager.myHand) ||
            (GameOverseer.GO.isEnemyHoveringHimself == false && deckManager.gameObject == HeroDecks.HD.myManager.myHand)))) { // Ou eu to hoverando ou o inimigo ta
@@ -125,6 +125,10 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
                                                     deckManager.ultiLocation, Time.deltaTime * 5f);
         transform.localScale = new Vector3(2 * 0.8665f, 2 * 1.177f, 1f);
         gameObject.GetComponent<Canvas>().overrideSorting = true;
+        if (deckManager.gameObject == HeroDecks.HD.myManager.myHand)
+            GameObject.Find("Main UI").GetComponent<MainUIManager>().hoveredCard = HeroDecks.HD.myManager.cardList[thisCard].name;
+        else if (deckManager.gameObject == HeroDecks.HD.enemyManager.myHand)
+            GameObject.Find("Main UI").GetComponent<MainUIManager>().hoveredCard = HeroDecks.HD.enemyManager.cardList[thisCard].name;
 
         // Buy the card
         //Debug.Log(deckManager.gameObject.name + ", " + HeroDecks.HD.myManager.myHand.name);

@@ -42,13 +42,17 @@ public class NetworkTrain : MonoBehaviour
             }
 
             // Summon Card
-            if (GameOverseer.GO.sentCard > 0 && GameOverseer.GO.state == GameState.Choice)
-            {
-                for (int i = 1; i <= 8; i++)
-                {
+            if (GameOverseer.GO.sentCard > 0 && GameOverseer.GO.state == GameState.Choice) {
+                for (int i = 1; i <= 8; i++) {
                     PV.RPC("RPC_sentCard", RpcTarget.OthersBuffered);
                     Debug.Log("Sent Card");
                 }
+            }
+
+            // Send Interface
+            if (GameOverseer.GO.interfaceSignalSent != 200 && GameOverseer.GO.state == GameState.Revelation) {
+                if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed] is Interfacer)
+                    PV.RPC("RPC_sendInterfaceSignal", RpcTarget.OthersBuffered, (byte)GameOverseer.GO.interfaceSignalSent);
             }
 
             // Send Ulti Purchase
@@ -66,6 +70,13 @@ public class NetworkTrain : MonoBehaviour
             // Send Confirm
             PV.RPC("RPC_SendClick", RpcTarget.OthersBuffered, GameOverseer.GO.myConfirm);
 
+
+            // Send hovering hero
+            if (GameOverseer.GO.myheroHover != 200) {
+            PV.RPC("RPC_heroHover", RpcTarget.OthersBuffered, (byte)GameOverseer.GO.myheroHover);
+            } else {
+                PV.RPC("RPC_ecoHeroHover", RpcTarget.OthersBuffered);
+            }
 
             // Send chosen Hero
             PV.RPC("RPC_SendHero", RpcTarget.OthersBuffered, (byte)GameOverseer.GO.myHero);
@@ -105,6 +116,17 @@ public class NetworkTrain : MonoBehaviour
     }
 
     [PunRPC]
+    public void RPC_heroHover(byte heroHover)
+    {
+        GameOverseer.GO.enemyheroHover = (int)heroHover;
+    }
+    [PunRPC]
+    public void RPC_ecoHeroHover()
+    {
+        GameOverseer.GO.enemyheroHover = 200;
+    }
+
+    [PunRPC]
     public void RPC_sentCard() {
         Debug.Log("Received enemySentCard");
         GameOverseer.GO.enemySentCard = true;
@@ -116,6 +138,12 @@ public class NetworkTrain : MonoBehaviour
         GameOverseer.GO.enemyHero = (int)myHero;
     }
 
+    [PunRPC]
+    public void RPC_sendInterfaceSignal(byte signalSent) {
+        Interfacer cc = (Interfacer)HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed];
+        cc.interfaceSignal = (int)signalSent;
+        HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed] = (Card)cc;
+    }
 
     [PunRPC]
     public void RPC_ultiStuff(bool ultiBuy, byte charge)

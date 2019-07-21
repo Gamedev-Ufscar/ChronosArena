@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ConfirmButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 {
@@ -33,8 +34,14 @@ public class ConfirmButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
         // Click
         if (pointerOver == true && Input.GetMouseButtonDown(0))
         {
-            GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
-            image.sprite = buttonColors[1];
+            if (SceneManager.GetActiveScene().buildIndex == 2 && GameOverseer.GO.myHero != 200) {
+                GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
+                image.sprite = buttonColors[1];
+            } else if (SceneManager.GetActiveScene().buildIndex == 3 && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false
+                 && (GameOverseer.GO.state != GameState.Choice || GameOverseer.GO.myCardPlayed != 200)) {
+                GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
+                image.sprite = buttonColors[1];
+            }
 
 
         // Button Colors

@@ -373,8 +373,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 976c52b9ddb3c424cbbae625825a5868, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myHero: -1
-  enemyHero: -1
+  myHero: 200
+  enemyHero: 200
+  myheroHover: 200
+  enemyheroHover: 200
   state: 0
   changingStates: 0
   receivedAState: 0
@@ -390,14 +392,15 @@ MonoBehaviour:
   enemyHoveringCardPos: {x: 0, y: 0, z: 0}
   enemyHoveringCardLocalPos: {x: 0, y: 0, z: 0}
   enemySentCard: 1
+  interfaceSignalSent: 200
   ultiBuy: 0
   enemyUltiBuy: 0
   shuffled: 0
   sentDeckList: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
   enemyShuffled: 0
   receivedDeckList: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
-  myCardPlayed: -1
-  enemyCardPlayed: -1
+  myCardPlayed: 200
+  enemyCardPlayed: 200
 --- !u!4 &527729731
 Transform:
   m_ObjectHideFlags: 0
@@ -499,11 +502,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b59e95b33778ce4cade0d3e9cbcfe63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heroName: Yuri
   hero: 21
   sideListSize: 1
   handSize: 7
   profile: {fileID: 21300000, guid: a6c1a87bb077dbd428791d9b11217db9, type: 3}
   hermesScript: {fileID: 983468379}
+  heroTitle: {fileID: 2051824072}
 --- !u!1 &983468378
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,11 +538,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad88e1b2285beae4abb02e03ae9af7e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hero: -1
+  hero: 200
   sideListSize: 0
   handSize: 0
   profile: {fileID: 0}
-  enemyHero: -1
+  enemyHero: 200
   enemySideListSize: 0
   enemyHandSize: 0
   enemyProfile: {fileID: 0}
@@ -798,6 +803,7 @@ RectTransform:
   - {fileID: 1887062560}
   - {fileID: 927829259}
   - {fileID: 413326341}
+  - {fileID: 2078963185}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -893,11 +899,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b59e95b33778ce4cade0d3e9cbcfe63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heroName: Roboto
   hero: 155
   sideListSize: 0
   handSize: 6
   profile: {fileID: 21300000, guid: 4221fc4515c0c654d8ed559de3a2e697, type: 3}
   hermesScript: {fileID: 983468379}
+  heroTitle: {fileID: 2051824072}
 --- !u!1 &1859617532
 GameObject:
   m_ObjectHideFlags: 0
@@ -1068,11 +1076,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b59e95b33778ce4cade0d3e9cbcfe63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heroName: Uga
   hero: 0
   sideListSize: 0
   handSize: 7
   profile: {fileID: 21300000, guid: 2473b1fa49eb99c45ab97e2db07a91cc, type: 3}
   hermesScript: {fileID: 983468379}
+  heroTitle: {fileID: 2051824072}
 --- !u!222 &1887062563
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1081,3 +1091,118 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1887062559}
   m_CullTransparentMesh: 0
+--- !u!1 &2051824070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2051824071}
+  - component: {fileID: 2051824073}
+  - component: {fileID: 2051824072}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2051824071
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051824070}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2078963185}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 68.6}
+  m_SizeDelta: {x: 211.79, y: 44.7}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2051824072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051824070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 4a4df204c321f9c40b0dbfb1baaffb4c, type: 3}
+    m_FontSize: 24
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 2
+    m_MaxSize: 40
+    m_Alignment: 1
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: ???
+--- !u!222 &2051824073
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051824070}
+  m_CullTransparentMesh: 0
+--- !u!1 &2078963184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2078963185}
+  m_Layer: 5
+  m_Name: Hero Title
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2078963185
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078963184}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 2051824071}
+  m_Father: {fileID: 1475981871}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}

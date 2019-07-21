@@ -20,11 +20,13 @@ public class ProfileScript : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
     void Update()
     {
         GetComponent<Image>().sprite = profile;
-        if (mouseOver && Input.GetMouseButtonDown(0) && gameObject.name == "Player Profile") {
+        if (mouseOver && Input.GetMouseButtonDown(0) && gameObject.name == "Player Profile"
+             && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false) {
             HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().Shuffle();
         }
 
-        if (mouseOver && Input.GetMouseButton(0) && gameObject.name == "Player Profile") {
+        if (mouseOver && Input.GetMouseButton(0) && gameObject.name == "Player Profile"
+             && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false) {
             transform.localScale = new Vector3(1.1f, 1.1f);
         } else {
             transform.localScale = new Vector3(1.210431f, 1.272552f);

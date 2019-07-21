@@ -5,8 +5,10 @@ using UnityEngine;
 public class HeroDecks : MonoBehaviour
 {
     public static HeroDecks HD;
+    public Sprite[] imageList;
     public PlayerManager myManager;
     public PlayerManager enemyManager;
+    public InterfaceScript interfaceScript;
 
 
     private void Awake()
@@ -269,7 +271,7 @@ public class HeroDecks : MonoBehaviour
 
             case 3:
                 Nullification supressionShot = new Nullification();
-                supressionShot.name = "Anulacao Robotica";
+                supressionShot.name = "Tiro de Supressão";
                 supressionShot.type = CardTypes.Nullification;
                 supressionShot.id = 3;
                 supressionShot.minmax = 0404;
@@ -282,6 +284,7 @@ public class HeroDecks : MonoBehaviour
                 Attack bulletBarrage = new Attack();
                 bulletBarrage.name = "Chuva de Balas";
                 bulletBarrage.type = CardTypes.Skill;
+                bulletBarrage.image = imageList[0];
                 bulletBarrage.id = 4;
                 bulletBarrage.minmax = 1616;
                 bulletBarrage.damage = 4;
@@ -295,6 +298,7 @@ public class HeroDecks : MonoBehaviour
                 BasicSkill calculatedShot = new BasicSkill();
                 calculatedShot.name = "Tiro Calculado";
                 calculatedShot.type = CardTypes.Skill;
+                calculatedShot.image = imageList[0];
                 calculatedShot.id = 5;
                 calculatedShot.minmax = 1616;
                 calculatedShot.damage = 3;
@@ -307,6 +311,7 @@ public class HeroDecks : MonoBehaviour
                 SideEffectSkill weakSpot = new SideEffectSkill();
                 weakSpot.name = "Ponto Fraco";
                 weakSpot.type = CardTypes.Skill;
+                weakSpot.image = imageList[0];
                 weakSpot.id = 6;
                 weakSpot.minmax = 1717;
                 weakSpot.sideEffect = 0;
@@ -314,16 +319,12 @@ public class HeroDecks : MonoBehaviour
                 return weakSpot;
 
             case 7:
-                BasicSkill dexterity = new BasicSkill();
+                Dexterity dexterity = new Dexterity();
                 dexterity.name = "Destreza";
                 dexterity.type = CardTypes.Ultimate;
-                dexterity.id = 6;
-                dexterity.minmax = 0816;
-                dexterity.cost = 2;
-                dexterity.damage = 2;
-                dexterity.isUnblockable = false;
-                dexterity.protection = 2;
-                dexterity.charge = 0;
+                dexterity.id = 7;
+                dexterity.minmax = 1818;
+                dexterity.cost = 1;
                 return dexterity;
 
             default:

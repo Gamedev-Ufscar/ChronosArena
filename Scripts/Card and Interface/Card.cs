@@ -57,3 +57,11 @@ public interface NullInterface
     CardTypes[] nullificationList { get; set; }
     bool wronged { get; set; }
 }
+
+public interface Interfacer
+{
+    Sprite[] interfaceList { get; set; }
+    int interfaceSignal { get; set; }
+
+    void interfacing();
+}
