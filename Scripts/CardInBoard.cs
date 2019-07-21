@@ -52,7 +52,7 @@ public class CardInBoard : MonoBehaviour
                 GameOverseer.GO.enemyHoveringCard = -1;
             }
 
-        // Recede deck if not returning
+        // Recede deck if not returning & add this to discard deck list
         } else {
             if (owner == HeroDecks.HD.myManager) {
                 owner.myHand.GetComponent<DeckManager>().recedeDeck(thisCardInHand.GetComponent<CardInHand>().cardIndex);
@@ -60,13 +60,13 @@ public class CardInBoard : MonoBehaviour
                 owner.myHand.GetComponent<DeckManager>().recedeDeck(thisCardInHand.GetComponent<EnemyCardInHand>().cardIndex);
             }
 
-            owner.myHand.GetComponent<DeckManager>().activeCardCount--;
-
             // Destroy Card in Hand if Ultimate
             if (owner.cardList[thisCard].type == CardTypes.Ultimate) {
                 thisUltimateCard.SetActive(true);
                 Destroy(thisCardInHand);
             }
+
+            owner.myHand.GetComponent<DeckManager>().activeCardCount--;
 
         }
 

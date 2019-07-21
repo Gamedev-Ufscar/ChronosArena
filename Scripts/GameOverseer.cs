@@ -12,8 +12,10 @@ public class GameOverseer : MonoBehaviour
     public static GameOverseer GO;
 
     // Hero selection
-    public int myHero = -1;
-    public int enemyHero = -1;
+    public int myHero = 200;
+    public int enemyHero = 200;
+    public int myheroHover = 200;
+    public int enemyheroHover = 200;
 
     // State stuff
     public GameState state;
@@ -36,6 +38,9 @@ public class GameOverseer : MonoBehaviour
     public Vector3 enemyHoveringCardLocalPos = Vector3.zero;
     public bool enemySentCard = false;
 
+    // Interface stuff
+    public int interfaceSignalSent = 200;
+
     // Ulti stuff
     public bool ultiBuy = false;
     public bool enemyUltiBuy = false;
@@ -48,9 +53,9 @@ public class GameOverseer : MonoBehaviour
 
     // Playing cards
     [HideInInspector]
-    public int myCardPlayed = -1;
+    public int myCardPlayed = 200;
     [HideInInspector]
-    public int enemyCardPlayed = -1;
+    public int enemyCardPlayed = 200;
 
     // Singleton management (THERE CAN BE ONLY ONE!!!)
     private void Awake()
@@ -104,7 +109,7 @@ public class GameOverseer : MonoBehaviour
     // Hero Selection Stuff
     void heroSelectionStuff()
     {
-        if ((myConfirm && enemyConfirm) && GO.myHero != -1 && GO.enemyHero != -1)
+        if ((myConfirm && enemyConfirm) && GO.myHero != 200 && GO.enemyHero != 200)
         {
             myConfirm = false;
             enemyConfirm = false;
@@ -128,6 +133,11 @@ public class GameOverseer : MonoBehaviour
                 case GameState.Choice:
                     state = GameState.Revelation;
                     Debug.Log("Revelation state");
+                    if (HeroDecks.HD.myManager.cardList[GO.myCardPlayed] is Interfacer) {
+                        Interfacer cc = (Interfacer)HeroDecks.HD.myManager.cardList[GO.myCardPlayed];
+                        cc.interfacing();
+                    }
+
                     break;
 
                 case GameState.Revelation:
@@ -145,15 +155,17 @@ public class GameOverseer : MonoBehaviour
                     HeroDecks.HD.enemyManager.protection = 0;
                     HeroDecks.HD.myManager.cardList[GO.myCardPlayed].isNullified = false;
                     HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].isNullified = false;
-                    myCardPlayed = -1;
-                    enemyCardPlayed = -1;
+                    myCardPlayed = 200;
+                    enemyCardPlayed = 200;
                     break;
 
                 case GameState.Effects:
                     state = GameState.Purchase;
                     Debug.Log("Purchase state");
+                    // Card Reset stuff -> CardInBoard
                     GO.sentCard = 0;
                     GO.enemySentCard = false;
+                    GO.interfaceSignalSent = 0;
                     break;
 
             }

@@ -37,7 +37,8 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         //moveCard = EventSystem.current.IsPointerOverGameObject();
 
         // Moving the card around and stuff
-        if (zoomCard == true || moveCard == true) { // Zoom Card = Pointer Over; Move Card = Pointer Down
+        // Zoom Card = Pointer Over; Move Card = Pointer Down
+        if ((zoomCard == true || moveCard == true) && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false) {
             ZoomCard();
         } else {
             ReturnCard();
@@ -46,7 +47,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         if (HeroDecks.HD.myManager.cardList[thisCard] != null)
         {
             // Summon card to board
-            if (outOfHand == true && Input.GetMouseButtonUp(0) && GameOverseer.GO.state == GameState.Choice && GameOverseer.GO.myCardPlayed == -1
+            if (outOfHand == true && Input.GetMouseButtonUp(0) && GameOverseer.GO.state == GameState.Choice && GameOverseer.GO.myCardPlayed == 200
                 && HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable <= 0) {
                 Debug.Log("Activated sentCard");
                 GameOverseer.GO.sentCard = 5;
@@ -75,6 +76,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         GameOverseer.GO.hoveringCard = cardIndex;
         GameOverseer.GO.hoveringCardPos = transform.position;
         GameOverseer.GO.hoveringCardLocalPos = transform.localPosition;
+        GameObject.Find("Main UI").GetComponent<MainUIManager>().hoveredCard = HeroDecks.HD.myManager.cardList[thisCard].name;
 
         // Holding down the card
         if (Input.GetMouseButton(0)) {

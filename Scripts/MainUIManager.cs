@@ -12,7 +12,9 @@ public class MainUIManager : MonoBehaviour
     public PlayerManager myManager;
     public PlayerManager enemyManager;
 
-    public Text countdown;
+    public Text stateText;
+    public Text cardText;
+    public string hoveredCard = "";
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +26,8 @@ public class MainUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        countdown.text = " State: " + (int)GameOverseer.GO.state;
+        stateText.text = " State: " + (int)GameOverseer.GO.state;
+        cardText.text = " Current Card: " + hoveredCard;
 
         myHealthbar.maxValue = 10;
         myHealthbar.minValue = 0;
