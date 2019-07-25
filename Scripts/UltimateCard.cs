@@ -28,18 +28,29 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     {
         // Enemy Card stuff
         if (deckManager.gameObject == HeroDecks.HD.enemyManager.myHand) {
-            bought = GameOverseer.GO.enemyUltiBuy;
+            if (GameOverseer.GO.enemyUltiBuy == cardIndex)
+                bought = true;
         }
 
 
-        // Moving the card around and stuff
-        if ((zoomCard == true && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false) || 
+        // Hovering the card
+        if ((zoomCard == true && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false) ||
            (GameOverseer.GO.enemyHoveringCard == cardIndex && 
            ((GameOverseer.GO.isEnemyHoveringHimself == true && deckManager.gameObject == HeroDecks.HD.enemyManager.myHand) ||
            (GameOverseer.GO.isEnemyHoveringHimself == false && deckManager.gameObject == HeroDecks.HD.myManager.myHand)))) { // Ou eu to hoverando ou o inimigo ta
             ZoomCard();
         } else {
-            ReturnCard();
+
+            // Reset hovering Ulti
+            if (deckManager.hoveringUlti == cardIndex) {
+                deckManager.hoveringUlti = 200;
+            }
+
+            if (deckManager.hoveringUlti != 200) {
+                UltimatesHighlighted();
+            } else {
+                UltimatesHidden();
+            }
         }
 
         // Cores
@@ -92,8 +103,8 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
         if (GameOverseer.GO.state == GameState.Choice && bought)
         {
             bought = false;
-            GameOverseer.GO.ultiBuy = false;
-            GameOverseer.GO.enemyUltiBuy = false;
+            GameOverseer.GO.ultiBuy = 200;
+            GameOverseer.GO.enemyUltiBuy = 200;
             if (deckManager.gameObject == HeroDecks.HD.myManager.myHand) // If Player
             {
                 GameObject card = HeroDecks.HD.myManager.CreateCard(deckManager.activeCardCount, thisCard);
@@ -112,6 +123,9 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
                 deckManager.activeCardCount++;
                 card.GetComponent<EnemyCardInHand>().ultiCard = gameObject;
             }
+
+            deckManager.ultisInHand++;
+            Debug.Log("ultis in handd: " + deckManager.ultisInHand);
             gameObject.SetActive(false);
         }
     }
@@ -120,15 +134,21 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
 
     public void ZoomCard()
     {
-        //0.8665, 1.177
+        // Control location and scale
         transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 5f, 0f),
-                                                    deckManager.ultiLocation, Time.deltaTime * 5f);
-        transform.localScale = new Vector3(2 * 0.8665f, 2 * 1.177f, 1f);
+                                                    deckManager.ultiLocations[cardIndex - 100], Time.deltaTime * 5f);
+        transform.localScale = new Vector3(2 * 0.8665f, 2 * 1.177f, 1f); //0.8665, 1.177
+
+        // Put it on the forefront
         gameObject.GetComponent<Canvas>().overrideSorting = true;
-        if (deckManager.gameObject == HeroDecks.HD.myManager.myHand)
+        if (deckManager.gameObject == HeroDecks.HD.myManager.myHand && zoomCard == true) {
             GameObject.Find("Main UI").GetComponent<MainUIManager>().hoveredCard = HeroDecks.HD.myManager.cardList[thisCard].name;
-        else if (deckManager.gameObject == HeroDecks.HD.enemyManager.myHand)
+        } else if (deckManager.gameObject == HeroDecks.HD.enemyManager.myHand && zoomCard == true) { 
             GameObject.Find("Main UI").GetComponent<MainUIManager>().hoveredCard = HeroDecks.HD.enemyManager.cardList[thisCard].name;
+        }
+
+        // Set hovering ulti to true
+        deckManager.hoveringUlti = cardIndex;
 
         // Buy the card
         //Debug.Log(deckManager.gameObject.name + ", " + HeroDecks.HD.myManager.myHand.name);
@@ -138,17 +158,17 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
                 if (HeroDecks.HD.myManager.Charge >= HeroDecks.HD.myManager.cardList[thisCard].cost) {
                     HeroDecks.HD.myManager.Charge -= HeroDecks.HD.myManager.cardList[thisCard].cost;
                     bought = true;
-                    GameOverseer.GO.ultiBuy = true;
+                    GameOverseer.GO.ultiBuy = cardIndex;
                 }
             } else {
                 HeroDecks.HD.myManager.Charge += HeroDecks.HD.myManager.cardList[thisCard].cost;
                 bought = false;
-                GameOverseer.GO.ultiBuy = false;
+                GameOverseer.GO.ultiBuy = cardIndex;
             }
         }
     }
 
-    public void ReturnCard()
+    public void UltimatesHighlighted()
     {
         // Stop enemy network hovering
         if (GameOverseer.GO.hoveringCard == cardIndex &&
@@ -157,19 +177,45 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
             GameOverseer.GO.hoveringCard = -1;
         }
 
+        Debug.Log("ultis in hand: " + deckManager.ultisInHand);
+        int actualLocation = cardIndex - 100 - deckManager.ultisInHand;
+        if (actualLocation < 0) { actualLocation = 0; }
+
         // Get back into position
         transform.localScale = new Vector3(0.8665f, 1.177f, 1f);
-        transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.ultiLocation, Time.deltaTime * 5f);
+        transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.ultiLocations[actualLocation], Time.deltaTime * 5f);
 
         // When card gets back into position, remove override
-        if (transform.localPosition.x >= deckManager.ultiLocation.x - 1f &&
-            transform.localPosition.x <= deckManager.ultiLocation.x + 1f &&
-            transform.localPosition.y >= deckManager.ultiLocation.y - 1f &&
-            transform.localPosition.y <= deckManager.ultiLocation.y + 1f) {
+
+        if (transform.localPosition.x >= deckManager.ultiLocations[actualLocation].x - 1f &&
+            transform.localPosition.x <= deckManager.ultiLocations[actualLocation].x + 1f &&
+            transform.localPosition.y >= deckManager.ultiLocations[actualLocation].y - 1f &&
+            transform.localPosition.y <= deckManager.ultiLocations[actualLocation].y + 1f) {
             gameObject.GetComponent<Canvas>().overrideSorting = false;
             canvas.sortingOrder = 1;
         }
     }
+
+    public void UltimatesHidden()
+    {
+        // Stop enemy network hovering
+        if (GameOverseer.GO.hoveringCard == cardIndex &&
+           ((GameOverseer.GO.amIHoveringMyself == true && deckManager.gameObject == HeroDecks.HD.myManager.myHand) ||
+           (GameOverseer.GO.amIHoveringMyself == false && deckManager.gameObject == HeroDecks.HD.enemyManager.myHand)))
+        {
+            GameOverseer.GO.hoveringCard = -1;
+        }
+
+        // Get back into ultimate default position
+        transform.localScale = new Vector3(0.8665f, 1.177f, 1f);
+        transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.ultiLocations[0], Time.deltaTime * 5f);
+
+        // Sorting order
+        if (cardIndex != 100) {  canvas.sortingLayerName = "Default"; }
+        else { canvas.sortingLayerName = "FirstUlti"; }
+        gameObject.GetComponent<Canvas>().overrideSorting = false;
+    }
+
 
     public void OnPointerEnter(PointerEventData eventData)
     {

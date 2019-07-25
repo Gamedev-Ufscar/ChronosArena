@@ -163,7 +163,8 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
 
         g.GetComponent<CardInBoard>().thisCard = thisCard;
         g.GetComponent<CardInBoard>().owner = HeroDecks.HD.myManager;
-        g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard);
+        if (GameOverseer.GO.predicted == false) { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, false); }
+        else { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, true); }
         deckManager.holdingCard = false;
 
         // Preparing to turn this on later

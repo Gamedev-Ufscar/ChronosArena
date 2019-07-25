@@ -14,7 +14,13 @@ public class MainUIManager : MonoBehaviour
 
     public Text stateText;
     public Text cardText;
+    public Text enemyCardText;
+    public Text MHP;
+    public Text MCHP;
+    public Text EHP;
+    public Text ECHP;
     public string hoveredCard = "";
+    public string enemyRevealedCard = "";
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +34,11 @@ public class MainUIManager : MonoBehaviour
     {
         stateText.text = " State: " + (int)GameOverseer.GO.state;
         cardText.text = " Current Card: " + hoveredCard;
+        enemyCardText.text = "Enemy Card: " + enemyRevealedCard;
+        MHP.text = "" + myManager.HP;
+        MCHP.text = "" + myManager.Charge;
+        EHP.text = "" + enemyManager.HP;
+        ECHP.text = "" + enemyManager.Charge;
 
         myHealthbar.maxValue = 10;
         myHealthbar.minValue = 0;

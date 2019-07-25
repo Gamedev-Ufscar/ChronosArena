@@ -13,6 +13,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
     public int hero = 200;
     public int sideListSize = 0;
     public int handSize;
+    public int ultiCount;
     public Sprite profile;
     public HermesScript hermesScript;
     public Text heroTitle;
@@ -35,6 +36,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
                     hermesScript.sideListSize = sideListSize;
                     hermesScript.handSize = handSize;
                     hermesScript.profile = profile;
+                    hermesScript.ultiCount = ultiCount;
                     GameOverseer.GO.myHero = hero;
                     selectionMode = 1;
                     GetComponent<Image>().color = new Color(1f, 1f, 1f);
@@ -54,8 +56,10 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
 
         if (GameOverseer.GO.enemyheroHover == hero) {
             red = 0.1f;
+            transform.localScale = new Vector3(1.1f, 1.1f);
         } else {
             red = 0f;
+            if (!mouseOver) transform.localScale = new Vector3(1f, 1f);
         }
 
         if (GameOverseer.GO.enemyHero == hero) {
@@ -63,6 +67,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
             hermesScript.enemySideListSize = sideListSize;
             hermesScript.enemyHandSize = handSize;
             hermesScript.enemyProfile = profile;
+            hermesScript.enemyUltiCount = ultiCount;
             selectionMode = 2;
             red = 0.3f; 
         } else if (selectionMode == 2) {

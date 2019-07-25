@@ -7,12 +7,14 @@ public class DeckManager : MonoBehaviour
     public PlayerManager playerManager;
     public GameObject[] deckList = new GameObject[10];
     public List<Vector2> cardLocations = new List<Vector2>();
-    public Vector2 ultiLocation = new Vector2();
+    public List<Vector2> ultiLocations = new List<Vector2>();
     public bool holdingCard = false;
+    public int hoveringUlti = 200;
 
     [HideInInspector]
     public int cardTotalCount;
     public int activeCardCount;
+    public int ultisInHand = 0;
 
     // Start is called before the first frame update
     void Start()

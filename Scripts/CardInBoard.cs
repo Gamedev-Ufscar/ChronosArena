@@ -12,14 +12,35 @@ public class CardInBoard : MonoBehaviour
     public GameObject thisUltimateCard;
     public int thisCard;
     public PlayerManager owner;
+    public int revealAnimState = 0;
+    public bool waiting = false;
 
     //public bool isPlayer = true;
 
     // Update is called once per frame
     void Update()
     {
-        if (GameOverseer.GO.state == GameState.Purchase)
+        if (GameOverseer.GO.state == GameState.Purchase) {
             Resett();
+        } else if (GameOverseer.GO.state == GameState.Revelation && waiting == false) {
+            waiting = true;
+            if (revealAnimState == 0) {
+                if (thisCardInHand.GetComponent<CardInHand>() != null)
+                    Activate(SlotsOnBoard.PlayerCardAbove, true);
+                else if (thisCardInHand.GetComponent<EnemyCardInHand>() != null)
+                    Activate(SlotsOnBoard.EnemyCardAbove, true);
+            } else if (revealAnimState == 1) {
+                if (thisCardInHand.GetComponent<CardInHand>() != null)
+                    Activate(SlotsOnBoard.PlayerCard, true);
+                else if (thisCardInHand.GetComponent<EnemyCardInHand>() != null)
+                    Activate(SlotsOnBoard.EnemyCard, true);
+            } else if (revealAnimState == 2) {
+                if (thisCardInHand.GetComponent<CardInHand>() != null)
+                    Activate(SlotsOnBoard.PlayerCard, false);
+                else if (thisCardInHand.GetComponent<EnemyCardInHand>() != null)
+                    Activate(SlotsOnBoard.EnemyCard, false);
+            }
+        }
     }
 
     public void Resett()
@@ -62,6 +83,7 @@ public class CardInBoard : MonoBehaviour
 
             // Destroy Card in Hand if Ultimate
             if (owner.cardList[thisCard].type == CardTypes.Ultimate) {
+                owner.myHand.GetComponent<DeckManager>().ultisInHand--;
                 thisUltimateCard.SetActive(true);
                 Destroy(thisCardInHand);
             }
@@ -73,7 +95,7 @@ public class CardInBoard : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Activate(SlotsOnBoard place) {
+    public void Activate(SlotsOnBoard place, bool faceUp) {
         switch (place)
         {
             case SlotsOnBoard.PlayerCard:
@@ -83,7 +105,15 @@ public class CardInBoard : MonoBehaviour
             case SlotsOnBoard.EnemyCard:
                 slot = GameObject.FindWithTag("Slot/EnemyCard");
                 break;
+
+            case SlotsOnBoard.PlayerCardAbove:
+                slot = GameObject.FindWithTag("Slot/PlayerCardAbove");
+                break;
+
+            case SlotsOnBoard.EnemyCardAbove:
+                slot = GameObject.FindWithTag("Slot/EnemyCardAbove");
+                break;
         }
-        slot.GetComponent<PlaceCard>().PlaceOnSlot(gameObject);
+        slot.GetComponent<PlaceCard>().PlaceOnSlot(gameObject, faceUp);
     }
 }

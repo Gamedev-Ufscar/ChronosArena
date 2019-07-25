@@ -57,6 +57,9 @@ public class HeroDecks : MonoBehaviour
             case 0:
                 return UgaDeck(id);
 
+            case 1:
+                return TimothyDeck(id);
+
             case 21:
                 return YuriDeck(id);
 
@@ -227,6 +230,98 @@ public class HeroDecks : MonoBehaviour
                 bugaScream.minmax = 1617;
                 bugaScream.cost = 2;
                 return bugaScream;
+
+            default:
+                return null;
+        }
+    }
+
+    public Card TimothyDeck(int id)
+    {
+        switch (id)
+        {
+            case 0:
+                Attack sonicGun = new Attack();
+                sonicGun.name = "Pistola Sônica";
+                sonicGun.type = CardTypes.Attack;
+                sonicGun.id = 0;
+                sonicGun.minmax = 1616;
+                sonicGun.damage = 2;
+                sonicGun.isUnblockable = false;
+                sonicGun.limit = 0;
+                sonicGun.limitMax = 2;
+                return sonicGun;
+
+            case 1:
+                Defense temporalShield = new Defense();
+                temporalShield.name = "Escudo Temporal";
+                temporalShield.type = CardTypes.Defense;
+                temporalShield.id = 2;
+                temporalShield.minmax = 0808;
+                temporalShield.protection = 2;
+                return temporalShield;
+
+            case 2:
+                WatchAdjustments watchAdjustments = new WatchAdjustments();
+                watchAdjustments.name = "Ajustes no Relógio";
+                watchAdjustments.type = CardTypes.Charge;
+                watchAdjustments.id = 2;
+                watchAdjustments.minmax = 1414;
+                return watchAdjustments;
+
+            case 3:
+                Nullification fourSecondsBack = new Nullification();
+                fourSecondsBack.name = "Quatro Segundos Atrás";
+                fourSecondsBack.type = CardTypes.Nullification;
+                fourSecondsBack.id = 3;
+                fourSecondsBack.minmax = 0404;
+                fourSecondsBack.nullificationList = new CardTypes[4];
+                fourSecondsBack.nullificationList[0] = CardTypes.Charge; fourSecondsBack.nullificationList[1] = CardTypes.Skill;
+                fourSecondsBack.nullificationList[2] = CardTypes.Ultimate; fourSecondsBack.nullificationList[3] = CardTypes.NeutralSkill;
+                return fourSecondsBack;
+
+            case 4:
+                return TimothyDeck(3);
+
+            case 5:
+                TimeLock timeLock = new TimeLock();
+                timeLock.name = "Marca do Tempo";
+                timeLock.type = CardTypes.Skill;
+                timeLock.image = imageList[0];
+                timeLock.id = 5;
+                timeLock.minmax = 0014;
+                return timeLock;
+
+            case 6:
+                return TimothyDeck(5);
+
+            case 7:
+                DejaVu dejaVu = new DejaVu();
+                dejaVu.name = "Déjà Vu";
+                dejaVu.type = CardTypes.Skill;
+                dejaVu.id = 7;
+                dejaVu.minmax = 0817;
+                return dejaVu;
+
+            case 8:
+                ChronosMachine chronosMachine = new ChronosMachine();
+                chronosMachine.name = "Máquina de Cronos";
+                chronosMachine.type = CardTypes.Ultimate;
+                chronosMachine.id = 8;
+                chronosMachine.minmax = 1212;
+                chronosMachine.cost = 1;
+                chronosMachine.isChronos = true;
+                return chronosMachine;
+
+            case 9:
+                ChronosMachine fragmentedReturn = new ChronosMachine();
+                fragmentedReturn.name = "Retorno Fragmentado";
+                fragmentedReturn.type = CardTypes.Ultimate;
+                fragmentedReturn.id = 9;
+                fragmentedReturn.minmax = 1212;
+                fragmentedReturn.cost = 2;
+                fragmentedReturn.isChronos = false;
+                return fragmentedReturn;
 
             default:
                 return null;

@@ -57,7 +57,7 @@ public class NetworkTrain : MonoBehaviour
 
             // Send Ulti Purchase
             if (GameOverseer.GO.state == GameState.Purchase && SceneManager.GetActiveScene().buildIndex == 3) {
-                PV.RPC("RPC_ultiStuff", RpcTarget.OthersBuffered, GameOverseer.GO.ultiBuy, (byte)HeroDecks.HD.myManager.Charge);
+                PV.RPC("RPC_ultiStuff", RpcTarget.OthersBuffered, (byte)GameOverseer.GO.ultiBuy, (byte)HeroDecks.HD.myManager.Charge);
             }
 
             // Send State
@@ -146,10 +146,12 @@ public class NetworkTrain : MonoBehaviour
     }
 
     [PunRPC]
-    public void RPC_ultiStuff(bool ultiBuy, byte charge)
+    public void RPC_ultiStuff(byte ultiBuy, byte charge)
     {
-        GameOverseer.GO.enemyUltiBuy = ultiBuy;
-        HeroDecks.HD.enemyManager.Charge = (int)charge;
+        if (SceneManager.GetActiveScene().buildIndex == 3) {
+            GameOverseer.GO.enemyUltiBuy = (int)ultiBuy;
+            HeroDecks.HD.enemyManager.Charge = (int)charge;
+        }
     }
 
     [PunRPC]

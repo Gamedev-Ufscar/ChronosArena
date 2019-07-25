@@ -5,28 +5,37 @@ using UnityEngine;
 public class PlaceCard : MonoBehaviour
 {
     public float speed = 13f;
+
     public Transform point;
     private GameObject go;
+    private bool fu = false;
     private Quaternion targetRot;
     private Queue<GameObject> queue;
+    private Queue<bool> boolQueue;
 
-    void Start() { queue = new Queue<GameObject>(); }
+    void Start() {
+        queue = new Queue<GameObject>();
+        boolQueue = new Queue<bool>();
+    }
 
     // Place Card
-    public void PlaceOnSlot(GameObject g)
+    public void PlaceOnSlot(GameObject g, bool faceUp)
     {
-        if (go == null)
-        {
+        if (go == null) {
             go = g; // go = card
+            fu = faceUp;
             go.GetComponent<Rigidbody>().useGravity = false;
+            if (faceUp) { targetRot = Quaternion.LookRotation(Vector3.back, Vector3.down); }
+            else { targetRot = Quaternion.LookRotation(Vector3.back, Vector3.up); }
 
             // Slight rotation
             //float f1 = Random.Range(-5f, 5f);
             //float f2 = Random.Range(-1f, 1f);
-            targetRot = Quaternion.LookRotation(Vector3.back, Vector3.up);
-        }
-        else
+            //targetRot = Quaternion.LookRotation(Vector3.back, Vector3.up);
+        } else {
             queue.Enqueue(g);
+            boolQueue.Enqueue(g);
+        }
     }
 
     void Update()
@@ -44,11 +53,19 @@ public class PlaceCard : MonoBehaviour
                         targetRot, Time.deltaTime * 6f);
 
         // When close, activate gravity
-        if (Vector3.Distance(point.position, go.transform.position) <= 0.05f)
+        if ((Vector3.Distance(point.position, go.transform.position) <= 0.05f && fu == false) ||
+            Mathf.Approximately(Vector3.Distance(point.position, go.transform.position), 0f))
         {
-            go.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            go.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            go.GetComponent<Rigidbody>().useGravity = true;
+            if (fu == false) {
+                go.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                go.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                go.GetComponent<Rigidbody>().useGravity = true;
+            } else {
+                go.GetComponent<CardInBoard>().revealAnimState++;
+                go.GetComponent<CardInBoard>().waiting = false;
+                Debug.Log("reveal anim state: " + go.GetComponent<CardInBoard>().revealAnimState);
+            }
+
             //go.name = go.name + "1";
 
             /*if (tag.StartsWith("Slot/"))
@@ -58,15 +75,16 @@ public class PlaceCard : MonoBehaviour
             else
                 Destroy(go);*/
 
-            if (queue.Count == 0)
+            if (queue.Count == 0) { 
                 go = null;
-            else
-            {
+                fu = false;
+            } else {
                 go = queue.Dequeue();
                 go.GetComponent<Rigidbody>().useGravity = false;
+                fu = boolQueue.Dequeue();
                 //float f1 = Random.Range(-15f, 15f);
                 //float f2 = Random.Range(-15f, 15f);
-                targetRot = Quaternion.LookRotation(Vector3.back, Vector3.up);
+                //targetRot = Quaternion.LookRotation(Vector3.back, Vector3.up);
             }
         }
     }

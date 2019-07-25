@@ -57,11 +57,13 @@ public enum CardTypes
 public enum SlotsOnBoard
 {
     PlayerCard,
+    PlayerCardAbove,
     PlayerSecondary,
     PlayerUltimate,
     PlayerDiscard,
     PlayerPassive,
     EnemyCard,
+    EnemyCardAbove,
     EnemySecondary,
     EnemyUltimate,
     EnemyDiscard,

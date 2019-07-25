@@ -39,7 +39,7 @@ public class Dexterity : Card, Interfacer
         switch (priority)
         {
             case 18:
-                HeroDecks.HD.myManager.RestoreCard(discardedCardList[interfaceSignal]);
+                user.RestoreCard(discardedCardList[interfaceSignal]);
                 break;
         }
     }

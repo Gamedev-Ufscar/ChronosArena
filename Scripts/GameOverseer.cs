@@ -38,12 +38,16 @@ public class GameOverseer : MonoBehaviour
     public Vector3 enemyHoveringCardLocalPos = Vector3.zero;
     public bool enemySentCard = false;
 
+    // Predict stuff
+    public bool predicted = false;
+    public bool enemyPredicted = false;
+
     // Interface stuff
     public int interfaceSignalSent = 200;
 
     // Ulti stuff
-    public bool ultiBuy = false;
-    public bool enemyUltiBuy = false;
+    public int ultiBuy = 200;
+    public int enemyUltiBuy = 200;
 
     // Deck shuffle
     public int shuffled = 0;
@@ -127,12 +131,19 @@ public class GameOverseer : MonoBehaviour
             {
                 case GameState.Purchase:
                     state = GameState.Choice;
+                    HeroSideEffects.HSE.executeSideEffect(0, HeroDecks.HD.myManager, 200);
+                    HeroSideEffects.HSE.executeSideEffect(0, HeroDecks.HD.enemyManager, 200);
                     Debug.Log("Choice state");
                     break;
 
                 case GameState.Choice:
                     state = GameState.Revelation;
                     Debug.Log("Revelation state");
+                    GameObject.Find("Main UI").GetComponent<MainUIManager>().enemyRevealedCard = HeroDecks.HD.enemyManager.cardList[enemyCardPlayed].name;
+
+                    HeroSideEffects.HSE.executeSideEffect(1, HeroDecks.HD.myManager, GO.myCardPlayed);
+                    HeroSideEffects.HSE.executeSideEffect(1, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
+
                     if (HeroDecks.HD.myManager.cardList[GO.myCardPlayed] is Interfacer) {
                         Interfacer cc = (Interfacer)HeroDecks.HD.myManager.cardList[GO.myCardPlayed];
                         cc.interfacing();
@@ -143,12 +154,13 @@ public class GameOverseer : MonoBehaviour
                 case GameState.Revelation:
                     state = GameState.Effects;
                     Debug.Log("Effects state");
-                    HeroSideEffects.HSE.executeSideEffect(true, HeroDecks.HD.myManager, GO.myCardPlayed);
-                    HeroSideEffects.HSE.executeSideEffect(true, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
+
+                    HeroSideEffects.HSE.executeSideEffect(2, HeroDecks.HD.myManager, GO.myCardPlayed);
+                    HeroSideEffects.HSE.executeSideEffect(2, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
                     everyTurn();
                     activateCards();
-                    HeroSideEffects.HSE.executeSideEffect(false, HeroDecks.HD.myManager, GO.myCardPlayed);
-                    HeroSideEffects.HSE.executeSideEffect(false, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
+                    HeroSideEffects.HSE.executeSideEffect(3, HeroDecks.HD.myManager, GO.myCardPlayed);
+                    HeroSideEffects.HSE.executeSideEffect(3, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
 
                     // Reset stuff
                     HeroDecks.HD.myManager.protection = 0;
@@ -162,6 +174,8 @@ public class GameOverseer : MonoBehaviour
                 case GameState.Effects:
                     state = GameState.Purchase;
                     Debug.Log("Purchase state");
+                    GameObject.Find("Main UI").GetComponent<MainUIManager>().enemyRevealedCard = "";
+
                     // Card Reset stuff -> CardInBoard
                     GO.sentCard = 0;
                     GO.enemySentCard = false;

@@ -74,11 +74,16 @@ public class EnemyCardInHand : MonoBehaviour
 
         g.GetComponent<CardInBoard>().thisCard = thisCard;
         g.GetComponent<CardInBoard>().owner = HeroDecks.HD.enemyManager;
-        g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.EnemyCard);
+        if (GameOverseer.GO.enemyPredicted == false) { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.EnemyCard, false); }
+        else { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.EnemyCard, true); }
 
         g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
-        if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.enemyCardPlayed].type == CardTypes.Ultimate) {
+        if (HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed].type == CardTypes.Ultimate) {
             g.GetComponent<CardInBoard>().thisUltimateCard = ultiCard;
+        }
+
+        if (GameOverseer.GO.predicted) {
+            GameObject.Find("Main UI").GetComponent<MainUIManager>().enemyRevealedCard = HeroDecks.HD.enemyManager.cardList[thisCard].name;
         }
 
         gameObject.SetActive(false);

@@ -26,6 +26,7 @@ public class InterfaceScript : MonoBehaviour
     {
         if (!setup)
         {
+            interfaceSignal = 200;
             setup = true;
             Debug.Log("IS enabled, card amount: " + cardAmount);
             cardLocations = setupCardLocations(cardAmount);
@@ -49,6 +50,7 @@ public class InterfaceScript : MonoBehaviour
                 Destroy(option);
             }
 
+            setup = false;
             gameObject.SetActive(false);
         }
        
