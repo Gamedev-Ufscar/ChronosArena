@@ -62,6 +62,7 @@ public class CardInBoard : MonoBehaviour
         // Returning...
         if (returning) {
             // Enable card again
+            HeroDecks.HD.audioManager.CardSound();
             thisCardInHand.SetActive(true);
 
             // Dont have it zoomed
@@ -114,6 +115,7 @@ public class CardInBoard : MonoBehaviour
                 slot = GameObject.FindWithTag("Slot/EnemyCardAbove");
                 break;
         }
+        HeroDecks.HD.audioManager.CardSound();
         slot.GetComponent<PlaceCard>().PlaceOnSlot(gameObject, faceUp);
     }
 }

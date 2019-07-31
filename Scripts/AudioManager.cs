@@ -1,9 +1,11 @@
 ﻿using UnityEngine.Audio;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour {
 
+    public static AudioManager AM;
     public Sound[] sounds;
     public bool mainMenu = true;
 
@@ -21,8 +23,23 @@ public class AudioManager : MonoBehaviour {
             s.source.pitch = s.pitch;
             s.source.loop = s.loop;
         }
-		
-	}
+
+        DontDestroyOnLoad(this);
+        if (AM == null) {
+            AM = this;
+        } else {
+            if (AM != this) {
+                Destroy(this);
+            }
+        }
+    }
+
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().buildIndex == 2) {
+            Stop("MainMenuTheme");
+        }
+    }
 
     public void Play (string name)
     {
@@ -35,7 +52,7 @@ public class AudioManager : MonoBehaviour {
             s.source.Play();
         }
 
-        mainMenu = (name == "MainMenuTheme" || (name == "ShotKill" && mainMenu == true)) ? true : false;
+        //mainMenu = (name == "MainMenuTheme" || (name == "ShotKill" && mainMenu == true)) ? true : false;
 
     }
 
@@ -56,5 +73,13 @@ public class AudioManager : MonoBehaviour {
             audioS.Stop();
         }
 
+    }
+
+    public void CardSound()
+    {
+        int r = UnityEngine.Random.Range(0, 5);
+        string[] soundList = {"Card 1", "Card 2", "Card 3", "Card 4", "Card 5"};
+
+        Play(soundList[r]);
     }
 }

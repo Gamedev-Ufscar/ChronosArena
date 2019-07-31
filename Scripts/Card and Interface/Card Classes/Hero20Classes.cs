@@ -39,7 +39,22 @@ public class Dexterity : Card, Interfacer
         switch (priority)
         {
             case 18:
+                // Setup discarded list for enemy
+                if (user == HeroDecks.HD.enemyManager) {
+                    int discardedCount = 0;
+                    for (int i = 0; i < HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList.Length; i++) {
+                        if (HeroDecks.HD.enemyManager.cardList[i] != null && HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList != null) {
+                            if (HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard] != this &&
+                                HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].activeInHierarchy == false) {
+                                discardedCardList[discardedCount] = i;
+                                discardedCount++;
+                            }
+                        }
+                    }
+                }
+
                 user.RestoreCard(discardedCardList[interfaceSignal]);
+                Debug.Log("Discarded: " + discardedCardList[interfaceSignal]);
                 break;
         }
     }

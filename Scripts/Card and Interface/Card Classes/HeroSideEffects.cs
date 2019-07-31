@@ -96,8 +96,6 @@ public class HeroSideEffects : MonoBehaviour
 
         } else if (phase == 3) {
             // Vodka
-            Debug.Log("Card Played: " + cardPlayed);
-
             if (playerManager.cardList[cardPlayed].isNullified)
                     playerManager.HP--;
 

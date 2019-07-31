@@ -168,7 +168,6 @@ public class Nullification : Card, NullInterface
                 } else {
                     enemyNullify();
                 }
-                Debug.Log(user.gameObject.name + "'s Nullify");
                 break;
         }
     }

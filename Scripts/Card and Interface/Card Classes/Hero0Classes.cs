@@ -72,7 +72,7 @@ public class TimeLock : Card
         {
 
             case 00:
-                user.sideList[0] = HeroDecks.HD.myManager.HP * 100 + HeroDecks.HD.enemyManager.HP;
+                user.sideList[0] = user.HP * 100 + enemy.HP;
                 Debug.Log(user.gameObject.name + "'s Time Lock");
                 break;
 
@@ -134,10 +134,12 @@ public class ChronosMachine : Card, Interfacer
         {
             case 12:
                 if (user.sideList[0] != 0) {
-                    if (interfaceSignal == 0 || isChronos)
+                    if (interfaceSignal == 0 || isChronos) {
                         user.HP = user.sideList[0] / 100;
-                    if (interfaceSignal == 1 || isChronos)
+                    }
+                    if (interfaceSignal == 1 || isChronos) {
                         enemy.HP = user.sideList[0] % 100;
+                    }
                     Debug.Log("Chronos Machine!");
                 }
                 if (isChronos)

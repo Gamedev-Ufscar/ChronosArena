@@ -28,7 +28,7 @@ public class InterfaceScript : MonoBehaviour
         {
             interfaceSignal = 200;
             setup = true;
-            Debug.Log("IS enabled, card amount: " + cardAmount);
+            //Debug.Log("IS enabled, card amount: " + cardAmount);
             cardLocations = setupCardLocations(cardAmount);
             for (int i = 0; i < cardAmount; i++) {
                 GameObject optionCreated = Instantiate(optionPrefab, gameObject.transform);
@@ -36,7 +36,6 @@ public class InterfaceScript : MonoBehaviour
                 optionCreated.GetComponent<InterfaceCard>().index = i;
                 optionCreated.GetComponent<Image>().sprite = interfaceList[i];
                 destructionList.Add(optionCreated);
-                Debug.Log(i);
             }
         }
 

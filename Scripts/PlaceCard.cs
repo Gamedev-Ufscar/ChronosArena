@@ -63,7 +63,6 @@ public class PlaceCard : MonoBehaviour
             } else {
                 go.GetComponent<CardInBoard>().revealAnimState++;
                 go.GetComponent<CardInBoard>().waiting = false;
-                Debug.Log("reveal anim state: " + go.GetComponent<CardInBoard>().revealAnimState);
             }
 
             //go.name = go.name + "1";

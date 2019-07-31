@@ -46,6 +46,7 @@ public class DeckManager : MonoBehaviour
                     helper = deckList[i].GetComponent<CardInHand>().cardIndex;
                     deckList[i].GetComponent<CardInHand>().cardIndex = deckList[rando].GetComponent<CardInHand>().cardIndex;
                     deckList[rando].GetComponent<CardInHand>().cardIndex = helper;
+                    HeroDecks.HD.audioManager.CardSound();
                 }
             }
         }
@@ -65,11 +66,13 @@ public class DeckManager : MonoBehaviour
                 if (gameObject == HeroDecks.HD.myManager.myHand) {
                     if (deckList[i].GetComponent<CardInHand>().cardIndex > cardIndex) {
                         deckList[i].GetComponent<CardInHand>().cardIndex--;
+                        HeroDecks.HD.audioManager.CardSound();
                     }
                 }
                 else if (gameObject == HeroDecks.HD.enemyManager.myHand) {
                     if (deckList[i].GetComponent<EnemyCardInHand>().cardIndex > cardIndex) {
                         deckList[i].GetComponent<EnemyCardInHand>().cardIndex--;
+                        HeroDecks.HD.audioManager.CardSound();
                     }
                     }
                 }

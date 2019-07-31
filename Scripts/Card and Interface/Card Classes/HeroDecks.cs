@@ -9,6 +9,8 @@ public class HeroDecks : MonoBehaviour
     public PlayerManager myManager;
     public PlayerManager enemyManager;
     public InterfaceScript interfaceScript;
+    public AudioManager audioManager;
+    public VoicelineManager voicelineManager;
 
 
     private void Awake()
@@ -36,6 +38,9 @@ public class HeroDecks : MonoBehaviour
 
         HeroDecks.HD.enemyManager = GameObject.Find("Enemy Manager").GetComponent<PlayerManager>();
         for (int i = 0; i < enemyManager.sideList.Length; i++) { enemyManager.sideList[i] = 0; }
+
+        HeroDecks.HD.audioManager = GameObject.Find("Audio Manager").GetComponent<AudioManager>();
+        HeroDecks.HD.voicelineManager = GameObject.Find("Audio Manager").GetComponent<VoicelineManager>();
     }
 
     // Start is called before the first frame update
@@ -368,6 +373,7 @@ public class HeroDecks : MonoBehaviour
                 Nullification supressionShot = new Nullification();
                 supressionShot.name = "Tiro de Supressão";
                 supressionShot.type = CardTypes.Nullification;
+                supressionShot.image = imageList[0];
                 supressionShot.id = 3;
                 supressionShot.minmax = 0404;
                 supressionShot.nullificationList = new CardTypes[4];

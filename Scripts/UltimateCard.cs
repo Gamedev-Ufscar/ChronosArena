@@ -8,7 +8,6 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
 {
     public bool zoomCard = false;
     public DeckManager deckManager;
-    public Canvas canvas;
 
     public GameObject cardPrefab;
     public Sprite cardSprite;
@@ -97,6 +96,7 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
         }
     }
 
+
     // Acquire card (After buying it)
     void acquireCard()
     {
@@ -107,6 +107,7 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
             GameOverseer.GO.enemyUltiBuy = 200;
             if (deckManager.gameObject == HeroDecks.HD.myManager.myHand) // If Player
             {
+                Debug.Log("This Card: " + thisCard);
                 GameObject card = HeroDecks.HD.myManager.CreateCard(deckManager.activeCardCount, thisCard);
                 card.transform.parent = deckManager.transform;
                 deckManager.deckList[deckManager.cardTotalCount] = card;
@@ -125,12 +126,12 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
             }
 
             deckManager.ultisInHand++;
-            Debug.Log("ultis in handd: " + deckManager.ultisInHand);
+            HeroDecks.HD.audioManager.CardSound();
             gameObject.SetActive(false);
         }
     }
 
-    // Moving the card around and stuff
+    // Zooming the card and stuff
 
     public void ZoomCard()
     {
@@ -140,7 +141,7 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
         transform.localScale = new Vector3(2 * 0.8665f, 2 * 1.177f, 1f); //0.8665, 1.177
 
         // Put it on the forefront
-        gameObject.GetComponent<Canvas>().overrideSorting = true;
+        transform.SetAsLastSibling();
         if (deckManager.gameObject == HeroDecks.HD.myManager.myHand && zoomCard == true) {
             GameObject.Find("Main UI").GetComponent<MainUIManager>().hoveredCard = HeroDecks.HD.myManager.cardList[thisCard].name;
         } else if (deckManager.gameObject == HeroDecks.HD.enemyManager.myHand && zoomCard == true) { 
@@ -191,8 +192,7 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
             transform.localPosition.x <= deckManager.ultiLocations[actualLocation].x + 1f &&
             transform.localPosition.y >= deckManager.ultiLocations[actualLocation].y - 1f &&
             transform.localPosition.y <= deckManager.ultiLocations[actualLocation].y + 1f) {
-            gameObject.GetComponent<Canvas>().overrideSorting = false;
-            canvas.sortingOrder = 1;
+            transform.SetAsFirstSibling();
         }
     }
 
@@ -211,9 +211,7 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
         transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.ultiLocations[0], Time.deltaTime * 5f);
 
         // Sorting order
-        if (cardIndex != 100) {  canvas.sortingLayerName = "Default"; }
-        else { canvas.sortingLayerName = "FirstUlti"; }
-        gameObject.GetComponent<Canvas>().overrideSorting = false;
+        transform.SetAsFirstSibling();
     }
 
 
@@ -231,7 +229,6 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
             } else if (deckManager.gameObject == HeroDecks.HD.enemyManager.myHand) {  // Hovering enemy card
                 GameOverseer.GO.amIHoveringMyself = false;
             }
-            canvas.sortingOrder = 3;
         }
     }
 

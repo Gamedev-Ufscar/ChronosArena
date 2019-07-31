@@ -140,9 +140,14 @@ public class NetworkTrain : MonoBehaviour
 
     [PunRPC]
     public void RPC_sendInterfaceSignal(byte signalSent) {
-        Interfacer cc = (Interfacer)HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed];
-        cc.interfaceSignal = (int)signalSent;
-        HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed] = (Card)cc;
+        if (GameOverseer.GO.enemyCardPlayed != 200) {
+            Debug.Log("Enemy Card: " + GameOverseer.GO.enemyCardPlayed + ", signal sent: " + signalSent);
+            if (HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed] is Interfacer) {
+                Interfacer cc = (Interfacer)HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed];
+                cc.interfaceSignal = (int)signalSent;
+                HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed] = (Card)cc;
+            }
+        }
     }
 
     [PunRPC]

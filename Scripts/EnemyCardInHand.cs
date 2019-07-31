@@ -8,7 +8,6 @@ public class EnemyCardInHand : MonoBehaviour
     public DeckManager deckManager;
     public int cardIndex;
     public int thisCard;
-    public Canvas canvas;
     public Vector3 adaptedEnemyHoverPos;
     public GameObject cardPrefab;
     private float zValue = 12f;
@@ -29,19 +28,18 @@ public class EnemyCardInHand : MonoBehaviour
         {
             transform.localScale = new Vector3(0.8665f, 1.177f, 1f);
             transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.cardLocations[cardIndex], Time.deltaTime * 5f);
-            gameObject.GetComponent<Canvas>().overrideSorting = false;
+            transform.SetAsFirstSibling();
         }
         else { // Mover carta do inimigo
             transform.localScale = new Vector3(2 * 0.8665f, 2 * 1.177f, 1f);
             adaptedEnemyHoverPos = new Vector3(-GameOverseer.GO.enemyHoveringCardLocalPos.x, 2-GameOverseer.GO.enemyHoveringCardLocalPos.y);
             transform.localPosition = Vector2.Lerp(transform.localPosition, adaptedEnemyHoverPos, Time.deltaTime * 5f);
-            gameObject.GetComponent<Canvas>().overrideSorting = true;
+            transform.SetAsLastSibling();
 
             // Summonar carta
             if (GameOverseer.GO.enemySentCard == true && GameOverseer.GO.state == GameState.Choice)
             {
                 GameOverseer.GO.enemySentCard = false;
-                Debug.Log("Enemy card summoned " + cardIndex);
                 Summon();
             }
         }
@@ -52,7 +50,7 @@ public class EnemyCardInHand : MonoBehaviour
             transform.localPosition.y >= deckManager.cardLocations[cardIndex].y - 1f &&
             transform.localPosition.y <= deckManager.cardLocations[cardIndex].y + 1f)
         {
-            gameObject.GetComponent<Canvas>().overrideSorting = false;
+            transform.SetAsFirstSibling();
         }
 
         // Se inimigo estiver olhando, fica mais vermelho
@@ -67,6 +65,7 @@ public class EnemyCardInHand : MonoBehaviour
     public void Summon()
     {
         GameOverseer.GO.enemyCardPlayed = thisCard;
+        Debug.Log(thisCard);
 
         // Invoke physical card
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(adaptedEnemyHoverPos.x, adaptedEnemyHoverPos.y, zValue));
@@ -82,7 +81,8 @@ public class EnemyCardInHand : MonoBehaviour
             g.GetComponent<CardInBoard>().thisUltimateCard = ultiCard;
         }
 
-        if (GameOverseer.GO.predicted) {
+        // Show Predicted card
+        if (GameOverseer.GO.enemyPredicted) {
             GameObject.Find("Main UI").GetComponent<MainUIManager>().enemyRevealedCard = HeroDecks.HD.enemyManager.cardList[thisCard].name;
         }
 

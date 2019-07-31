@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UltimateEnemyCard : MonoBehaviour
+public class VoicelineManager : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

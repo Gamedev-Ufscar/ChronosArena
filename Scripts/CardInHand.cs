@@ -10,7 +10,6 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     public DeckManager deckManager;
     public int cardIndex;
     public bool moveCard;
-    public Canvas canvas;
 
     public GameObject cardPrefab;
     public Sprite cardSprite;
@@ -72,7 +71,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     {
         //0.8665, 1.177
         transform.localScale = new Vector3(2 * 0.8665f, 2 * 1.177f, 1f);
-        gameObject.GetComponent<Canvas>().overrideSorting = true;
+        transform.SetAsLastSibling();
         GameOverseer.GO.hoveringCard = cardIndex;
         GameOverseer.GO.hoveringCardPos = transform.position;
         GameOverseer.GO.hoveringCardLocalPos = transform.localPosition;
@@ -107,7 +106,6 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         deckManager.holdingCard = true;
         moveCard = true;
         cardBeingHeld = true;
-        canvas.sortingOrder = 3;
     }
 
     public void ReturnCard()
@@ -127,8 +125,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
             transform.localPosition.x <= deckManager.cardLocations[cardIndex].x + 1f &&
             transform.localPosition.y >= deckManager.cardLocations[cardIndex].y - 1f &&
             transform.localPosition.y <= deckManager.cardLocations[cardIndex].y + 1f) {
-            gameObject.GetComponent<Canvas>().overrideSorting = false;
-            canvas.sortingOrder = 1;
+            transform.SetAsFirstSibling();
         }
     }
 
@@ -140,7 +137,6 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
             GetComponent<Image>().color = new Color(1f, 1f, 1f);
             transform.localPosition = transform.localPosition + new Vector3(0f, 5f, 0f);
             zoomCard = true;
-            canvas.sortingOrder = 3;
         }
     }
 

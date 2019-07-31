@@ -16,7 +16,6 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
     public int ultiCount;
     public Sprite profile;
     public HermesScript hermesScript;
-    public Text heroTitle;
 
     // Start is called before the first frame update
     void Start()
@@ -28,8 +27,28 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
     // Update is called once per frame
     void Update()
     {
-        if (mouseOver) {
-            if (Input.GetMouseButtonDown(0) && selectionMode != 2) {
+
+
+        // On Player Hover (Ignore if char already chosen)
+        if (mouseOver && (GameOverseer.GO.myHero == 200 || GameOverseer.GO.myHero == hero)) {
+            GameOverseer.GO.myheroHover = hero;
+            GetComponentInParent<HeroSelection>().myTitle.text = heroName;
+            GetComponentInParent<HeroSelection>().myPortrait.sprite = profile;
+
+            // Highlight button
+            if (selectionMode != 1 && GameOverseer.GO.enemyHero != hero) {
+                GetComponent<Image>().color = new Color(0.8f, 0.8f - red, 0.8f - red);
+                transform.localScale = new Vector3(1.1f, 1.1f);
+            }
+
+            // Juicy feeling of pressing a button
+            if (Input.GetMouseButton(0) && selectionMode != 2)
+            {
+                transform.localScale = new Vector3(1f, 1f);
+            } //else { transform.localScale = new Vector3(1.1f, 1.1f); }
+
+
+            if (Input.GetMouseButtonUp(0) && selectionMode != 2) {
                 // Selecting hero
                 if (hermesScript.hero == 200) {
                     hermesScript.hero = hero;
@@ -52,16 +71,42 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
                     Debug.Log("Unselected hero!");
                 }
             }
+
+        // Out Player Hover
+        } else if (GameOverseer.GO.myheroHover == hero) {
+            GameOverseer.GO.myheroHover = 200;
+
+            // Change portrait
+            if (GameOverseer.GO.myHero == 200) {
+                GetComponentInParent<HeroSelection>().myTitle.text = "???";
+                GetComponentInParent<HeroSelection>().myPortrait.sprite = GetComponentInParent<HeroSelection>().noHero;
+            }
+
+            // Remove highlight
+            if (selectionMode != 1) {
+                GetComponent<Image>().color = new Color(0.55f, 0.55f - red, 0.55f - red);
+                transform.localScale = new Vector3(1f, 1f);
+            }
         }
 
+        // On Enemy Hover
         if (GameOverseer.GO.enemyheroHover == hero) {
             red = 0.1f;
             transform.localScale = new Vector3(1.1f, 1.1f);
+            GetComponentInParent<HeroSelection>().enemyTitle.text = heroName;
+            GetComponentInParent<HeroSelection>().enemyPortrait.sprite = profile;
+
+        // Out Enemy Hover
         } else {
             red = 0f;
-            if (!mouseOver) transform.localScale = new Vector3(1f, 1f);
+            if (mouseOver == false && selectionMode != 1) transform.localScale = new Vector3(1f, 1f);
+            if (GameOverseer.GO.enemyHero == 200 && GameOverseer.GO.enemyheroHover == 200) {
+                GetComponentInParent<HeroSelection>().enemyTitle.text = "???";
+                GetComponentInParent<HeroSelection>().enemyPortrait.sprite = GetComponentInParent<HeroSelection>().noHero;
+            }
         }
 
+        // Selecting Enemy
         if (GameOverseer.GO.enemyHero == hero) {
             hermesScript.enemyHero = hero;
             hermesScript.enemySideListSize = sideListSize;
@@ -70,8 +115,10 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
             hermesScript.enemyUltiCount = ultiCount;
             selectionMode = 2;
             red = 0.3f; 
+        
+        // Unselecting Enemy
         } else if (selectionMode == 2) {
-            hermesScript.enemyHero = -1;
+            hermesScript.enemyHero = 200;
             red = 0f;
             selectionMode = 0;
         }
@@ -79,25 +126,17 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
         GetComponent<Image>().color = new Color(GetComponent<Image>().color.r, GetComponent<Image>().color.r - red, GetComponent<Image>().color.r - red);
     }
 
+    // On Hover
     public void OnPointerEnter(PointerEventData eventData)
     {
         mouseOver = true;
-        GameOverseer.GO.myheroHover = hero;
-        heroTitle.text = heroName;
-        if (selectionMode != 1) {
-            GetComponent<Image>().color = new Color(0.8f, 0.8f - red, 0.8f - red);
-            transform.localScale = new Vector3(1.1f, 1.1f);
-        }
+        
     }
 
+    // Out Hover
     public void OnPointerExit(PointerEventData eventData)
     {
         mouseOver = false;
-        GameOverseer.GO.myheroHover = 200;
-        heroTitle.text = "???";
-        if (selectionMode != 1) {
-            GetComponent<Image>().color = new Color(0.55f, 0.55f - red, 0.55f - red);
-            transform.localScale = new Vector3(1f, 1f);
-        }
+        
     }
 }

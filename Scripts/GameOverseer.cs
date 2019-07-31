@@ -207,7 +207,6 @@ public class GameOverseer : MonoBehaviour
 
     public void reduceUnplayability(Card[] cardList)
     {
-        Debug.Log("Reduce Unplayability");
         for (int i = 0; i < cardList.Length; i++)
         {
             if (cardList[i] != null)
