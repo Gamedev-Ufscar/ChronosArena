@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject myHand;
     public GameObject prefabCard;
     public GameObject prefabUlti;
-    public int hero = -1;
+    public HeroEnum hero = HeroEnum.None;
 
     private bool startedGame = false;
 
@@ -36,7 +36,7 @@ public class PlayerManager : MonoBehaviour
     {
 
         // Game Initialization
-        if (gameObject.name == "Player Manager" && startedGame == false && hero != -1) {
+        if (gameObject.name == "Player Manager" && startedGame == false && hero != HeroEnum.None) {
             startedGame = true;
             GameOverseer.GO.myConfirm = false;
             HeroDecks.HD.myManager = this;
@@ -45,7 +45,7 @@ public class PlayerManager : MonoBehaviour
             CreatePlayer();
         }
 
-        if (gameObject.name == "Enemy Manager" && startedGame == false && hero != -1) {
+        if (gameObject.name == "Enemy Manager" && startedGame == false && hero != HeroEnum.None) {
             startedGame = true;
             GameOverseer.GO.enemyConfirm = false;
             HeroDecks.HD.enemyManager = this;
@@ -56,13 +56,47 @@ public class PlayerManager : MonoBehaviour
     }
 
     // GENERAL INITIALIZATION
+    public void DiscardCard(int id) // Descarta thisCard
+    {
+        // Se for Ultimate, restaura a carta de compra
+        if (this == HeroDecks.HD.myManager) {
+            if (HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[id].GetComponent<CardInHand>().thisCard].type == CardTypes.Ultimate)
+            {
+                myHand.GetComponent<DeckManager>().deckList[id].GetComponent<CardInHand>().ultiCard.SetActive(true);
+            }
+        }
+        else if (this == HeroDecks.HD.enemyManager)
+        {
+            if (HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[id].GetComponent<EnemyCardInHand>().thisCard].type == CardTypes.Ultimate)
+            {
+                myHand.GetComponent<DeckManager>().deckList[id].GetComponent<EnemyCardInHand>().ultiCard.SetActive(true);
+            }
+        }
+
+        // Desativa carta
+        myHand.GetComponent<DeckManager>().deckList[id].SetActive(false);
+
+        // Recede Deck
+        if (this == HeroDecks.HD.myManager) {
+            myHand.GetComponent<DeckManager>().recedeDeck(myHand.GetComponent<DeckManager>().deckList[id].GetComponent<CardInHand>().cardIndex);
+        } else if (this == HeroDecks.HD.enemyManager) {
+            myHand.GetComponent<DeckManager>().recedeDeck(myHand.GetComponent<DeckManager>().deckList[id].GetComponent<EnemyCardInHand>().cardIndex);
+        }
+
+        // Diminui a quantidade de cartas ativas
+        myHand.GetComponent<DeckManager>().activeCardCount--;
+    }
+
     public void RestoreCard(int id) // Restaura thisCard
     {
+        // Ativa carta, coloca-a no final da fila
         myHand.GetComponent<DeckManager>().deckList[id].SetActive(true);
         if (this == HeroDecks.HD.myManager)
             myHand.GetComponent<DeckManager>().deckList[id].GetComponent<CardInHand>().cardIndex = myHand.GetComponent<DeckManager>().activeCardCount;
         else if (this == HeroDecks.HD.enemyManager)
             myHand.GetComponent<DeckManager>().deckList[id].GetComponent<EnemyCardInHand>().cardIndex = myHand.GetComponent<DeckManager>().activeCardCount;
+
+        // Aumenta a quantidade de cartas ativas
         myHand.GetComponent<DeckManager>().activeCardCount++;
     }
 
@@ -76,13 +110,15 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private void CreateUlti(int index)
+    private GameObject CreateUlti(int index)
     {
         GameObject card = Instantiate(prefabUlti, new Vector3(507f, -286.2f), Quaternion.identity);
         card.transform.parent = myHand.transform;
         card.GetComponent<UltimateCard>().deckManager = card.transform.parent.GetComponent<DeckManager>();
-        card.GetComponent<UltimateCard>().cardIndex = index + 100;
+        card.GetComponent<UltimateCard>().staticCardIndex = index + 100;
+        card.GetComponent<UltimateCard>().cardIndex = card.GetComponent<UltimateCard>().staticCardIndex;
         card.GetComponent<UltimateCard>().thisCard = index + initialCardCount;
+        return card;
     }
 
 
@@ -106,7 +142,7 @@ public class PlayerManager : MonoBehaviour
         myHand.GetComponent<DeckManager>().cardTotalCount = initialCardCount;
         myHand.GetComponent<DeckManager>().activeCardCount = initialCardCount;
         for (int i = 0; i < ultiCount; i++) {
-            CreateUlti(i);
+            myHand.GetComponent<DeckManager>().ultiList[i] = CreateUlti(i);
         }
     }
 

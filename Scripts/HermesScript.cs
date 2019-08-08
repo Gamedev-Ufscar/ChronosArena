@@ -5,16 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class HermesScript : MonoBehaviour
 {
-    public int hero = -1;
+    public HeroEnum hero = HeroEnum.None;
     public int sideListSize = 0;
     public int handSize;
     public int ultiCount;
+    public List<CardTypes> attackDisableList = new List<CardTypes>();
     public Sprite profile;
 
-    public int enemyHero = -1;
+    public HeroEnum enemyHero = HeroEnum.None;
     public int enemySideListSize = 0;
     public int enemyHandSize;
     public int enemyUltiCount;
+    public List<CardTypes> enemyAttackDisableList = new List<CardTypes>();
     public Sprite enemyProfile;
 
     private bool delivered = false;
@@ -37,6 +39,7 @@ public class HermesScript : MonoBehaviour
             HeroDecks.HD.myManager.sideList = new int[sideListSize];
             HeroDecks.HD.myManager.initialCardCount = handSize;
             HeroDecks.HD.myManager.ultiCount = ultiCount;
+            HeroDecks.HD.myManager.attackDisableList = attackDisableList;
             GameObject.Find("Player Profile").GetComponent<ProfileScript>().profile = profile;
 
             // Enemyy Manager
@@ -44,6 +47,7 @@ public class HermesScript : MonoBehaviour
             HeroDecks.HD.enemyManager.sideList = new int[enemySideListSize];
             HeroDecks.HD.enemyManager.initialCardCount = enemyHandSize;
             HeroDecks.HD.enemyManager.ultiCount = enemyUltiCount;
+            HeroDecks.HD.enemyManager.attackDisableList = enemyAttackDisableList;
             GameObject.Find("Enemy Profile").GetComponent<ProfileScript>().profile = enemyProfile;
         }
     }

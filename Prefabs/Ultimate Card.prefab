@@ -92,10 +92,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zoomCard: 0
   deckManager: {fileID: 0}
-  canvas: {fileID: 4184104468394480587}
   cardPrefab: {fileID: 5583869552287936293}
   cardSprite: {fileID: 0}
-  cardIndex: 0
+  cardIndex: 100
   thisCard: 0
   bought: 0
 --- !u!65 &5462130157396438853

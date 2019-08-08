@@ -12,10 +12,10 @@ public class GameOverseer : MonoBehaviour
     public static GameOverseer GO;
 
     // Hero selection
-    public int myHero = 200;
-    public int enemyHero = 200;
-    public int myheroHover = 200;
-    public int enemyheroHover = 200;
+    public HeroEnum myHero = HeroEnum.None;
+    public HeroEnum enemyHero = HeroEnum.None;
+    public HeroEnum myheroHover = HeroEnum.None;
+    public HeroEnum enemyheroHover = HeroEnum.None;
 
     // State stuff
     public GameState state;
@@ -27,16 +27,17 @@ public class GameOverseer : MonoBehaviour
 
     // Network card position
     public bool amIHoveringMyself = false;
-    public int hoveringCard = -1;
+    public int hoveringCard = 200;
     public Vector3 hoveringCardPos = Vector3.zero;
     public Vector3 hoveringCardLocalPos = Vector3.zero;
     public int sentCard = 0;
 
     public bool isEnemyHoveringHimself = false;
-    public int enemyHoveringCard = -1;
+    public int enemyHoveringCard = 200;
     public Vector3 enemyHoveringCardPos = Vector3.zero;
     public Vector3 enemyHoveringCardLocalPos = Vector3.zero;
     public bool enemySentCard = false;
+    public bool alreadyReceived = false;
 
     // Predict stuff
     public bool predicted = false;
@@ -46,8 +47,10 @@ public class GameOverseer : MonoBehaviour
     public int interfaceSignalSent = 200;
 
     // Ulti stuff
-    public int ultiBuy = 200;
-    public int enemyUltiBuy = 200;
+    [HideInInspector]
+    public bool[] ultiBuy = new bool[3] { false, false, false};
+    [HideInInspector]
+    public bool[] enemyUltiBuy = new bool[3] { false, false, false };
 
     // Deck shuffle
     public int shuffled = 0;
@@ -113,7 +116,7 @@ public class GameOverseer : MonoBehaviour
     // Hero Selection Stuff
     void heroSelectionStuff()
     {
-        if ((myConfirm && enemyConfirm) && GO.myHero != 200 && GO.enemyHero != 200)
+        if ((myConfirm && enemyConfirm) && GO.myHero != HeroEnum.None && GO.enemyHero != HeroEnum.None)
         {
             myConfirm = false;
             enemyConfirm = false;
@@ -131,8 +134,8 @@ public class GameOverseer : MonoBehaviour
             {
                 case GameState.Purchase:
                     state = GameState.Choice;
-                    HeroSideEffects.HSE.executeSideEffect(0, HeroDecks.HD.myManager, 200);
-                    HeroSideEffects.HSE.executeSideEffect(0, HeroDecks.HD.enemyManager, 200);
+                    HeroSideEffects.HSE.executeSideEffect(0, HeroDecks.HD.myManager, 200, HeroDecks.HD.myManager.hero);
+                    HeroSideEffects.HSE.executeSideEffect(0, HeroDecks.HD.enemyManager, 200, HeroDecks.HD.enemyManager.hero);
                     Debug.Log("Choice state");
                     break;
 
@@ -141,13 +144,20 @@ public class GameOverseer : MonoBehaviour
                     Debug.Log("Revelation state");
                     GameObject.Find("Main UI").GetComponent<MainUIManager>().enemyRevealedCard = HeroDecks.HD.enemyManager.cardList[enemyCardPlayed].name;
 
-                    HeroSideEffects.HSE.executeSideEffect(1, HeroDecks.HD.myManager, GO.myCardPlayed);
-                    HeroSideEffects.HSE.executeSideEffect(1, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
+                    // Choice Side Effects
+                    HeroSideEffects.HSE.executeSideEffect(1, HeroDecks.HD.myManager, GO.myCardPlayed, HeroDecks.HD.myManager.hero);
+                    HeroSideEffects.HSE.executeSideEffect(1, HeroDecks.HD.enemyManager, GO.enemyCardPlayed, HeroDecks.HD.enemyManager.hero);
 
+                    // Interfaces
                     if (HeroDecks.HD.myManager.cardList[GO.myCardPlayed] is Interfacer) {
                         Interfacer cc = (Interfacer)HeroDecks.HD.myManager.cardList[GO.myCardPlayed];
                         cc.interfacing();
                     }
+
+                    // Reset sent card
+                    GO.alreadyReceived = false;
+                    GO.sentCard = 0;
+                    GO.enemySentCard = false;
 
                     break;
 
@@ -155,12 +165,13 @@ public class GameOverseer : MonoBehaviour
                     state = GameState.Effects;
                     Debug.Log("Effects state");
 
-                    HeroSideEffects.HSE.executeSideEffect(2, HeroDecks.HD.myManager, GO.myCardPlayed);
-                    HeroSideEffects.HSE.executeSideEffect(2, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
+                    // Side Effects, soft resets, cards
+                    HeroSideEffects.HSE.executeSideEffect(2, HeroDecks.HD.myManager, GO.myCardPlayed, HeroDecks.HD.myManager.hero);
+                    HeroSideEffects.HSE.executeSideEffect(2, HeroDecks.HD.enemyManager, GO.enemyCardPlayed, HeroDecks.HD.enemyManager.hero);
                     everyTurn();
                     activateCards();
-                    HeroSideEffects.HSE.executeSideEffect(3, HeroDecks.HD.myManager, GO.myCardPlayed);
-                    HeroSideEffects.HSE.executeSideEffect(3, HeroDecks.HD.enemyManager, GO.enemyCardPlayed);
+                    HeroSideEffects.HSE.executeSideEffect(3, HeroDecks.HD.myManager, GO.myCardPlayed, HeroDecks.HD.myManager.hero);
+                    HeroSideEffects.HSE.executeSideEffect(3, HeroDecks.HD.enemyManager, GO.enemyCardPlayed, HeroDecks.HD.enemyManager.hero);
 
                     // Reset stuff
                     HeroDecks.HD.myManager.protection = 0;
@@ -177,6 +188,7 @@ public class GameOverseer : MonoBehaviour
                     GameObject.Find("Main UI").GetComponent<MainUIManager>().enemyRevealedCard = "";
 
                     // Card Reset stuff -> CardInBoard
+                    GO.alreadyReceived = false;
                     GO.sentCard = 0;
                     GO.enemySentCard = false;
                     GO.interfaceSignalSent = 0;
@@ -249,8 +261,5 @@ public class GameOverseer : MonoBehaviour
             if (!HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].isNullified)
                 HeroDecks.HD.enemyManager.cardList[GO.enemyCardPlayed].effect(HeroDecks.HD.enemyManager, HeroDecks.HD.myManager, e);
         }
-
-        
-        
     }
 }

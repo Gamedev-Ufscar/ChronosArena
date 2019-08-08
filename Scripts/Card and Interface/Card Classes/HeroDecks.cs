@@ -55,17 +55,20 @@ public class HeroDecks : MonoBehaviour
 
     }
 
-    public Card heroCard(int hero, int id)
+    public Card heroCard(HeroEnum hero, int id)
     {
         switch (hero)
         {
-            case 0:
+            case HeroEnum.Uga:
                 return UgaDeck(id);
 
-            case 1:
+            case HeroEnum.Timothy:
                 return TimothyDeck(id);
 
-            case 21:
+            case HeroEnum.Harold:
+                return HaroldDeck(id);
+
+            case HeroEnum.Yuri:
                 return YuriDeck(id);
 
             default:
@@ -261,7 +264,7 @@ public class HeroDecks : MonoBehaviour
                 Defense temporalShield = new Defense();
                 temporalShield.name = "Escudo Temporal";
                 temporalShield.type = CardTypes.Defense;
-                temporalShield.id = 2;
+                temporalShield.id = 1;
                 temporalShield.minmax = 0808;
                 temporalShield.protection = 2;
                 return temporalShield;
@@ -319,14 +322,136 @@ public class HeroDecks : MonoBehaviour
                 return chronosMachine;
 
             case 9:
-                ChronosMachine fragmentedReturn = new ChronosMachine();
-                fragmentedReturn.name = "Retorno Fragmentado";
-                fragmentedReturn.type = CardTypes.Ultimate;
-                fragmentedReturn.id = 9;
-                fragmentedReturn.minmax = 1212;
-                fragmentedReturn.cost = 2;
-                fragmentedReturn.isChronos = false;
-                return fragmentedReturn;
+                ChronosMachine backToFuture = new ChronosMachine();
+                backToFuture.name = "De Volta ao Futuro";
+                backToFuture.type = CardTypes.Ultimate;
+                backToFuture.id = 9;
+                backToFuture.minmax = 1212;
+                backToFuture.cost = 2;
+                backToFuture.isChronos = false;
+                return backToFuture;
+
+            default:
+                return null;
+        }
+    }
+
+    public Card HaroldDeck(int id)
+    {
+        switch (id)
+        {
+            case 0:
+                Attack miniLaser = new Attack();
+                miniLaser.name = "Mini-Laser";
+                miniLaser.type = CardTypes.Attack;
+                miniLaser.id = 0;
+                miniLaser.minmax = 1616;
+                miniLaser.damage = 2;
+                miniLaser.isUnblockable = false;
+                miniLaser.limit = 0;
+                miniLaser.limitMax = 1;
+                return miniLaser;
+
+            case 1:
+                Defense hideout = new Defense();
+                hideout.name = "Esconderijo";
+                hideout.type = CardTypes.Defense;
+                hideout.id = 1;
+                hideout.minmax = 0808;
+                hideout.protection = 1;
+                return hideout;
+
+            case 2:
+                Charge machinations = new Charge();
+                machinations.name = "Planos Maléficos";
+                machinations.type = CardTypes.Charge;
+                machinations.id = 2;
+                machinations.minmax = 1414;
+                machinations.charge = 1;
+                machinations.limit = 0;
+                machinations.limitMax = 2;
+                return machinations;
+
+            case 3:
+                Sabotage sabotageDmg = new Sabotage();
+                sabotageDmg.name = "Sabotagem (Dano)";
+                sabotageDmg.type = CardTypes.Nullification;
+                sabotageDmg.image = imageList[0];
+                sabotageDmg.id = 3;
+                sabotageDmg.minmax = 0416;
+                sabotageDmg.nullType = 0;
+                sabotageDmg.damage = 2;
+                sabotageDmg.nullificationList = new CardTypes[4];
+                sabotageDmg.nullificationList[0] = CardTypes.Charge; sabotageDmg.nullificationList[1] = CardTypes.Skill;
+                sabotageDmg.nullificationList[2] = CardTypes.Ultimate; sabotageDmg.nullificationList[3] = CardTypes.NeutralSkill;
+                return sabotageDmg;
+
+            case 4:
+                Sabotage sabotageDef = new Sabotage();
+                sabotageDef.name = "Sabotagem (Defesa)";
+                sabotageDef.type = CardTypes.Nullification;
+                sabotageDef.image = imageList[0];
+                sabotageDef.id = 4;
+                sabotageDef.minmax = 0408;
+                sabotageDef.nullType = 1;
+                sabotageDef.protection = 2;
+                sabotageDef.nullificationList = new CardTypes[4];
+                sabotageDef.nullificationList[0] = CardTypes.Charge; sabotageDef.nullificationList[1] = CardTypes.Skill;
+                sabotageDef.nullificationList[2] = CardTypes.Ultimate; sabotageDef.nullificationList[3] = CardTypes.NeutralSkill;
+                return sabotageDef;
+
+            case 5:
+                Sabotage sabotageNull = new Sabotage();
+                sabotageNull.name = "Sabotagem (Null)";
+                sabotageNull.type = CardTypes.Nullification;
+                sabotageNull.image = imageList[0];
+                sabotageNull.id = 5;
+                sabotageNull.minmax = 0419;
+                sabotageNull.nullType = 2;
+                sabotageNull.nullificationList = new CardTypes[4];
+                sabotageNull.nullificationList[0] = CardTypes.Charge; sabotageNull.nullificationList[1] = CardTypes.Skill;
+                sabotageNull.nullificationList[2] = CardTypes.Ultimate; sabotageNull.nullificationList[3] = CardTypes.NeutralSkill;
+                return sabotageNull;
+
+            case 6:
+                CloningMachine cloningMachine = new CloningMachine();
+                cloningMachine.name = "Máquina de Clonagem";
+                cloningMachine.type = CardTypes.Skill;
+                cloningMachine.image = imageList[0];
+                cloningMachine.id = 6;
+                cloningMachine.minmax = 0019;
+                return cloningMachine;
+
+            case 7:
+                return HaroldDeck(6);
+
+            case 8:
+                PerverseEngineering perverseEngineering = new PerverseEngineering();
+                perverseEngineering.name = "Engenharia Maligna";
+                perverseEngineering.type = CardTypes.Skill;
+                perverseEngineering.id = 8;
+                perverseEngineering.minmax = 1818;
+                return perverseEngineering;
+
+            case 9:
+                Catastrophe catastrophe = new Catastrophe();
+                catastrophe.name = "Mestre do Desastre";
+                catastrophe.type = CardTypes.Ultimate;
+                catastrophe.id = 9;
+                catastrophe.minmax = 1018;
+                catastrophe.cost = 1;
+                return catastrophe;
+
+            case 10:
+                TemporalShieldTwo temporalShieldTwo = new TemporalShieldTwo();
+                temporalShieldTwo.name = "Escudo Temporal 2.0";
+                temporalShieldTwo.type = CardTypes.Ultimate;
+                temporalShieldTwo.image = imageList[0];
+                temporalShieldTwo.id = 10;
+                temporalShieldTwo.minmax = 1212;
+                temporalShieldTwo.cost = 1;
+                temporalShieldTwo.isReaction = true;
+                return temporalShieldTwo;
 
             default:
                 return null;

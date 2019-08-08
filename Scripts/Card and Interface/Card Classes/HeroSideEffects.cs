@@ -37,14 +37,18 @@ public class HeroSideEffects : MonoBehaviour
     }
 
     // Phases: 0 Choice, 1 Revelation, 2 EffectsBefore, 3 EffectsAfter
-    public void executeSideEffect (int phase, PlayerManager playerManager, int cardPlayed)
+    public void executeSideEffect (int phase, PlayerManager playerManager, int cardPlayed, HeroEnum hero)
     {
-        switch (playerManager.hero) {
-            case 1:
+        switch (hero) {
+            case HeroEnum.Timothy:
                 TimothySideEffects(phase, playerManager, cardPlayed);
                 break;
 
-            case 21:
+            case HeroEnum.Harold:
+                HaroldSideEffects(phase, playerManager, cardPlayed);
+                break;
+
+            case HeroEnum.Yuri:
                 YuriSideEffects(phase, playerManager, cardPlayed);
                 break;
         }
@@ -54,22 +58,22 @@ public class HeroSideEffects : MonoBehaviour
     {
         if (phase == 0) {
             // Deja Vu
-            if (playerManager.sideList[1] == 2)
+            if (playerManager.sideList[2] == 2)
             {
                 if (playerManager == HeroDecks.HD.myManager) {
                     GameOverseer.GO.enemyPredicted = true;
                 } else if (playerManager == HeroDecks.HD.enemyManager) {
                     GameOverseer.GO.predicted = true;
                 }
-               playerManager.sideList[1]--;
+               playerManager.sideList[2]--;
 
-            } else if (playerManager.sideList[1] == 1) {
+            } else if (playerManager.sideList[2] == 1) {
                 if (playerManager == HeroDecks.HD.myManager)  {
                     GameOverseer.GO.enemyPredicted = false;
                 } else if (playerManager == HeroDecks.HD.enemyManager) {
                     GameOverseer.GO.predicted = false;
                 }
-                playerManager.sideList[1]--;
+                playerManager.sideList[2]--;
             }
 
         } else if (phase == 2) {
@@ -81,6 +85,15 @@ public class HeroSideEffects : MonoBehaviour
         }
     }
 
+    public void HaroldSideEffects(int phase, PlayerManager playerManager, int cardPlayed)
+    {
+        if (playerManager == HeroDecks.HD.myManager) {
+            executeSideEffect(phase, playerManager, cardPlayed, HeroDecks.HD.enemyManager.hero);
+        } else if (playerManager == HeroDecks.HD.enemyManager) {
+            executeSideEffect(phase, playerManager, cardPlayed, HeroDecks.HD.myManager.hero);
+        }
+    }
+
     public void YuriSideEffects(int phase, PlayerManager playerManager, int cardPlayed)
     {
         if (phase == 2) {
@@ -89,25 +102,26 @@ public class HeroSideEffects : MonoBehaviour
                 if (playerManager.cardList[cardPlayed] is Damage) {
                     Damage cc = (Damage)playerManager.cardList[cardPlayed];
                     cc.isUnblockable = true;
-                    Debug.Log("Ponto Fraco ativado");
                     playerManager.cardList[cardPlayed] = (Card)cc;
                 }
             }
 
         } else if (phase == 3) {
             // Vodka
-            if (playerManager.cardList[cardPlayed].isNullified)
+            if (playerManager.hero == HeroEnum.Yuri)
+            {
+                if (playerManager.cardList[cardPlayed].isNullified)
                     playerManager.HP--;
+            }
 
             // Ponto Fraco
             if (playerManager.sideList[0] > 0) {
                 if (playerManager.cardList[cardPlayed] is Damage) {
                         Damage cc = (Damage)playerManager.cardList[cardPlayed];
                         cc.isUnblockable = false;
-                        Debug.Log("Ponto Fraco ativado");
                         playerManager.cardList[cardPlayed] = (Card)cc;
                 }
-                playerManager.sideList[0]--;
+                playerManager.sideList[2]--;
             }
         }
     }

@@ -7,6 +7,7 @@ public enum HeroEnum
     None,
     Timothy,
     Harold,
+    Uga,
     Guujaw,
     Muerte,
     Medusa,

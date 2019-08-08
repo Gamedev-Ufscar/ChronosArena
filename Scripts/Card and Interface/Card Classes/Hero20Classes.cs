@@ -10,12 +10,15 @@ public class Dexterity : Card, Interfacer
 
     int[] discardedCardList = new int[10]; // Lists the deckList indexes of discarded cards
 
+    bool bugCatcher = true;
+
     // Run through deckList, if card not active, add it to Interface List
     public void interfacing() {
         interfaceList = new Sprite[HeroDecks.HD.myManager.cardList.Length];
         int discardedCount = 0;
 
-        // Run through Deck List, check if it's a disabled card
+
+        // Run through Deck List, check if it's a disabled card - if yes, then add to discard card list
         for (int i = 0; i < HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList.Length; i++) {
             if (HeroDecks.HD.myManager.cardList[i] != null && HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList != null) {
                 if (HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard] != this &&
@@ -23,15 +26,18 @@ public class Dexterity : Card, Interfacer
                     interfaceList[discardedCount] = HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard].image;
                     discardedCardList[discardedCount] = i;
                     discardedCount++;
-                    Debug.Log("raise discardedCount");
+                    bugCatcher = false;
                 }
             }
         }
-        HeroDecks.HD.interfaceScript.cardAmount = discardedCount;
-        HeroDecks.HD.interfaceScript.interfaceList = interfaceList;
-        HeroDecks.HD.interfaceScript.invoker = this;
-        Debug.Log("Interface script setup");
-        HeroDecks.HD.interfaceScript.gameObject.SetActive(true);
+
+        // Interface script setup
+        if (!bugCatcher) { 
+            HeroDecks.HD.interfaceScript.cardAmount = discardedCount;
+            HeroDecks.HD.interfaceScript.interfaceList = interfaceList;
+            HeroDecks.HD.interfaceScript.invoker = this;
+            HeroDecks.HD.interfaceScript.gameObject.SetActive(true);
+        }
     }
 
     public override void effect(PlayerManager user, PlayerManager enemy, int priority)
@@ -48,13 +54,16 @@ public class Dexterity : Card, Interfacer
                                 HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].activeInHierarchy == false) {
                                 discardedCardList[discardedCount] = i;
                                 discardedCount++;
+                                bugCatcher = false;
                             }
                         }
                     }
                 }
 
-                user.RestoreCard(discardedCardList[interfaceSignal]);
-                Debug.Log("Discarded: " + discardedCardList[interfaceSignal]);
+                if (!bugCatcher) { 
+                    user.RestoreCard(discardedCardList[interfaceSignal]);
+                    Debug.Log("Discarded: " + discardedCardList[interfaceSignal]);
+                }
                 break;
         }
     }

@@ -49,7 +49,7 @@ public class CardInBoard : MonoBehaviour
 
         // Should this card return?
         if (owner.cardList[thisCard].type == CardTypes.Nullification) {
-            Nullification cc = (Nullification)owner.cardList[thisCard];
+            NullInterface cc = (NullInterface)owner.cardList[thisCard];
             if (cc.wronged == false)
             {
                 returning = true;
@@ -71,26 +71,12 @@ public class CardInBoard : MonoBehaviour
                 thisCardInHand.GetComponent<CardInHand>().moveCard = false;
                 thisCardInHand.GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
             } else if (owner == HeroDecks.HD.enemyManager) {
-                GameOverseer.GO.enemyHoveringCard = -1;
+                GameOverseer.GO.enemyHoveringCard = 200;
             }
 
-        // Recede deck if not returning & add this to discard deck list
+        // Recede deck if not returning
         } else {
-            if (owner == HeroDecks.HD.myManager) {
-                owner.myHand.GetComponent<DeckManager>().recedeDeck(thisCardInHand.GetComponent<CardInHand>().cardIndex);
-            } else if (owner == HeroDecks.HD.enemyManager) {
-                owner.myHand.GetComponent<DeckManager>().recedeDeck(thisCardInHand.GetComponent<EnemyCardInHand>().cardIndex);
-            }
-
-            // Destroy Card in Hand if Ultimate
-            if (owner.cardList[thisCard].type == CardTypes.Ultimate) {
-                owner.myHand.GetComponent<DeckManager>().ultisInHand--;
-                thisUltimateCard.SetActive(true);
-                Destroy(thisCardInHand);
-            }
-
-            owner.myHand.GetComponent<DeckManager>().activeCardCount--;
-
+            whenNotReturning();
         }
 
         Destroy(gameObject);
@@ -117,5 +103,24 @@ public class CardInBoard : MonoBehaviour
         }
         HeroDecks.HD.audioManager.CardSound();
         slot.GetComponent<PlaceCard>().PlaceOnSlot(gameObject, faceUp);
+    }
+
+    void whenNotReturning()
+    {
+        if (owner == HeroDecks.HD.myManager) {
+            owner.myHand.GetComponent<DeckManager>().recedeDeck(thisCardInHand.GetComponent<CardInHand>().cardIndex);
+        } else if (owner == HeroDecks.HD.enemyManager) {
+            owner.myHand.GetComponent<DeckManager>().recedeDeck(thisCardInHand.GetComponent<EnemyCardInHand>().cardIndex);
+        }
+
+        // Destroy Card in Hand if Ultimate
+        if (owner.cardList[thisCard].type == CardTypes.Ultimate) {
+
+            // Recover ultimate card
+            thisUltimateCard.SetActive(true);
+            Destroy(thisCardInHand);
+        }
+
+        owner.myHand.GetComponent<DeckManager>().activeCardCount--;
     }
 }

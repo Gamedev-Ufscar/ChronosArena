@@ -10,10 +10,11 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
     float red = 0f;
     int selectionMode = 0; // 0 = Not selected; 1 = My Hero; 2 = Enemy Hero
     public string heroName;
-    public int hero = 200;
+    public HeroEnum hero = HeroEnum.None;
     public int sideListSize = 0;
     public int handSize;
     public int ultiCount;
+    public List<CardTypes> attackDisableList = new List<CardTypes>();
     public Sprite profile;
     public HermesScript hermesScript;
 
@@ -30,7 +31,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
 
 
         // On Player Hover (Ignore if char already chosen)
-        if (mouseOver && (GameOverseer.GO.myHero == 200 || GameOverseer.GO.myHero == hero)) {
+        if (mouseOver && (GameOverseer.GO.myHero == HeroEnum.None || GameOverseer.GO.myHero == hero)) {
             GameOverseer.GO.myheroHover = hero;
             GetComponentInParent<HeroSelection>().myTitle.text = heroName;
             GetComponentInParent<HeroSelection>().myPortrait.sprite = profile;
@@ -50,12 +51,13 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
 
             if (Input.GetMouseButtonUp(0) && selectionMode != 2) {
                 // Selecting hero
-                if (hermesScript.hero == 200) {
+                if (hermesScript.hero == HeroEnum.None) {
                     hermesScript.hero = hero;
                     hermesScript.sideListSize = sideListSize;
                     hermesScript.handSize = handSize;
                     hermesScript.profile = profile;
                     hermesScript.ultiCount = ultiCount;
+                    hermesScript.attackDisableList = attackDisableList;
                     GameOverseer.GO.myHero = hero;
                     selectionMode = 1;
                     GetComponent<Image>().color = new Color(1f, 1f, 1f);
@@ -63,9 +65,9 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
 
                 // Unselecting hero
                 } else if (hermesScript.hero == hero) {
-                    hermesScript.hero = 200;
+                    hermesScript.hero = HeroEnum.None;
                     GameOverseer.GO.myConfirm = false;
-                    GameOverseer.GO.myHero = 200;
+                    GameOverseer.GO.myHero = HeroEnum.None;
                     selectionMode = 0;
                     GetComponent<Image>().color = new Color(0.8f, 0.8f, 0.8f);
                     Debug.Log("Unselected hero!");
@@ -74,10 +76,10 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
 
         // Out Player Hover
         } else if (GameOverseer.GO.myheroHover == hero) {
-            GameOverseer.GO.myheroHover = 200;
+            GameOverseer.GO.myheroHover = HeroEnum.None;
 
             // Change portrait
-            if (GameOverseer.GO.myHero == 200) {
+            if (GameOverseer.GO.myHero == HeroEnum.None) {
                 GetComponentInParent<HeroSelection>().myTitle.text = "???";
                 GetComponentInParent<HeroSelection>().myPortrait.sprite = GetComponentInParent<HeroSelection>().noHero;
             }
@@ -100,7 +102,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
         } else {
             red = 0f;
             if (mouseOver == false && selectionMode != 1) transform.localScale = new Vector3(1f, 1f);
-            if (GameOverseer.GO.enemyHero == 200 && GameOverseer.GO.enemyheroHover == 200) {
+            if (GameOverseer.GO.enemyHero == HeroEnum.None && GameOverseer.GO.enemyheroHover == HeroEnum.None) {
                 GetComponentInParent<HeroSelection>().enemyTitle.text = "???";
                 GetComponentInParent<HeroSelection>().enemyPortrait.sprite = GetComponentInParent<HeroSelection>().noHero;
             }
@@ -113,12 +115,13 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
             hermesScript.enemyHandSize = handSize;
             hermesScript.enemyProfile = profile;
             hermesScript.enemyUltiCount = ultiCount;
+            hermesScript.enemyAttackDisableList = attackDisableList;
             selectionMode = 2;
             red = 0.3f; 
         
         // Unselecting Enemy
         } else if (selectionMode == 2) {
-            hermesScript.enemyHero = 200;
+            hermesScript.enemyHero = HeroEnum.None;
             red = 0f;
             selectionMode = 0;
         }

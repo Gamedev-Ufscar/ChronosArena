@@ -13,7 +13,8 @@ public abstract class Card
     public int minmax = 0000;
 
     // ULTIMATE AND NEUTRAL SKILL ONLY
-    public int cost = -1;
+    public bool isReaction = false;
+    public int cost = 200;
 
     public abstract void effect(PlayerManager user, PlayerManager enemy, int priority);
 

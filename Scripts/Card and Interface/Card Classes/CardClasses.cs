@@ -67,7 +67,7 @@ public class Defense : Card, Protection
 
     public void protect(int protection, PlayerManager target)
     {
-        target.protection = this.protection;
+        target.protection += this.protection;
     }
 
     public override void effect(PlayerManager user, PlayerManager enemy, int priority)

@@ -10,6 +10,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     public DeckManager deckManager;
     public int cardIndex;
     public bool moveCard;
+    public bool reactionCard = false;
 
     public GameObject cardPrefab;
     public Sprite cardSprite;
@@ -33,8 +34,6 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     // Update is called once per frame
     void Update()
     {
-        //moveCard = EventSystem.current.IsPointerOverGameObject();
-
         // Moving the card around and stuff
         // Zoom Card = Pointer Over; Move Card = Pointer Down
         if ((zoomCard == true || moveCard == true) && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false) {
@@ -46,12 +45,18 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         if (HeroDecks.HD.myManager.cardList[thisCard] != null)
         {
             // Summon card to board
-            if (outOfHand == true && Input.GetMouseButtonUp(0) && GameOverseer.GO.state == GameState.Choice && GameOverseer.GO.myCardPlayed == 200
-                && HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable <= 0) {
-                Debug.Log("Activated sentCard");
-                GameOverseer.GO.sentCard = 5;
-                Summon();
-                outOfHand = false;
+            if (outOfHand == true && Input.GetMouseButtonUp(0) && HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable <= 0 &&
+                !reactionCard) {
+                if (HeroDecks.HD.myManager.cardList[thisCard].isReaction == false && GameOverseer.GO.state == GameState.Choice
+                    && GameOverseer.GO.myCardPlayed == 200) {
+                    Debug.Log("Activated sentCard");
+                    GameOverseer.GO.sentCard = 5;
+                    Summon();
+                    outOfHand = false;
+                } else if (HeroDecks.HD.myManager.cardList[thisCard].isReaction && GameOverseer.GO.state == GameState.Revelation) {
+                    GameOverseer.GO.sentCard = 5;
+                    RevealReaction();
+                }
             }
 
            // Se não é jogável, fica BEM escuro
@@ -60,6 +65,12 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
             } else if (GetComponent<Image>().color == new Color(0.3f, 0.3f, 0.3f)) {
                 GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
             }
+        }
+
+        // If reaction, discard at the end of turn
+        if (GameOverseer.GO.state == GameState.Purchase && reactionCard)
+        {
+            discardingReaction();
         }
     }
 
@@ -78,15 +89,18 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         GameObject.Find("Main UI").GetComponent<MainUIManager>().hoveredCard = HeroDecks.HD.myManager.cardList[thisCard].name;
 
         // Holding down the card
-        if (Input.GetMouseButton(0)) {
-            //Debug.ClearDeveloperConsole();
+        if (Input.GetMouseButton(0) && !reactionCard) {
             Debug.Log(HeroDecks.HD.myManager.cardList[thisCard].name);
             HoldCard();
         } else {
             cardBeingHeld = false;
             deckManager.holdingCard = false;
-            transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 5f, 0f),
+            if (!reactionCard)
+                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 5f, 0f),
                                                     deckManager.cardLocations[cardIndex], Time.deltaTime * 5f);
+            else
+                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 5f, 0f),
+                                                    deckManager.reactionLocations[0], Time.deltaTime * 5f);
             moveCard = false;
         }
     }
@@ -113,12 +127,15 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         // Stop enemy network hovering
         if (GameOverseer.GO.hoveringCard == cardIndex)
         {
-            GameOverseer.GO.hoveringCard = -1;
+            GameOverseer.GO.hoveringCard = 200;
         }
 
-        // Get back into position
+        // Get back into position (or reaction position)
         transform.localScale = new Vector3(0.8665f, 1.177f, 1f);
-        transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.cardLocations[cardIndex], Time.deltaTime * 5f);
+        if (!reactionCard) 
+            transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.cardLocations[cardIndex], Time.deltaTime * 5f);
+        else
+            transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.reactionLocations[0], Time.deltaTime * 5f);
 
         // When card gets back into position, remove override
         if (transform.localPosition.x >= deckManager.cardLocations[cardIndex].x - 1f &&
@@ -142,7 +159,6 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
 
     public void OnPointerExit(PointerEventData eventData)
     {
-
         GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
         zoomCard = false;
     }
@@ -169,6 +185,30 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
             g.GetComponent<CardInBoard>().thisUltimateCard = ultiCard;
         }
         gameObject.SetActive(false);
+    }
+
+    // Reveal reaction card
+    public void RevealReaction()
+    {
+        reactionCard = true;
+        HeroDecks.HD.myManager.cardList[thisCard].effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager, 0);
+    }
+
+    void discardingReaction()
+    {
+        HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().recedeDeck(cardIndex);
+        HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().activeCardCount--;
+
+        // Destroy Card in Hand if Ultimate
+        if (HeroDecks.HD.myManager.cardList[thisCard].type == CardTypes.Ultimate)
+        {
+            // Recover ultimate card
+            ultiCard.SetActive(true);
+            Destroy(gameObject);
+        } else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void OnTriggerEnter(Collider other)

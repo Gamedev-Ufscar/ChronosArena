@@ -34,24 +34,29 @@ public class ConfirmButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
         // Click
         if (pointerOver == true && Input.GetMouseButtonDown(0))
         {
-            if (SceneManager.GetActiveScene().buildIndex == 2 && GameOverseer.GO.myHero != 200) {
+            image.sprite = buttonColors[1];
+        } else if (pointerOver == true && Input.GetMouseButtonUp(0))
+        {
+            if (SceneManager.GetActiveScene().buildIndex == 2 && GameOverseer.GO.myHero != HeroEnum.None) {
                 GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
-                image.sprite = buttonColors[1];
+
             } else if (SceneManager.GetActiveScene().buildIndex == 3 && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false
                  && (GameOverseer.GO.state != GameState.Choice || GameOverseer.GO.myCardPlayed != 200)) {
                 GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
-                image.sprite = buttonColors[1];
             }
 
+        }
 
         // Button Colors
-        } else if (!Input.GetMouseButton(0)) {
-            if (GameOverseer.GO.myConfirm == true)  {
-                image.sprite = buttonColors[2];
-            } else {
-                image.sprite = buttonColors[0];
-            }
+        if (GameOverseer.GO.myConfirm == true)
+        {
+            image.sprite = buttonColors[2];
         }
+        else
+        {
+            image.sprite = buttonColors[0];
+        }
+
 
     }
 

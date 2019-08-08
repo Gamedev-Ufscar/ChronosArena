@@ -269,7 +269,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 4221fc4515c0c654d8ed559de3a2e697, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e88fe64bd59b92d4da3976198d806931, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -359,80 +359,6 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 190406074}
-  m_CullTransparentMesh: 0
---- !u!1 &214145221
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 214145222}
-  - component: {fileID: 214145224}
-  - component: {fileID: 214145223}
-  m_Layer: 5
-  m_Name: Square
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &214145222
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 214145221}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1734934302}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &214145223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 214145221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: dd0718d1f0e5c744d96178a759117d61, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
---- !u!222 &214145224
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 214145221}
   m_CullTransparentMesh: 0
 --- !u!1 &280042805
 GameObject:
@@ -670,10 +596,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 976c52b9ddb3c424cbbae625825a5868, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myHero: 200
-  enemyHero: 200
-  myheroHover: 200
-  enemyheroHover: 200
+  myHero: 0
+  enemyHero: 0
+  myheroHover: 0
+  enemyheroHover: 0
   state: 0
   changingStates: 0
   receivedAState: 0
@@ -689,11 +615,12 @@ MonoBehaviour:
   enemyHoveringCardPos: {x: 0, y: 0, z: 0}
   enemyHoveringCardLocalPos: {x: 0, y: 0, z: 0}
   enemySentCard: 1
+  alreadyReceived: 0
   predicted: 0
   enemyPredicted: 0
   interfaceSignalSent: 200
-  ultiBuy: 0
-  enemyUltiBuy: 0
+  ultiBuy: 000000
+  enemyUltiBuy: 000000
   shuffled: 0
   sentDeckList: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
   enemyShuffled: 0
@@ -772,7 +699,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 4221fc4515c0c654d8ed559de3a2e697, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e88fe64bd59b92d4da3976198d806931, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -962,7 +889,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: a6c1a87bb077dbd428791d9b11217db9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cc0e376746189b646aba31835104ac39, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -992,11 +919,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heroName: Yuri
-  hero: 21
+  hero: 22
   sideListSize: 1
   handSize: 7
   ultiCount: 1
-  profile: {fileID: 21300000, guid: a6c1a87bb077dbd428791d9b11217db9, type: 3}
+  attackDisableList: 0100000004000000050000000600000007000000
+  profile: {fileID: 21300000, guid: cc0e376746189b646aba31835104ac39, type: 3}
   hermesScript: {fileID: 983468379}
 --- !u!1 &983468378
 GameObject:
@@ -1027,15 +955,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad88e1b2285beae4abb02e03ae9af7e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hero: 200
+  hero: 0
   sideListSize: 0
   handSize: 0
   ultiCount: 0
+  attackDisableList: 
   profile: {fileID: 0}
-  enemyHero: 200
+  enemyHero: 0
   enemySideListSize: 0
   enemyHandSize: 0
   enemyUltiCount: 0
+  enemyAttackDisableList: 
   enemyProfile: {fileID: 0}
 --- !u!4 &983468380
 Transform:
@@ -1117,6 +1047,102 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1086041821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1086041822}
+  - component: {fileID: 1086041825}
+  - component: {fileID: 1086041824}
+  - component: {fileID: 1086041823}
+  m_Layer: 5
+  m_Name: Dr. Harold
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1086041822
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086041821}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1218528818}
+  m_Father: {fileID: 1475981871}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -31.7, y: -39}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1086041823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086041821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 21300000, guid: ee62c8db68610864784ad1512596529d, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+--- !u!114 &1086041824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086041821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b59e95b33778ce4cade0d3e9cbcfe63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heroName: Dr. Harold
+  hero: 2
+  sideListSize: 5
+  handSize: 9
+  ultiCount: 2
+  attackDisableList: 01000000050000000600000007000000
+  profile: {fileID: 21300000, guid: ee62c8db68610864784ad1512596529d, type: 3}
+  hermesScript: {fileID: 983468379}
+--- !u!222 &1086041825
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086041821}
+  m_CullTransparentMesh: 0
 --- !u!1 &1118430579
 GameObject:
   m_ObjectHideFlags: 0
@@ -1388,6 +1414,80 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1170492588}
   m_CullTransparentMesh: 0
+--- !u!1 &1218528817
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1218528818}
+  - component: {fileID: 1218528820}
+  - component: {fileID: 1218528819}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1218528818
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218528817}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1086041822}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1218528819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218528817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 21300000, guid: dd0718d1f0e5c744d96178a759117d61, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+--- !u!222 &1218528820
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218528817}
+  m_CullTransparentMesh: 0
 --- !u!1 &1420558028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1558,9 +1658,9 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1734934302}
   - {fileID: 1717519978}
   - {fileID: 1887062560}
+  - {fileID: 1086041822}
   - {fileID: 927829259}
   - {fileID: 759293169}
   - {fileID: 2051824071}
@@ -1593,7 +1693,7 @@ MonoBehaviour:
   myTitle: {fileID: 2051824072}
   enemyPortrait: {fileID: 179920899}
   enemyTitle: {fileID: 1420558030}
-  noHero: {fileID: 21300000, guid: d3426c4dd0addcc46bdd67707b0ccb55, type: 3}
+  noHero: {fileID: 21300000, guid: e88fe64bd59b92d4da3976198d806931, type: 3}
   enemyConfirmButton: {fileID: 873913579}
   confirm: {fileID: 21300000, guid: dc71af7ebb2462a468b441b956efead5, type: 3}
   confirmed: {fileID: 21300000, guid: 3187826c4f939714096e4c6c209bf2e6, type: 3}
@@ -1777,11 +1877,11 @@ RectTransform:
   m_Children:
   - {fileID: 1602281798}
   m_Father: {fileID: 1475981871}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -32.600006, y: -39}
+  m_AnchoredPosition: {x: -32.600006, y: 31}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1717519979
@@ -1804,7 +1904,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 4221fc4515c0c654d8ed559de3a2e697, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 94b631828f671f547af5b07bb45ae28a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1827,10 +1927,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heroName: Timothy
   hero: 1
-  sideListSize: 2
+  sideListSize: 3
   handSize: 8
   ultiCount: 2
-  profile: {fileID: 21300000, guid: 4221fc4515c0c654d8ed559de3a2e697, type: 3}
+  attackDisableList: 0100000004000000050000000600000007000000
+  profile: {fileID: 21300000, guid: 94b631828f671f547af5b07bb45ae28a, type: 3}
   hermesScript: {fileID: 983468379}
 --- !u!222 &1717519981
 CanvasRenderer:
@@ -1840,101 +1941,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1717519977}
   m_CullTransparentMesh: 0
---- !u!1 &1734934301
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1734934302}
-  - component: {fileID: 1734934304}
-  - component: {fileID: 1734934305}
-  - component: {fileID: 1734934303}
-  m_Layer: 5
-  m_Name: Roboto
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1734934302
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1734934301}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 214145222}
-  m_Father: {fileID: 1475981871}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -30.800003, y: 31}
-  m_SizeDelta: {x: 50, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1734934303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1734934301}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 4221fc4515c0c654d8ed559de3a2e697, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
---- !u!222 &1734934304
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1734934301}
-  m_CullTransparentMesh: 0
---- !u!114 &1734934305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1734934301}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b59e95b33778ce4cade0d3e9cbcfe63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  heroName: Roboto
-  hero: 155
-  sideListSize: 0
-  handSize: 6
-  ultiCount: 1
-  profile: {fileID: 21300000, guid: 4221fc4515c0c654d8ed559de3a2e697, type: 3}
-  hermesScript: {fileID: 983468379}
 --- !u!1 &1859617532
 GameObject:
   m_ObjectHideFlags: 0
@@ -2058,7 +2064,7 @@ RectTransform:
   m_Children:
   - {fileID: 1563587463}
   m_Father: {fileID: 1475981871}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2085,7 +2091,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 2473b1fa49eb99c45ab97e2db07a91cc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1f624f767120ea04ab5beb67887f9e85, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2107,11 +2113,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heroName: Uga
-  hero: 0
+  hero: 3
   sideListSize: 0
   handSize: 7
   ultiCount: 1
-  profile: {fileID: 21300000, guid: 2473b1fa49eb99c45ab97e2db07a91cc, type: 3}
+  attackDisableList: 0100000004000000050000000600000007000000
+  profile: {fileID: 21300000, guid: 1f624f767120ea04ab5beb67887f9e85, type: 3}
   hermesScript: {fileID: 983468379}
 --- !u!222 &1887062563
 CanvasRenderer:
