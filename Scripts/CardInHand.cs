@@ -29,6 +29,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     {
         // Check PointerHandler for Pointer-related problems
         GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
+        GetComponentInChildren<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].text;
     }
 
     // Update is called once per frame
@@ -81,7 +82,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     public void ZoomCard()
     {
         //0.8665, 1.177
-        transform.localScale = new Vector3(2 * 0.8665f, 2 * 1.177f, 1f);
+        transform.localScale = new Vector3(HeroDecks.HD.cardZoomSize * 0.8665f, HeroDecks.HD.cardZoomSize * 1.177f, 1f);
         transform.SetAsLastSibling();
         GameOverseer.GO.hoveringCard = cardIndex;
         GameOverseer.GO.hoveringCardPos = transform.position;
@@ -96,11 +97,11 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
             cardBeingHeld = false;
             deckManager.holdingCard = false;
             if (!reactionCard)
-                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 5f, 0f),
-                                                    deckManager.cardLocations[cardIndex], Time.deltaTime * 5f);
+                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 7.5f, 0f),
+                                                    deckManager.cardLocations[cardIndex], Time.deltaTime * 6f);
             else
-                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 5f, 0f),
-                                                    deckManager.reactionLocations[0], Time.deltaTime * 5f);
+                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 7.5f, 0f),
+                                                    deckManager.reactionLocations[0], Time.deltaTime * 6f);
             moveCard = false;
         }
     }
@@ -173,11 +174,17 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zValue));
         GameObject g = Instantiate(cardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));
 
+        // Setup variables
         g.GetComponent<CardInBoard>().thisCard = thisCard;
         g.GetComponent<CardInBoard>().owner = HeroDecks.HD.myManager;
+        deckManager.holdingCard = false;
+
+        // Setup text
+        g.GetComponentInChildren<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].text;
+
+        // Activate slot
         if (GameOverseer.GO.predicted == false) { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, false); }
         else { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, true); }
-        deckManager.holdingCard = false;
 
         // Preparing to turn this on later
         g.GetComponent<CardInBoard>().thisCardInHand = gameObject;

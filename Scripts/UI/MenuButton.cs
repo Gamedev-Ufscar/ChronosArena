@@ -10,6 +10,7 @@ public class MenuButton : MonoBehaviour
     public FadingScript back;
     public SlidingParent mainMenu;
     public SlidingParent libraryMenu;
+    public InterfaceScript interfaceScript;
     public int type = 0;
 
     // Start is called before the first frame update
@@ -55,7 +56,7 @@ public class MenuButton : MonoBehaviour
                 Application.Quit();
                 break;
 
-            case 7: // Back
+            case 7: // Back Menu
                 libraryMenu.Recede();
                 libraryMenu.GetComponent<LibraryHub>().enabled = false;
                 mainMenu.Slide();
@@ -64,6 +65,10 @@ public class MenuButton : MonoBehaviour
                 logo.setMinguant(false);
                 logo.waitTime = 0.5f;
                 back.setMinguant(true);
+                break;
+
+            case 8: // Back Summary
+                interfaceScript.Close();
                 break;
 
             default:

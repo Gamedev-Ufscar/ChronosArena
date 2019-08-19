@@ -21,6 +21,11 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     void Start()
     {
         GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
+        if (deckManager.gameObject == HeroDecks.HD.myManager.myHand) {
+            GetComponentInChildren<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].text;
+        } else {
+            GetComponentInChildren<Text>().text = HeroDecks.HD.enemyManager.cardList[thisCard].text;
+        }
     }
 
     private void OnEnable()
@@ -75,23 +80,23 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     void Cores ()
     {
 
-        if (bought) {
+        if (bought) { // Already bought
             GetComponent<Image>().color = new Color(1f, 1f - red, 1f - red);
-        } else if (GameOverseer.GO.state != GameState.Purchase) {
+        } else if (GameOverseer.GO.state != GameState.Purchase) { // Out of purchase phase
             GetComponent<Image>().color = new Color(0.3f, 0.3f - red, 0.3f - red);
         } else {
             if (HeroDecks.HD.myManager.cardList[thisCard] != null) { 
-                if (HeroDecks.HD.myManager.Charge < HeroDecks.HD.myManager.cardList[thisCard].cost) {
+                if (HeroDecks.HD.myManager.Charge < HeroDecks.HD.myManager.cardList[thisCard].cost) { // Unpurchaseable
                     GetComponent<Image>().color = new Color(0.3f, 0.3f - red, 0.3f - red);
-                } else if (zoomCard) {
+                } else if (zoomCard) {  // Reading card
                     GetComponent<Image>().color = new Color(0.8f, 0.8f - red, 0.8f - red);
-                } else {
+                } else {  // Available card
                     GetComponent<Image>().color = new Color(0.6f, 0.6f - red, 0.6f - red);
                 }
             } else {
-                if (zoomCard) {
+                if (zoomCard) { // Reading enemy card
                     GetComponent<Image>().color = new Color(0.8f, 0.8f - red, 0.8f - red);
-                } else {
+                } else {  // Resting enemy card
                     GetComponent<Image>().color = new Color(0.6f, 0.6f - red, 0.6f - red);
                 }
             }
@@ -146,7 +151,7 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
         // Control location and scale
         transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 5f, 0f),
                                                     deckManager.ultiLocations[cardIndex - 100], Time.deltaTime * 5f);
-        transform.localScale = new Vector3(2 * 0.8665f, 2 * 1.177f, 1f); //0.8665, 1.177
+        transform.localScale = new Vector3(HeroDecks.HD.cardZoomSize * 0.8665f, HeroDecks.HD.cardZoomSize * 1.177f, 1f); //0.8665, 1.177
 
         // Put it on the forefront
         transform.SetAsLastSibling();

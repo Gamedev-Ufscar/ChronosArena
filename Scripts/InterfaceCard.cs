@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class InterfaceCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 {
+    public bool option = false;
     bool zoomCard = false;
     InterfaceScript interfaceScript;
     [HideInInspector]
@@ -34,11 +35,11 @@ public class InterfaceCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
         //0.8665, 1.177
         transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 5f, 0f),
                                                     interfaceScript.cardLocations[index], Time.deltaTime * 5f);
-        transform.localScale = new Vector3(2 * 0.8665f, 2 * 1.177f, 1f);
+        transform.localScale = new Vector3(HeroDecks.HD.cardZoomSize * 0.8665f, HeroDecks.HD.cardZoomSize * 1.177f, 1f);
         gameObject.GetComponent<Canvas>().overrideSorting = true;
 
         // Choose Option
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0) && option) {
             interfaceScript.interfaceSignal = index;
             GameOverseer.GO.interfaceSignalSent = index;
         }

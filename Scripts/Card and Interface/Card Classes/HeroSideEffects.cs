@@ -116,12 +116,14 @@ public class HeroSideEffects : MonoBehaviour
 
             // Ponto Fraco
             if (playerManager.sideList[0] > 0) {
-                if (playerManager.cardList[cardPlayed] is Damage) {
+                if (playerManager.cardList[cardPlayed] != null) {
+                    if (playerManager.cardList[cardPlayed] is Damage) {
                         Damage cc = (Damage)playerManager.cardList[cardPlayed];
                         cc.isUnblockable = false;
                         playerManager.cardList[cardPlayed] = (Card)cc;
+                    }
                 }
-                playerManager.sideList[2]--;
+                playerManager.sideList[0]--;
             }
         }
     }

@@ -16,6 +16,7 @@ public class GameOverseer : MonoBehaviour
     public HeroEnum enemyHero = HeroEnum.None;
     public HeroEnum myheroHover = HeroEnum.None;
     public HeroEnum enemyheroHover = HeroEnum.None;
+    float countdown = 2f;
 
     // State stuff
     public GameState state;
@@ -118,9 +119,14 @@ public class GameOverseer : MonoBehaviour
     {
         if ((myConfirm && enemyConfirm) && GO.myHero != HeroEnum.None && GO.enemyHero != HeroEnum.None)
         {
-            myConfirm = false;
-            enemyConfirm = false;
-            SceneManager.LoadScene(3);
+            if (countdown > 0f) { countdown -= Time.deltaTime; }
+            else {
+                myConfirm = false;
+                enemyConfirm = false;
+                SceneManager.LoadScene(3);
+            }
+        } else {
+            countdown = 2f;
         }
     }
 
