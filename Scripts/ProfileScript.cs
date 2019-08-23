@@ -52,9 +52,9 @@ public class ProfileScript : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
         if (name == "Player Profile") { thisManager = HeroDecks.HD.myManager; }
         else { thisManager = HeroDecks.HD.enemyManager; }
 
-        // Create both lists
+        // Create Card list
         Sprite[] imageList = new Sprite[thisManager.initialCardCount + thisManager.ultiCount];
-        string[] textList = new string[thisManager.initialCardCount + thisManager.ultiCount];
+        Card[] cardList = new Card[thisManager.initialCardCount + thisManager.ultiCount];
 
         // Go through Manager's card list and add to interface script
         HeroDecks.HD.interfaceScript.cardAmount = thisManager.cardList.Length;
@@ -63,7 +63,7 @@ public class ProfileScript : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
             if (thisManager.cardList[i] != null)
             {
                 imageList[i] = thisManager.cardList[i].image;
-                textList[i] = thisManager.cardList[i].text;
+                cardList[i] = thisManager.cardList[i];
             }
         }
 
@@ -71,7 +71,7 @@ public class ProfileScript : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
         HeroDecks.HD.interfaceScript.optionMenu = false;
         HeroDecks.HD.interfaceScript.cardAmount = thisManager.initialCardCount + thisManager.ultiCount;
         HeroDecks.HD.interfaceScript.interfaceList = imageList;
-        HeroDecks.HD.interfaceScript.textList = textList;
+        HeroDecks.HD.interfaceScript.cardList = cardList;
         HeroDecks.HD.interfaceScript.gameObject.SetActive(true);
     }
 

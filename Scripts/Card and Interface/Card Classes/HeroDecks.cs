@@ -5,7 +5,9 @@ using UnityEngine;
 public class HeroDecks : MonoBehaviour
 {
     public static HeroDecks HD;
-    public float cardZoomSize = 2.5f;
+    public static float cardZoomSize = 2.8f;
+    public static float cardMoveUp = 7.5f;
+
     public Sprite[] imageList;
     public PlayerManager myManager;
     public PlayerManager enemyManager;
@@ -121,7 +123,7 @@ public class HeroDecks : MonoBehaviour
                 robotoNull.minmax = 0404;
                 robotoNull.nullificationList = new CardTypes[4];
                 robotoNull.nullificationList[0] = CardTypes.Charge; robotoNull.nullificationList[1] = CardTypes.Skill;
-                robotoNull.nullificationList[2] = CardTypes.Ultimate; robotoNull.nullificationList[3] = CardTypes.NeutralSkill;
+                robotoNull.nullificationList[2] = CardTypes.Ultimate; robotoNull.nullificationList[3] = CardTypes.Item;
                 return robotoNull;
 
             case 4:
@@ -164,7 +166,7 @@ public class HeroDecks : MonoBehaviour
         {
             case 0:
                 Attack clubSmack = new Attack();
-                clubSmack.name = "Pancada com Tronco";
+                clubSmack.name = "PANCADA COM TRONCO";
                 clubSmack.type = CardTypes.Attack;
                 clubSmack.image = imageList[0];
                 clubSmack.id = 0;
@@ -177,7 +179,7 @@ public class HeroDecks : MonoBehaviour
 
             case 1:
                 Defense clubBlock = new Defense();
-                clubBlock.name = "Defesa com Tronco";
+                clubBlock.name = "DEFESA COM TRONCO";
                 clubBlock.type = CardTypes.Defense;
                 clubBlock.image = imageList[0];
                 clubBlock.id = 2;
@@ -187,7 +189,7 @@ public class HeroDecks : MonoBehaviour
 
             case 2:
                 Charge headScratch = new Charge();
-                headScratch.name = "Coçar a Cabeça";
+                headScratch.name = "COÇAR A CABEÇA";
                 headScratch.type = CardTypes.Charge;
                 headScratch.image = imageList[0];
                 headScratch.id = 2;
@@ -199,7 +201,7 @@ public class HeroDecks : MonoBehaviour
 
             case 3:
                 Nullification ugaScream = new Nullification();
-                ugaScream.name = "Grito Uga";
+                ugaScream.name = "GRITO UGA";
                 ugaScream.type = CardTypes.Nullification;
                 ugaScream.image = imageList[0];
                 ugaScream.text = "ANULA  c ,  e   , f     .";
@@ -207,7 +209,7 @@ public class HeroDecks : MonoBehaviour
                 ugaScream.minmax = 0404;
                 ugaScream.nullificationList = new CardTypes[4];
                 ugaScream.nullificationList[0] = CardTypes.Charge; ugaScream.nullificationList[1] = CardTypes.Skill;
-                ugaScream.nullificationList[2] = CardTypes.Ultimate; ugaScream.nullificationList[3] = CardTypes.NeutralSkill;
+                ugaScream.nullificationList[2] = CardTypes.Ultimate; ugaScream.nullificationList[3] = CardTypes.Item;
                 return ugaScream;
 
             case 4:
@@ -216,7 +218,7 @@ public class HeroDecks : MonoBehaviour
 
             case 5:
                 BasicSkill boneSpear = new BasicSkill();
-                boneSpear.name = "Lança de Ossos";
+                boneSpear.name = "LANÇA DE OSSOS";
                 boneSpear.type = CardTypes.Skill;
                 boneSpear.image = imageList[0];
                 boneSpear.text = "CAUSA 3a      .";
@@ -230,7 +232,7 @@ public class HeroDecks : MonoBehaviour
 
             case 6:
                 AutoHealSkill rawMeat = new AutoHealSkill();
-                rawMeat.name = "Carne Crua";
+                rawMeat.name = "CARNE CRUA";
                 rawMeat.type = CardTypes.Skill;
                 rawMeat.image = imageList[0];
                 rawMeat.text = "CURA 2g   .";
@@ -262,7 +264,7 @@ public class HeroDecks : MonoBehaviour
         {
             case 0:
                 Attack sonicGun = new Attack();
-                sonicGun.name = "Pistola Sônica";
+                sonicGun.name = "PISTOLA SÔNICA"; 
                 sonicGun.type = CardTypes.Attack;
                 sonicGun.image = imageList[0];
                 sonicGun.id = 0;
@@ -275,7 +277,7 @@ public class HeroDecks : MonoBehaviour
 
             case 1:
                 Defense temporalShield = new Defense();
-                temporalShield.name = "Escudo Temporal";
+                temporalShield.name = "ESCUDO TEMPORAL";
                 temporalShield.type = CardTypes.Defense;
                 temporalShield.image = imageList[0];
                 temporalShield.id = 1;
@@ -285,7 +287,7 @@ public class HeroDecks : MonoBehaviour
 
             case 2:
                 WatchAdjustments watchAdjustments = new WatchAdjustments();
-                watchAdjustments.name = "Ajustes no Relógio";
+                watchAdjustments.name = "AJUSTES NO RELÓGIO";
                 watchAdjustments.type = CardTypes.Charge;
                 watchAdjustments.image = imageList[0];
                 watchAdjustments.text = "+1c   OU +2c , -2g   .";
@@ -295,7 +297,7 @@ public class HeroDecks : MonoBehaviour
 
             case 3:
                 Nullification fourSecondsBack = new Nullification();
-                fourSecondsBack.name = "Quatro Segundos Atrás";
+                fourSecondsBack.name = "QUATRO SEGUNDOS ATRÁS";
                 fourSecondsBack.type = CardTypes.Nullification;
                 fourSecondsBack.image = imageList[0];
                 fourSecondsBack.text = "ANULA  c ,  e   , f     .";
@@ -303,7 +305,7 @@ public class HeroDecks : MonoBehaviour
                 fourSecondsBack.minmax = 0404;
                 fourSecondsBack.nullificationList = new CardTypes[4];
                 fourSecondsBack.nullificationList[0] = CardTypes.Charge; fourSecondsBack.nullificationList[1] = CardTypes.Skill;
-                fourSecondsBack.nullificationList[2] = CardTypes.Ultimate; fourSecondsBack.nullificationList[3] = CardTypes.NeutralSkill;
+                fourSecondsBack.nullificationList[2] = CardTypes.Ultimate; fourSecondsBack.nullificationList[3] = CardTypes.Item;
                 return fourSecondsBack;
 
             case 4:
@@ -311,7 +313,7 @@ public class HeroDecks : MonoBehaviour
 
             case 5:
                 TimeLock timeLock = new TimeLock();
-                timeLock.name = "Marca do Tempo";
+                timeLock.name = "MARCA DO TEMPO";
                 timeLock.type = CardTypes.Skill;
                 timeLock.image = imageList[0];
                 timeLock.text = "MARCA O TEMPO PARA A ULTIMATE. \n+1c .";
@@ -324,7 +326,7 @@ public class HeroDecks : MonoBehaviour
 
             case 7:
                 DejaVu dejaVu = new DejaVu();
-                dejaVu.name = "Déjà Vu";
+                dejaVu.name = "DÉJÀ VU";
                 dejaVu.type = CardTypes.Skill;
                 dejaVu.image = imageList[0];
                 dejaVu.text = "2b   . \nPREVÊ A CARTA DO OPONENTE, NO PRÓXIMO TURNO.";
@@ -334,7 +336,7 @@ public class HeroDecks : MonoBehaviour
 
             case 8:
                 ChronosMachine chronosMachine = new ChronosMachine();
-                chronosMachine.name = "Máquina de Cronos";
+                chronosMachine.name = "MÁQUINA DE CRONOS";
                 chronosMachine.type = CardTypes.Ultimate;
                 chronosMachine.image = imageList[0];
                 chronosMachine.text = "O g      DE AMBOS JOGADORES \nVOLTA PARA QUANDO A ÚLTIMA \nMARCA DO TEMPO FOI JOGADA.";
@@ -346,7 +348,7 @@ public class HeroDecks : MonoBehaviour
 
             case 9:
                 ChronosMachine backToFuture = new ChronosMachine();
-                backToFuture.name = "De Volta ao Futuro";
+                backToFuture.name = "DE VOLTA AO FUTURO";
                 backToFuture.type = CardTypes.Ultimate;
                 backToFuture.image = imageList[0];
                 backToFuture.text = "O g      DO JOGADOR DE SUA \nESCOLHA VOLTA PARA QUANDO A \nMÁQUINA DE CRONOS MAIS \nRECENTE FOI USADA.";
@@ -367,7 +369,7 @@ public class HeroDecks : MonoBehaviour
         {
             case 0:
                 Attack miniLaser = new Attack();
-                miniLaser.name = "Mini-Laser";
+                miniLaser.name = "MINI-LASER";
                 miniLaser.type = CardTypes.Attack;
                 miniLaser.image = imageList[0];
                 miniLaser.text = "PODE JOGAR d   , MESMO QUANDO \nESTIVER NO LIMITE.";
@@ -381,7 +383,7 @@ public class HeroDecks : MonoBehaviour
 
             case 1:
                 Defense hideout = new Defense();
-                hideout.name = "Esconderijo";
+                hideout.name = "ESCONDERIJO";
                 hideout.type = CardTypes.Defense;
                 hideout.image = imageList[0];
                 hideout.id = 1;
@@ -391,7 +393,7 @@ public class HeroDecks : MonoBehaviour
 
             case 2:
                 Charge machinations = new Charge();
-                machinations.name = "Planos Maléficos";
+                machinations.name = "PLANOS MALÉFICOS";
                 machinations.type = CardTypes.Charge;
                 machinations.image = imageList[0];
                 machinations.id = 2;
@@ -403,7 +405,7 @@ public class HeroDecks : MonoBehaviour
 
             case 3:
                 Sabotage sabotageDmg = new Sabotage();
-                sabotageDmg.name = "Sabotagem (Dano)";
+                sabotageDmg.name = "SABOTAGEM (DANO)";
                 sabotageDmg.type = CardTypes.Nullification;
                 sabotageDmg.image = imageList[0];
                 sabotageDmg.text = "CAUSA 2a       SE ACERTAR.";
@@ -413,12 +415,12 @@ public class HeroDecks : MonoBehaviour
                 sabotageDmg.damage = 2;
                 sabotageDmg.nullificationList = new CardTypes[4];
                 sabotageDmg.nullificationList[0] = CardTypes.Charge; sabotageDmg.nullificationList[1] = CardTypes.Skill;
-                sabotageDmg.nullificationList[2] = CardTypes.Ultimate; sabotageDmg.nullificationList[3] = CardTypes.NeutralSkill;
+                sabotageDmg.nullificationList[2] = CardTypes.Ultimate; sabotageDmg.nullificationList[3] = CardTypes.Item;
                 return sabotageDmg;
 
             case 4:
                 Sabotage sabotageDef = new Sabotage();
-                sabotageDef.name = "Sabotagem (Defesa)";
+                sabotageDef.name = "SABOTAGEM (DEFESA)";
                 sabotageDef.type = CardTypes.Nullification;
                 sabotageDef.image = imageList[0];
                 sabotageDef.text = "CONCEDE 2 b   , MESMO SE ERRAR.";
@@ -428,12 +430,12 @@ public class HeroDecks : MonoBehaviour
                 sabotageDef.protection = 2;
                 sabotageDef.nullificationList = new CardTypes[4];
                 sabotageDef.nullificationList[0] = CardTypes.Charge; sabotageDef.nullificationList[1] = CardTypes.Skill;
-                sabotageDef.nullificationList[2] = CardTypes.Ultimate; sabotageDef.nullificationList[3] = CardTypes.NeutralSkill;
+                sabotageDef.nullificationList[2] = CardTypes.Ultimate; sabotageDef.nullificationList[3] = CardTypes.Item;
                 return sabotageDef;
 
             case 5:
                 Sabotage sabotageNull = new Sabotage();
-                sabotageNull.name = "Sabotagem (Null)";
+                sabotageNull.name = "SABOTAGEM (NULL)";
                 sabotageNull.type = CardTypes.Nullification;
                 sabotageNull.image = imageList[0];
                 sabotageNull.text = "RECUPERA 1d     SE ACERTAR.";
@@ -442,12 +444,12 @@ public class HeroDecks : MonoBehaviour
                 sabotageNull.nullType = 2;
                 sabotageNull.nullificationList = new CardTypes[4];
                 sabotageNull.nullificationList[0] = CardTypes.Charge; sabotageNull.nullificationList[1] = CardTypes.Skill;
-                sabotageNull.nullificationList[2] = CardTypes.Ultimate; sabotageNull.nullificationList[3] = CardTypes.NeutralSkill;
+                sabotageNull.nullificationList[2] = CardTypes.Ultimate; sabotageNull.nullificationList[3] = CardTypes.Item;
                 return sabotageNull;
 
             case 6:
                 CloningMachine cloningMachine = new CloningMachine();
-                cloningMachine.name = "Máquina de Clonagem";
+                cloningMachine.name = "MÁQUINA DE CLONAGEM";
                 cloningMachine.type = CardTypes.Skill;
                 cloningMachine.image = imageList[0];
                 cloningMachine.text = "COPIA OS EFEITOS DA CARTA QUE O \nINIMIGO JOGOU.";
@@ -460,7 +462,7 @@ public class HeroDecks : MonoBehaviour
 
             case 8:
                 PerverseEngineering perverseEngineering = new PerverseEngineering();
-                perverseEngineering.name = "Engenharia Maligna";
+                perverseEngineering.name = "ENGENHARIA MALIGNA";
                 perverseEngineering.type = CardTypes.Skill;
                 perverseEngineering.image = imageList[0];
                 perverseEngineering.text = "RETIRA 1d     OU 1e     DO INIMIGO.";
@@ -470,7 +472,7 @@ public class HeroDecks : MonoBehaviour
 
             case 9:
                 Catastrophe catastrophe = new Catastrophe();
-                catastrophe.name = "Mestre do Desastre";
+                catastrophe.name = "MESTRE DO DESASTRE";
                 catastrophe.type = CardTypes.Ultimate;
                 catastrophe.image = imageList[0];
                 catastrophe.text = "RETIRA 2c   E  1f      DO INIMIGO.";
@@ -481,7 +483,7 @@ public class HeroDecks : MonoBehaviour
 
             case 10:
                 TemporalShieldTwo temporalShieldTwo = new TemporalShieldTwo();
-                temporalShieldTwo.name = "Escudo Temporal 2.0";
+                temporalShieldTwo.name = "ESCUDO TEMPORAL 2.0";
                 temporalShieldTwo.type = CardTypes.Ultimate;
                 temporalShieldTwo.image = imageList[0];
                 temporalShieldTwo.text = "CONCEDE 1 b   . \nPODE SER SACRIFICADA DURANTE A \nREVELAÇÃO.";
@@ -502,7 +504,7 @@ public class HeroDecks : MonoBehaviour
         {
             case 0:
                 Attack sniperShot = new Attack();
-                sniperShot.name = "Tiro de Sniper";
+                sniperShot.name = "TIRO DE SNIPER";
                 sniperShot.type = CardTypes.Attack;
                 sniperShot.image = imageList[0];
                 sniperShot.id = 0;
@@ -515,7 +517,7 @@ public class HeroDecks : MonoBehaviour
 
             case 1:
                 Defense cover = new Defense();
-                cover.name = "Cobertura";
+                cover.name = "COBERTURA";
                 cover.type = CardTypes.Defense;
                 cover.image = imageList[0];
                 cover.id = 1;
@@ -525,7 +527,7 @@ public class HeroDecks : MonoBehaviour
 
             case 2:
                 Charge reloadSniper = new Charge();
-                reloadSniper.name = "Recarregar";
+                reloadSniper.name = "RECARREGAR";
                 reloadSniper.type = CardTypes.Charge;
                 reloadSniper.image = imageList[0];
                 reloadSniper.id = 2;
@@ -537,7 +539,7 @@ public class HeroDecks : MonoBehaviour
 
             case 3:
                 Nullification supressionShot = new Nullification();
-                supressionShot.name = "Tiro de Supressão";
+                supressionShot.name = "TIRO DE SUPRESSÃO";
                 supressionShot.type = CardTypes.Nullification;
                 supressionShot.image = imageList[0];
                 supressionShot.text = "ANULA  c ,  e   , f     .";
@@ -545,12 +547,12 @@ public class HeroDecks : MonoBehaviour
                 supressionShot.minmax = 0404;
                 supressionShot.nullificationList = new CardTypes[4];
                 supressionShot.nullificationList[0] = CardTypes.Charge; supressionShot.nullificationList[1] = CardTypes.Skill;
-                supressionShot.nullificationList[2] = CardTypes.Ultimate; supressionShot.nullificationList[3] = CardTypes.NeutralSkill;
+                supressionShot.nullificationList[2] = CardTypes.Ultimate; supressionShot.nullificationList[3] = CardTypes.Item;
                 return supressionShot;
 
             case 4:
                 Attack bulletBarrage = new Attack();
-                bulletBarrage.name = "Chuva de Balas";
+                bulletBarrage.name = "CHUVA DE BALAS";
                 bulletBarrage.type = CardTypes.Skill;
                 bulletBarrage.image = imageList[0];
                 bulletBarrage.text = "CAUSA 4a     .\nATIVA LIMITE DE ATAQUE.";
@@ -565,7 +567,7 @@ public class HeroDecks : MonoBehaviour
 
             case 5:
                 BasicSkill calculatedShot = new BasicSkill();
-                calculatedShot.name = "Tiro Calculado";
+                calculatedShot.name = "TIRO CALCULADO";
                 calculatedShot.type = CardTypes.Skill;
                 calculatedShot.image = imageList[0];
                 calculatedShot.text = "CAUSA 3a     .";
@@ -579,7 +581,7 @@ public class HeroDecks : MonoBehaviour
 
             case 6:
                 SideEffectSkill weakSpot = new SideEffectSkill();
-                weakSpot.name = "Ponto Fraco";
+                weakSpot.name = "PONTO FRACO";
                 weakSpot.type = CardTypes.Skill;
                 weakSpot.image = imageList[0];
                 weakSpot.text = "DANO CAUSADO PRÓXIMO TURNO É \nIMBLOQUEÁVEL.";
@@ -591,7 +593,7 @@ public class HeroDecks : MonoBehaviour
 
             case 7:
                 Dexterity dexterity = new Dexterity();
-                dexterity.name = "Destreza";
+                dexterity.name = "DESTREZA";
                 dexterity.type = CardTypes.Ultimate;
                 dexterity.image = imageList[0];
                 dexterity.text = "RECUPERA 1 e     OU 1 d   .";

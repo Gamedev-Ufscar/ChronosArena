@@ -4,7 +4,8 @@ using UnityEngine;
 
 public abstract class Card
 {
-    public string name;
+    public HeroEnum hero = HeroEnum.Timothy;
+    public string name = "";
     public int id;
     public Sprite image;
     public string text = "";
@@ -19,14 +20,93 @@ public abstract class Card
 
     public abstract void effect(PlayerManager user, PlayerManager enemy, int priority);
 
-    public void interfacingSetup(int cardAmount, Sprite[] interfaceList, string[] textList)
+    // This setup is for choices - use the same card, only change text
+    public void interfacingSetup(int cardAmount, Sprite[] interfaceList, Card baseCard, string[] textList)
     {
         HeroDecks.HD.interfaceScript.cardAmount = cardAmount;
         HeroDecks.HD.interfaceScript.interfaceList = interfaceList;
         HeroDecks.HD.interfaceScript.textList = textList;
+        HeroDecks.HD.interfaceScript.baseCard = baseCard;
         HeroDecks.HD.interfaceScript.invoker = this;
         HeroDecks.HD.interfaceScript.optionMenu = true;
         HeroDecks.HD.interfaceScript.gameObject.SetActive(true);
+    }
+
+    // This setup is for cards - choose a card to draw, discard, etc.
+    public void interfacingSetup(int cardAmount, Sprite[] interfaceList, Card[] cardList)
+    {
+        HeroDecks.HD.interfaceScript.cardAmount = cardAmount;
+        HeroDecks.HD.interfaceScript.interfaceList = interfaceList;
+        HeroDecks.HD.interfaceScript.cardList = cardList;
+        HeroDecks.HD.interfaceScript.invoker = this;
+        HeroDecks.HD.interfaceScript.optionMenu = true;
+        HeroDecks.HD.interfaceScript.gameObject.SetActive(true);
+    }
+
+    public string typeString (CardTypes typer)
+    {
+        switch (typer)
+        {
+            case CardTypes.Attack:
+                return "ATTACK";
+
+            case CardTypes.Defense:
+                return "DEFENSE";
+
+            case CardTypes.Charge:
+                return "CHARGE";
+
+            case CardTypes.Nullification:
+                return "NULLIFICATION";
+
+            case CardTypes.Skill:
+                return "SKILL";
+
+            case CardTypes.Ultimate:
+                return "ULTIMATE";
+
+            case CardTypes.Item:
+                return "ITEM";
+
+            case CardTypes.Structure:
+                return "STRUCTURE";
+
+            default:
+                return "PASSIVE";
+        }
+    }
+
+    public string heroString(HeroEnum heror)
+    {
+        switch (heror)
+        {
+            case HeroEnum.Timothy:
+                return "TIMOTHY";
+
+            case HeroEnum.Harold:
+                return "DR. HAROLD";
+
+            case HeroEnum.Uga:
+                return "UGA";
+
+            case HeroEnum.Yuri:
+                return "YURI";
+
+            case HeroEnum.Zarnada:
+                return "ZARNADA";
+
+            case HeroEnum.Tupa:
+                return "TUPÃ";
+
+            case HeroEnum.Gerador:
+                return "MECHA-GERADOR";
+
+            case HeroEnum.Eugene:
+                return "EUGENE";
+
+            default:
+                return "ROBOTO";
+        }
     }
 
 }

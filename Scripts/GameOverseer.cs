@@ -16,7 +16,8 @@ public class GameOverseer : MonoBehaviour
     public HeroEnum enemyHero = HeroEnum.None;
     public HeroEnum myheroHover = HeroEnum.None;
     public HeroEnum enemyheroHover = HeroEnum.None;
-    float countdown = 2f;
+    [HideInInspector]
+    public float countdown = 2f;
 
     // State stuff
     public GameState state;

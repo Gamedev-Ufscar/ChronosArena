@@ -50,7 +50,7 @@ public enum CardTypes
     Nullification,
     Skill,
     Ultimate,
-    NeutralSkill,
+    Item,
     Passive,
     Structure
 }

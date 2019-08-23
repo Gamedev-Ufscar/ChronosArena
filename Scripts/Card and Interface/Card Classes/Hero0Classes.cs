@@ -44,7 +44,7 @@ public class WatchAdjustments : Card, Interfacer
         interfaceList[1] = HeroDecks.HD.imageList[0];
         textList[1] = "+2c , -2g   .";
 
-        interfacingSetup(2, interfaceList, textList);
+        interfacingSetup(2, interfaceList, (Card)this, textList);
     }
 
     public override void effect(PlayerManager user, PlayerManager enemy, int priority)
@@ -120,7 +120,7 @@ public class ChronosMachine : Card, Interfacer
             interfaceList[1] = HeroDecks.HD.imageList[0];
             textList[1] = "VOLTA O g      DO INIMIGO.";
 
-            interfacingSetup(2, interfaceList, textList);
+            interfacingSetup(2, interfaceList, this, textList);
         } else
         {
             interfaceSignal = 0;
@@ -166,7 +166,7 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
     public bool isUnblockable { get; set; }
     public int protection { get; set; }
     public Sprite[] interfaceList { get; set; }
-    public string[] textList { get; set; }
+    public Card[] cardList { get; set; }
     public int interfaceSignal { get; set; }
 
     int[] discardedCardList = new int[10]; // Lists the deckList indexes of discarded cards
@@ -212,7 +212,7 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
     public void interfacing()
     {
         interfaceList = new Sprite[HeroDecks.HD.myManager.cardList.Length];
-        textList = new string[HeroDecks.HD.myManager.cardList.Length];
+        cardList = new Card[HeroDecks.HD.myManager.cardList.Length];
         int discardedCount = 0;
 
 
@@ -239,7 +239,7 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
                             HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard].type == CardTypes.Nullification)
                         {
                             interfaceList[discardedCount] = HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard].image;
-                            textList[discardedCount] = HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard].text;
+                            cardList[discardedCount] = HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard];
                             discardedCardList[discardedCount] = i;
                             discardedCount++;
                             bugCatcher = false;
@@ -249,7 +249,7 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
 
                 // Interface script setup
                 if (!bugCatcher) {
-                    interfacingSetup(discardedCount, interfaceList, textList);
+                    interfacingSetup(discardedCount, interfaceList, cardList);
                 }
             }
         }
@@ -306,7 +306,7 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
 public class Catastrophe : Card, Interfacer
 {
     public Sprite[] interfaceList { get; set; }
-    public string[] textList { get; set; }
+    public Card[] cardList { get; set; }
     public int interfaceSignal { get; set; }
 
     int[] ultimateList = new int[3]; // Lists the deckList indexes of ultimate cards
@@ -315,7 +315,7 @@ public class Catastrophe : Card, Interfacer
     public void interfacing()
     {
         interfaceList = new Sprite[HeroDecks.HD.enemyManager.cardList.Length];
-        textList = new string[HeroDecks.HD.enemyManager.cardList.Length];
+        cardList = new Card[HeroDecks.HD.enemyManager.cardList.Length];
         int ultimateCount = 0;
 
         // Run through ENEMY Deck List, check if there's an ultimate card
@@ -328,6 +328,7 @@ public class Catastrophe : Card, Interfacer
                     HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard].type == CardTypes.Ultimate)
                 {
                     interfaceList[ultimateCount] = HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard].image;
+                    cardList[ultimateCount] = HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard];
                     ultimateList[ultimateCount] = i;
                     ultimateCount++;
                     bugCatcher = false;
@@ -338,7 +339,7 @@ public class Catastrophe : Card, Interfacer
         // Interface script setup
         if (bugCatcher == false && ultimateCount > 1)
         {
-            interfacingSetup(ultimateCount, interfaceList, textList);
+            interfacingSetup(ultimateCount, interfaceList, cardList);
         } else {
             interfaceSignal = 0;
             GameOverseer.GO.interfaceSignalSent = 0;
@@ -387,7 +388,7 @@ public class Catastrophe : Card, Interfacer
 public class PerverseEngineering : Card, Interfacer
 {
     public Sprite[] interfaceList { get; set; }
-    public string[] textList { get; set; }
+    public Card[] cardList { get; set; }
     public int interfaceSignal { get; set; }
 
     int[] ultimateList = new int[7]; // Lists the deckList indexes of relevant cards
@@ -396,7 +397,7 @@ public class PerverseEngineering : Card, Interfacer
     public void interfacing()
     {
         interfaceList = new Sprite[HeroDecks.HD.enemyManager.cardList.Length];
-        textList = new string[HeroDecks.HD.enemyManager.cardList.Length];
+        cardList = new Card[HeroDecks.HD.enemyManager.cardList.Length];
         int ultimateCount = 0;
 
         // Run through ENEMY Deck List, check if there's a skill or nullification card
@@ -409,7 +410,7 @@ public class PerverseEngineering : Card, Interfacer
                     (HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard].type == CardTypes.Nullification ||
                     HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard].type == CardTypes.Skill))
                 {
-                    interfaceList[ultimateCount] = HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard].image;
+                    cardList[ultimateCount] = HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard];
                     ultimateList[ultimateCount] = i;
                     ultimateCount++;
                     bugCatcher = false;
@@ -420,7 +421,7 @@ public class PerverseEngineering : Card, Interfacer
         // Interface script setup
         if (bugCatcher == false && ultimateCount > 1)
         {
-            interfacingSetup(ultimateCount, interfaceList, textList);
+            interfacingSetup(ultimateCount, interfaceList, cardList);
         } else {
             interfaceSignal = 0;
             GameOverseer.GO.interfaceSignalSent = 0;

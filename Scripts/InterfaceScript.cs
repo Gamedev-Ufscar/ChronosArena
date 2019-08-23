@@ -8,7 +8,9 @@ public class InterfaceScript : MonoBehaviour
     public GameObject backButton;
     public int cardAmount = 0;
     public Sprite[] interfaceList;
-    public string[] textList;
+    public string[] textList = null;
+    public Card baseCard = null;
+    public Card[] cardList = null;
     public int interfaceSignal = 200;
     public GameObject optionPrefab;
     public List<Vector2> cardLocations;
@@ -63,7 +65,19 @@ public class InterfaceScript : MonoBehaviour
                 optionCreated.transform.parent = gameObject.transform;
                 optionCreated.GetComponent<InterfaceCard>().index = i;
                 optionCreated.GetComponent<Image>().sprite = interfaceList[i];
-                optionCreated.GetComponentInChildren<Text>().text = textList[i];
+
+                if (cardList != null) { // Received cards
+                    optionCreated.transform.GetChild(0).GetComponent<Text>().text = cardList[i].name;
+                    optionCreated.transform.GetChild(1).GetComponent<Text>().text = cardList[i].typeString(cardList[i].type);
+                    optionCreated.transform.GetChild(2).GetComponent<Text>().text = cardList[i].text;
+                    optionCreated.transform.GetChild(5).GetComponent<Text>().text = cardList[i].heroString(cardList[i].hero);
+                } else {  // Received texts
+                    optionCreated.transform.GetChild(0).GetComponent<Text>().text = baseCard.name;
+                    optionCreated.transform.GetChild(1).GetComponent<Text>().text = baseCard.typeString(baseCard.type);
+                    optionCreated.transform.GetChild(2).GetComponent<Text>().text = textList[i];
+                    optionCreated.transform.GetChild(5).GetComponent<Text>().text = baseCard.heroString(baseCard.hero);
+                }
+
                 optionCreated.GetComponent<InterfaceCard>().option = optionMenu;
                 destructionList.Add(optionCreated);
             }
@@ -91,7 +105,7 @@ public class InterfaceScript : MonoBehaviour
         float baseDistanceX, actualDistanceX, initialPositionX, baseDistanceY, actualDistanceY, initialPositionY;
         baseDistanceX = 80 /Mathf.Pow(2, Mathf.Min(cardAmount, 5) - 2);
         actualDistanceX = baseDistanceX + 85;
-        baseDistanceY = 50 / Mathf.Pow(2, ((cardAmount - 1) / 5) - 2);
+        baseDistanceY = 25 / Mathf.Pow(2, (1 + ((cardAmount - 1) / 5)) - 2);
         actualDistanceY = baseDistanceY + 110;
 
         // Initial X
@@ -102,12 +116,14 @@ public class InterfaceScript : MonoBehaviour
         }
 
         // Initial Y
-        if (((cardAmount - 1) / 5) == 0) {
+        if (((cardAmount - 1) / 5) <= 0) {
             initialPositionY = 0f;
-        } else if (((cardAmount - 1) / 5) % 2 == 0) { // Par
-            initialPositionY = (((cardAmount - 1) / 5) * actualDistanceY) / 4;
+        } else if ((1 + ((cardAmount - 1) / 5)) % 2 == 0) { // Par
+            initialPositionY = ((1 + ((cardAmount - 1) / 5)) * actualDistanceY) / 4;
+            Debug.Log("par");
         } else { // Impar
-            initialPositionY = ((((cardAmount - 1) / 5)) / 2) * actualDistanceY;
+            initialPositionY = ((1 + ((cardAmount - 1) / 5)) / 2) * actualDistanceY;
+            Debug.Log("impar");
         }
 
         for (int i = 0; i < cardAmount; i++) {

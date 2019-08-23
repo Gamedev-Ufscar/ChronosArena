@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class Button : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 {
@@ -45,9 +46,16 @@ public class Button : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
             transform.SetAsFirstSibling();
 
             // Cor
-            image.color = new Color(0.57f, 0.57f, 0.57f, image.color.a);
-            text.color = new Color(0.57f, 0.57f, 0.57f, image.color.a);
-            if (arrow != null) { arrow.color = new Color(0.57f, 0.57f, 0.57f, arrow.color.a); }
+            if (SceneManager.GetActiveScene().buildIndex == 3)
+            {
+                image.color = new Color(0.9f, 0.9f, 0.9f, image.color.a);
+                text.color = new Color(0.9f, 0.9f, 0.9f, image.color.a);
+                if (arrow != null) { arrow.color = new Color(0.9f, 0.9f, 0.9f, arrow.color.a); }
+            } else {
+                image.color = new Color(0.57f, 0.57f, 0.57f, image.color.a);
+                text.color = new Color(0.57f, 0.57f, 0.57f, image.color.a);
+                if (arrow != null) { arrow.color = new Color(0.57f, 0.57f, 0.57f, arrow.color.a); }
+            }
         }
     }
 

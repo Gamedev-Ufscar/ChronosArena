@@ -15,6 +15,7 @@ public class EnemyCardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnter
     private float zValue = 12f;
 
     public GameObject ultiCard;
+    public Sprite cardSprite;
 
     private bool zoomCard = false;
 
@@ -28,9 +29,9 @@ public class EnemyCardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnter
     void Update()
     {
         if (reactionCard && zoomCard) { // Jogador dar zoom na carta de reação
-            transform.localScale = new Vector3(HeroDecks.HD.cardZoomSize * 0.8665f, HeroDecks.HD.cardZoomSize * 1.177f, 1f);
+            transform.localScale = new Vector3(HeroDecks.cardZoomSize * 0.8665f, HeroDecks.cardZoomSize * 1.177f, 1f);
             transform.SetAsLastSibling();
-            transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.reactionLocations[0] + new Vector2(0f, 5f),
+            transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.reactionLocations[0] + new Vector2(0f, HeroDecks.cardMoveUp),
                 Time.deltaTime * 5f);
 
         // Get back into position
@@ -44,13 +45,13 @@ public class EnemyCardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnter
             transform.SetAsFirstSibling();
         }
         else if (reactionCard) { // Inimigo dar zoom na carta de reação
-            transform.localScale = new Vector3(HeroDecks.HD.cardZoomSize * 0.8665f, HeroDecks.HD.cardZoomSize * 1.177f, 1f);
+            transform.localScale = new Vector3(HeroDecks.cardZoomSize * 0.8665f, HeroDecks.cardZoomSize * 1.177f, 1f);
             transform.SetAsLastSibling();
-            transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.reactionLocations[0] + new Vector2(0f, 5f),
+            transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.reactionLocations[0] + new Vector2(0f, HeroDecks.cardMoveUp),
                 Time.deltaTime * 5f);
 
         } else { // Mover carta do inimigo
-            transform.localScale = new Vector3(HeroDecks.HD.cardZoomSize * 0.8665f, HeroDecks.HD.cardZoomSize * 1.177f, 1f);
+            transform.localScale = new Vector3(HeroDecks.cardZoomSize * 0.8665f, HeroDecks.cardZoomSize * 1.177f, 1f);
             adaptedEnemyHoverPos = new Vector3(-GameOverseer.GO.enemyHoveringCardLocalPos.x, 2-GameOverseer.GO.enemyHoveringCardLocalPos.y);
             transform.localPosition = Vector2.Lerp(transform.localPosition, adaptedEnemyHoverPos, Time.deltaTime * 5f);
             transform.SetAsLastSibling();
@@ -123,7 +124,11 @@ public class EnemyCardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnter
         }
 
         // Setup text
-        g.GetComponentInChildren<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].text;
+        g.GetComponent<CardInBoard>().cardSprite = cardSprite;
+        g.transform.GetChild(0).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].name;
+        g.transform.GetChild(1).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].typeString(HeroDecks.HD.myManager.cardList[thisCard].type);
+        g.transform.GetChild(2).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].text;
+        g.transform.GetChild(5).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].heroString(HeroDecks.HD.myManager.cardList[thisCard].hero);
 
         // Show Predicted card
         if (GameOverseer.GO.enemyPredicted) {

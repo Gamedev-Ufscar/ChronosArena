@@ -15,6 +15,8 @@ public class CardInBoard : MonoBehaviour
     public int revealAnimState = 0;
     public bool waiting = false;
 
+    public Sprite cardSprite;
+
     //public bool isPlayer = true;
 
     // Update is called once per frame
@@ -54,7 +56,7 @@ public class CardInBoard : MonoBehaviour
             {
                 returning = true;
             }
-        } else if (owner.cardList[thisCard].type != CardTypes.Skill && owner.cardList[thisCard].type != CardTypes.NeutralSkill
+        } else if (owner.cardList[thisCard].type != CardTypes.Skill && owner.cardList[thisCard].type != CardTypes.Item
                      && owner.cardList[thisCard].type != CardTypes.Ultimate) {
             returning = true;
         }

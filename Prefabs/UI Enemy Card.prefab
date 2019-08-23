@@ -70,6 +70,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 19268772264820501, guid: e59a83af17f30d1439cfb8e255c16af1,
     type: 3}
   ultiCard: {fileID: 0}
+  cardSprite: {fileID: 21300000, guid: 97acc544c5556e64a8f9da5391b7f4d4, type: 3}
 --- !u!114 &1882153636552297611
 MonoBehaviour:
   m_ObjectHideFlags: 0

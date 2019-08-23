@@ -10,7 +10,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     public DeckManager deckManager;
     public int cardIndex;
     public bool moveCard;
-    public bool reactionCard = false;
+    public int cardCategory = 0; // 0 = Normal Card; 1 = Reaction Card; 2 = Viewing Card (Board)
 
     public GameObject cardPrefab;
     public Sprite cardSprite;
@@ -29,7 +29,13 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     {
         // Check PointerHandler for Pointer-related problems
         GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
-        GetComponentInChildren<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].text;
+        if (cardCategory != 2)
+        {
+            transform.GetChild(0).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].name;
+            transform.GetChild(1).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].typeString(HeroDecks.HD.myManager.cardList[thisCard].type);
+            transform.GetChild(2).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].text;
+            transform.GetChild(5).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].heroString(HeroDecks.HD.myManager.cardList[thisCard].hero);
+        }
     }
 
     // Update is called once per frame
@@ -37,7 +43,8 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     {
         // Moving the card around and stuff
         // Zoom Card = Pointer Over; Move Card = Pointer Down
-        if ((zoomCard == true || moveCard == true) && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false) {
+        if (((zoomCard == true || moveCard == true) && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false)
+            || cardCategory == 2) {
             ZoomCard();
         } else {
             ReturnCard();
@@ -47,7 +54,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         {
             // Summon card to board
             if (outOfHand == true && Input.GetMouseButtonUp(0) && HeroDecks.HD.myManager.cardList[thisCard].turnsTillPlayable <= 0 &&
-                !reactionCard) {
+                cardCategory == 0) {
                 if (HeroDecks.HD.myManager.cardList[thisCard].isReaction == false && GameOverseer.GO.state == GameState.Choice
                     && GameOverseer.GO.myCardPlayed == 200) {
                     Debug.Log("Activated sentCard");
@@ -69,7 +76,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         }
 
         // If reaction, discard at the end of turn
-        if (GameOverseer.GO.state == GameState.Purchase && reactionCard)
+        if (GameOverseer.GO.state == GameState.Purchase && cardCategory == 1)
         {
             discardingReaction();
         }
@@ -82,26 +89,31 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     public void ZoomCard()
     {
         //0.8665, 1.177
-        transform.localScale = new Vector3(HeroDecks.HD.cardZoomSize * 0.8665f, HeroDecks.HD.cardZoomSize * 1.177f, 1f);
+        transform.localScale = new Vector3(HeroDecks.cardZoomSize * 0.8665f, HeroDecks.cardZoomSize * 1.177f, 1f);
         transform.SetAsLastSibling();
-        GameOverseer.GO.hoveringCard = cardIndex;
-        GameOverseer.GO.hoveringCardPos = transform.position;
-        GameOverseer.GO.hoveringCardLocalPos = transform.localPosition;
+        if (cardCategory != 2)
+        {
+            GameOverseer.GO.hoveringCard = cardIndex;
+            GameOverseer.GO.hoveringCardPos = transform.position;
+            GameOverseer.GO.hoveringCardLocalPos = transform.localPosition;
+        }
         GameObject.Find("Main UI").GetComponent<MainUIManager>().hoveredCard = HeroDecks.HD.myManager.cardList[thisCard].name;
 
         // Holding down the card
-        if (Input.GetMouseButton(0) && !reactionCard) {
+        if (Input.GetMouseButton(0) && cardCategory == 0) {
             Debug.Log(HeroDecks.HD.myManager.cardList[thisCard].name);
             HoldCard();
         } else {
             cardBeingHeld = false;
             deckManager.holdingCard = false;
-            if (!reactionCard)
-                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 7.5f, 0f),
-                                                    deckManager.cardLocations[cardIndex], Time.deltaTime * 6f);
-            else
-                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 7.5f, 0f),
-                                                    deckManager.reactionLocations[0], Time.deltaTime * 6f);
+            if (cardCategory == 0 && 
+                !(transform.localPosition.y >= deckManager.cardLocations[cardIndex].y - 1f &&
+                transform.localPosition.y <= deckManager.cardLocations[cardIndex].y + 1f))
+                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, HeroDecks.cardMoveUp, 0f),
+                                                    deckManager.cardLocations[cardIndex], Time.deltaTime * 3f);
+            else if (cardCategory == 1)
+                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, HeroDecks.cardMoveUp, 0f),
+                                                    deckManager.reactionLocations[0], Time.deltaTime * 3f);
             moveCard = false;
         }
     }
@@ -133,17 +145,18 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
 
         // Get back into position (or reaction position)
         transform.localScale = new Vector3(0.8665f, 1.177f, 1f);
-        if (!reactionCard) 
+        if (cardCategory == 0) {
             transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.cardLocations[cardIndex], Time.deltaTime * 5f);
-        else
-            transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.reactionLocations[0], Time.deltaTime * 5f);
 
-        // When card gets back into position, remove override
-        if (transform.localPosition.x >= deckManager.cardLocations[cardIndex].x - 1f &&
-            transform.localPosition.x <= deckManager.cardLocations[cardIndex].x + 1f &&
-            transform.localPosition.y >= deckManager.cardLocations[cardIndex].y - 1f &&
-            transform.localPosition.y <= deckManager.cardLocations[cardIndex].y + 1f) {
-            transform.SetAsFirstSibling();
+            // When card gets back into position, remove override
+            if (transform.localPosition.x >= deckManager.cardLocations[cardIndex].x - 1f &&
+                transform.localPosition.x <= deckManager.cardLocations[cardIndex].x + 1f &&
+                transform.localPosition.y >= deckManager.cardLocations[cardIndex].y - 1f &&
+                transform.localPosition.y <= deckManager.cardLocations[cardIndex].y + 1f) {
+                transform.SetAsFirstSibling();
+            }
+        } else if (cardCategory == 1) {
+            transform.localPosition = Vector2.Lerp(transform.localPosition, deckManager.reactionLocations[0], Time.deltaTime * 5f);
         }
     }
 
@@ -180,7 +193,11 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         deckManager.holdingCard = false;
 
         // Setup text
-        g.GetComponentInChildren<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].text;
+        g.GetComponent<CardInBoard>().cardSprite = cardSprite;
+        g.transform.GetChild(0).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].name;
+        g.transform.GetChild(1).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].typeString(HeroDecks.HD.myManager.cardList[thisCard].type);
+        g.transform.GetChild(2).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].text;
+        g.transform.GetChild(5).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].heroString(HeroDecks.HD.myManager.cardList[thisCard].hero);
 
         // Activate slot
         if (GameOverseer.GO.predicted == false) { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, false); }
@@ -197,7 +214,7 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     // Reveal reaction card
     public void RevealReaction()
     {
-        reactionCard = true;
+        cardCategory = 1;
         HeroDecks.HD.myManager.cardList[thisCard].effect(HeroDecks.HD.myManager, HeroDecks.HD.enemyManager, 0);
     }
 

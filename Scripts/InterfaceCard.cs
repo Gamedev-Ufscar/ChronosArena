@@ -33,9 +33,9 @@ public class InterfaceCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
     public void ZoomCard()
     {
         //0.8665, 1.177
-        transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, 5f, 0f),
+        transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, HeroDecks.cardMoveUp, 0f),
                                                     interfaceScript.cardLocations[index], Time.deltaTime * 5f);
-        transform.localScale = new Vector3(HeroDecks.HD.cardZoomSize * 0.8665f, HeroDecks.HD.cardZoomSize * 1.177f, 1f);
+        transform.localScale = new Vector3(HeroDecks.cardZoomSize * 0.8665f, HeroDecks.cardZoomSize * 1.177f, 1f);
         gameObject.GetComponent<Canvas>().overrideSorting = true;
 
         // Choose Option
