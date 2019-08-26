@@ -32,7 +32,7 @@ public class HoverBoardCard : MonoBehaviour
 
             if (hitInfo.collider != null)
             {
-                if (hitInfo.collider.transform.parent.gameObject != null)
+                if (hitInfo.collider.transform.parent != null)
                 {
                     Debug.Log("HoverCard");
                     GameObject cardInBoard = hitInfo.collider.transform.parent.gameObject;
@@ -45,6 +45,8 @@ public class HoverBoardCard : MonoBehaviour
                     boardCardReader.transform.GetChild(0).GetComponent<Text>().text = cardInBoard.transform.GetChild(0).GetComponent<TextMesh>().text;
                     boardCardReader.transform.GetChild(1).GetComponent<Text>().text = cardInBoard.transform.GetChild(1).GetComponent<TextMesh>().text;
                     boardCardReader.transform.GetChild(2).GetComponent<Text>().text = cardInBoard.transform.GetChild(2).GetComponent<TextMesh>().text;
+                    boardCardReader.transform.GetChild(3).GetComponent<Text>().text = cardInBoard.transform.GetChild(3).GetComponent<TextMesh>().text;
+                    boardCardReader.transform.GetChild(4).GetComponent<Text>().text = cardInBoard.transform.GetChild(4).GetComponent<TextMesh>().text;
                     boardCardReader.transform.GetChild(5).GetComponent<Text>().text = cardInBoard.transform.GetChild(5).GetComponent<TextMesh>().text;
                 }
             } else if (boardCardReader != null)

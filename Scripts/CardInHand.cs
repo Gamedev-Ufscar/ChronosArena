@@ -31,16 +31,25 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
         if (cardCategory != 2)
         {
+            cardSprite = HeroDecks.HD.myManager.cardList[thisCard].image;
+            transform.GetComponent<Image>().sprite = HeroDecks.HD.myManager.cardList[thisCard].image;
             transform.GetChild(0).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].name;
             transform.GetChild(1).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].typeString(HeroDecks.HD.myManager.cardList[thisCard].type);
-            transform.GetChild(2).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].text;
-            transform.GetChild(5).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].heroString(HeroDecks.HD.myManager.cardList[thisCard].hero);
+            transform.GetChild(2).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].text.Replace("\\n", "\n");
+            transform.GetChild(3).GetComponent<Text>().text = HeroDecks.HD.value(HeroDecks.HD.myManager.cardList[thisCard], 1);
+            transform.GetChild(4).GetComponent<Text>().text = HeroDecks.HD.value(HeroDecks.HD.myManager.cardList[thisCard], 2);
+            transform.GetChild(5).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].heroString(HeroDecks.HD.myManager.hero);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (cardCategory == 2 && GameOverseer.GO.state == GameState.Purchase)
+        {
+            Destroy(gameObject);
+        }
+
         // Moving the card around and stuff
         // Zoom Card = Pointer Over; Move Card = Pointer Down
         if (((zoomCard == true || moveCard == true) && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false)
@@ -106,14 +115,12 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         } else {
             cardBeingHeld = false;
             deckManager.holdingCard = false;
-            if (cardCategory == 0 && 
-                !(transform.localPosition.y >= deckManager.cardLocations[cardIndex].y - 1f &&
-                transform.localPosition.y <= deckManager.cardLocations[cardIndex].y + 1f))
-                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, HeroDecks.cardMoveUp, 0f),
-                                                    deckManager.cardLocations[cardIndex], Time.deltaTime * 3f);
+            if (cardCategory == 0)
+                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, HeroDecks.cardMoveUp),
+                                                    deckManager.cardLocations[cardIndex], 0.1f);
             else if (cardCategory == 1)
-                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, HeroDecks.cardMoveUp, 0f),
-                                                    deckManager.reactionLocations[0], Time.deltaTime * 3f);
+                transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, HeroDecks.cardMoveUp),
+                                                    deckManager.reactionLocations[0], 0.1f);
             moveCard = false;
         }
     }
@@ -194,9 +201,12 @@ public class CardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
 
         // Setup text
         g.GetComponent<CardInBoard>().cardSprite = cardSprite;
+        g.transform.GetChild(6).GetComponent<Renderer>().material.mainTexture = ImageStash.IS.textureFromSprite(cardSprite);
         g.transform.GetChild(0).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].name;
         g.transform.GetChild(1).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].typeString(HeroDecks.HD.myManager.cardList[thisCard].type);
-        g.transform.GetChild(2).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].text;
+        g.transform.GetChild(2).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].text.Replace("\\n", "\n");
+        g.transform.GetChild(3).GetComponent<TextMesh>().text = HeroDecks.HD.value(HeroDecks.HD.myManager.cardList[thisCard], 1);
+        g.transform.GetChild(4).GetComponent<TextMesh>().text = HeroDecks.HD.value(HeroDecks.HD.myManager.cardList[thisCard], 2);
         g.transform.GetChild(5).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].heroString(HeroDecks.HD.myManager.cardList[thisCard].hero);
 
         // Activate slot

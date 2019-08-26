@@ -12,6 +12,7 @@ public class PlayerManager : MonoBehaviour
     public int protection = 0;
     public int initialCardCount = 0;
     public int ultiCount = 1;
+    public int passiveCount = 0;
     public Card[] cardList = new Card[15];
     public int[] sideList = new int[12];
     public List<CardTypes> attackDisableList = new List<CardTypes>();
@@ -104,9 +105,10 @@ public class PlayerManager : MonoBehaviour
     {
         //GameOverseer.GO.cardsTBSCount = 0;
         // Initialize Deck
-        for (int i = 0; i < initialCardCount+ultiCount; i++)
+        for (int i = 0; i < initialCardCount+ultiCount + passiveCount; i++)
         {
             cardList[i] = HeroDecks.HD.heroCard(hero, i);
+            cardList[i].hero = hero;
         }
     }
 

@@ -9,6 +9,7 @@ public class HermesScript : MonoBehaviour
     public int sideListSize = 0;
     public int handSize;
     public int ultiCount;
+    public int passiveCount;
     public List<CardTypes> attackDisableList = new List<CardTypes>();
     public Sprite profile;
 
@@ -16,6 +17,7 @@ public class HermesScript : MonoBehaviour
     public int enemySideListSize = 0;
     public int enemyHandSize;
     public int enemyUltiCount;
+    public int enemyPassiveCount;
     public List<CardTypes> enemyAttackDisableList = new List<CardTypes>();
     public Sprite enemyProfile;
 
@@ -39,6 +41,7 @@ public class HermesScript : MonoBehaviour
             HeroDecks.HD.myManager.sideList = new int[sideListSize];
             HeroDecks.HD.myManager.initialCardCount = handSize;
             HeroDecks.HD.myManager.ultiCount = ultiCount;
+            HeroDecks.HD.myManager.passiveCount = passiveCount;
             HeroDecks.HD.myManager.attackDisableList = attackDisableList;
             GameObject.Find("Player Profile").GetComponent<ProfileScript>().profile = profile;
 
@@ -47,6 +50,7 @@ public class HermesScript : MonoBehaviour
             HeroDecks.HD.enemyManager.sideList = new int[enemySideListSize];
             HeroDecks.HD.enemyManager.initialCardCount = enemyHandSize;
             HeroDecks.HD.enemyManager.ultiCount = enemyUltiCount;
+            HeroDecks.HD.enemyManager.passiveCount = enemyPassiveCount;
             HeroDecks.HD.enemyManager.attackDisableList = enemyAttackDisableList;
             GameObject.Find("Enemy Profile").GetComponent<ProfileScript>().profile = enemyProfile;
         }

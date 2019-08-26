@@ -53,12 +53,12 @@ public class ProfileScript : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
         else { thisManager = HeroDecks.HD.enemyManager; }
 
         // Create Card list
-        Sprite[] imageList = new Sprite[thisManager.initialCardCount + thisManager.ultiCount];
-        Card[] cardList = new Card[thisManager.initialCardCount + thisManager.ultiCount];
+        Sprite[] imageList = new Sprite[thisManager.initialCardCount + thisManager.ultiCount + thisManager.passiveCount];
+        Card[] cardList = new Card[thisManager.initialCardCount + thisManager.ultiCount + thisManager.passiveCount];
 
         // Go through Manager's card list and add to interface script
-        HeroDecks.HD.interfaceScript.cardAmount = thisManager.cardList.Length;
-        for (int i = 0; i < thisManager.initialCardCount + thisManager.ultiCount; i++)
+        //HeroDecks.HD.interfaceScript.cardAmount = thisManager.cardList.Length;
+        for (int i = 0; i < thisManager.initialCardCount + thisManager.ultiCount + thisManager.passiveCount; i++)
         {
             if (thisManager.cardList[i] != null)
             {
@@ -69,7 +69,7 @@ public class ProfileScript : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
 
         // Final setup
         HeroDecks.HD.interfaceScript.optionMenu = false;
-        HeroDecks.HD.interfaceScript.cardAmount = thisManager.initialCardCount + thisManager.ultiCount;
+        HeroDecks.HD.interfaceScript.cardAmount = thisManager.initialCardCount + thisManager.ultiCount + thisManager.passiveCount;
         HeroDecks.HD.interfaceScript.interfaceList = imageList;
         HeroDecks.HD.interfaceScript.cardList = cardList;
         HeroDecks.HD.interfaceScript.gameObject.SetActive(true);

@@ -527,7 +527,6 @@ MonoBehaviour:
   PV: {fileID: 3326205339169454883, guid: 192259f703b3e6243b48c74dc59a307c, type: 3}
   buttonColors:
   - {fileID: 21300000, guid: dc71af7ebb2462a468b441b956efead5, type: 3}
-  - {fileID: 21300000, guid: f8479fd9b803fe048868db398cb1de10, type: 3}
   - {fileID: 21300000, guid: 3187826c4f939714096e4c6c209bf2e6, type: 3}
   pointerOver: 0
 --- !u!114 &413326345
@@ -890,7 +889,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: cc0e376746189b646aba31835104ac39, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 43a723c3dce4fbe48bc29c8520acc764, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -924,8 +923,9 @@ MonoBehaviour:
   sideListSize: 1
   handSize: 7
   ultiCount: 1
+  passiveCount: 1
   attackDisableList: 0100000004000000050000000600000007000000
-  profile: {fileID: 21300000, guid: cc0e376746189b646aba31835104ac39, type: 3}
+  profile: {fileID: 21300000, guid: 43a723c3dce4fbe48bc29c8520acc764, type: 3}
   hermesScript: {fileID: 983468379}
 --- !u!1 &983468378
 GameObject:
@@ -960,12 +960,14 @@ MonoBehaviour:
   sideListSize: 0
   handSize: 0
   ultiCount: 0
+  passiveCount: 0
   attackDisableList: 
   profile: {fileID: 0}
   enemyHero: 0
   enemySideListSize: 0
   enemyHandSize: 0
   enemyUltiCount: 0
+  enemyPassiveCount: 0
   enemyAttackDisableList: 
   enemyProfile: {fileID: 0}
 --- !u!4 &983468380
@@ -1133,6 +1135,7 @@ MonoBehaviour:
   sideListSize: 5
   handSize: 9
   ultiCount: 2
+  passiveCount: 0
   attackDisableList: 01000000050000000600000007000000
   profile: {fileID: 21300000, guid: fc0ec1991a5f49a408eed69ebff19fa5, type: 3}
   hermesScript: {fileID: 983468379}
@@ -1906,7 +1909,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 94b631828f671f547af5b07bb45ae28a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 17ae3813bd178784980e828a452535c6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1932,8 +1935,9 @@ MonoBehaviour:
   sideListSize: 3
   handSize: 8
   ultiCount: 2
+  passiveCount: 0
   attackDisableList: 0100000004000000050000000600000007000000
-  profile: {fileID: 21300000, guid: 94b631828f671f547af5b07bb45ae28a, type: 3}
+  profile: {fileID: 21300000, guid: 17ae3813bd178784980e828a452535c6, type: 3}
   hermesScript: {fileID: 983468379}
 --- !u!222 &1717519981
 CanvasRenderer:
@@ -2119,6 +2123,7 @@ MonoBehaviour:
   sideListSize: 0
   handSize: 7
   ultiCount: 1
+  passiveCount: 0
   attackDisableList: 0100000004000000050000000600000007000000
   profile: {fileID: 21300000, guid: 00290c205d795054687fc721a8f753a0, type: 3}
   hermesScript: {fileID: 983468379}

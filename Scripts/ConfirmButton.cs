@@ -30,12 +30,8 @@ public class ConfirmButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
 
     public void MouseClick()
     {
-
         // Click
-        if (pointerOver == true && Input.GetMouseButtonDown(0))
-        {
-            image.sprite = buttonColors[1];
-        } else if (pointerOver == true && Input.GetMouseButtonUp(0))
+        if (pointerOver == true && Input.GetMouseButtonUp(0))
         {
             if (SceneManager.GetActiveScene().buildIndex == 2 && GameOverseer.GO.myHero != HeroEnum.None) {
                 GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
@@ -47,10 +43,19 @@ public class ConfirmButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
 
         }
 
+        // Juicy feeling
+        if (pointerOver == true && Input.GetMouseButton(0))
+        {
+            transform.localScale = new Vector2(1.1f, 1.1f);
+        } else
+        {
+            transform.localScale = new Vector2(1.2f, 1.2f);
+        }
+
         // Button Colors
         if (GameOverseer.GO.myConfirm == true)
         {
-            image.sprite = buttonColors[2];
+            image.sprite = buttonColors[1];
         }
         else
         {

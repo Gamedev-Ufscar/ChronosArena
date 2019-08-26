@@ -22,7 +22,7 @@ public class EnemyCardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnter
     // Start is called before the first frame update
     void Start()
     {
-        
+        cardSprite = HeroDecks.HD.enemyManager.cardList[thisCard].image;
     }
 
     // Update is called once per frame
@@ -125,10 +125,13 @@ public class EnemyCardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnter
 
         // Setup text
         g.GetComponent<CardInBoard>().cardSprite = cardSprite;
+        g.transform.GetChild(6).GetComponent<Renderer>().material.mainTexture = ImageStash.IS.textureFromSprite(cardSprite);
         g.transform.GetChild(0).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].name;
-        g.transform.GetChild(1).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].typeString(HeroDecks.HD.myManager.cardList[thisCard].type);
-        g.transform.GetChild(2).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].text;
-        g.transform.GetChild(5).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].heroString(HeroDecks.HD.myManager.cardList[thisCard].hero);
+        g.transform.GetChild(1).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].typeString(HeroDecks.HD.enemyManager.cardList[thisCard].type);
+        g.transform.GetChild(2).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].text.Replace("\\n", "\n");
+        g.transform.GetChild(3).GetComponent<TextMesh>().text = HeroDecks.HD.value(HeroDecks.HD.enemyManager.cardList[thisCard], 1);
+        g.transform.GetChild(4).GetComponent<TextMesh>().text = HeroDecks.HD.value(HeroDecks.HD.enemyManager.cardList[thisCard], 2);
+        g.transform.GetChild(5).GetComponent<TextMesh>().text = HeroDecks.HD.enemyManager.cardList[thisCard].heroString(HeroDecks.HD.enemyManager.hero);
 
         // Show Predicted card
         if (GameOverseer.GO.enemyPredicted) {

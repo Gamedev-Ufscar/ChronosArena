@@ -698,6 +698,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 19268772264820501, guid: e59a83af17f30d1439cfb8e255c16af1,
     type: 3}
   ultiCard: {fileID: 0}
+  cardSprite: {fileID: 0}
 --- !u!222 &124135555
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1267,6 +1268,7 @@ MonoBehaviour:
   owner: {fileID: 0}
   revealAnimState: 0
   waiting: 0
+  cardSprite: {fileID: 0}
 --- !u!65 &252858586
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1436,6 +1438,7 @@ MonoBehaviour:
   protection: 0
   initialCardCount: 6
   ultiCount: 1
+  passiveCount: 0
   sideList: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   attackDisableList: 01000000040000000500000006000000
   chargeDisableList: 03000000
@@ -3042,7 +3045,7 @@ Transform:
   - {fileID: 161088795}
   - {fileID: 1198205363}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &656470390
 GameObject:
@@ -3726,7 +3729,7 @@ Transform:
   - {fileID: 187779661}
   - {fileID: 7700492816497873910}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &963194225
 GameObject:
@@ -3811,6 +3814,77 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!1 &970336458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 970336460}
+  - component: {fileID: 970336459}
+  m_Layer: 0
+  m_Name: Image Stash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &970336459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970336458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec9776bbb10fdcd45bed01fd99282a7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UgaList:
+  - {fileID: 21300000, guid: 6ab9a3e08d9b17d4f907688c81ad6130, type: 3}
+  - {fileID: 21300000, guid: 1313537e1e7a6d240ae9dcd62509b60e, type: 3}
+  - {fileID: 21300000, guid: 2ecd10505f3d3de4dbf4ed0d7a75569f, type: 3}
+  - {fileID: 21300000, guid: 07652691cd0a2274ab058b3532061a88, type: 3}
+  - {fileID: 21300000, guid: f17aaf5eb84e8e44c8e6cc677c9b8249, type: 3}
+  - {fileID: 21300000, guid: 5ad3a60eca6dc5c409a15a54b978bbd9, type: 3}
+  - {fileID: 21300000, guid: a97681cd36319774cb145497a577e742, type: 3}
+  TimothyList:
+  - {fileID: 21300000, guid: 3ca279e4d0e5bb04280cad383112b693, type: 3}
+  - {fileID: 21300000, guid: 63aae7946e92f7645be6f9aecf15b44f, type: 3}
+  - {fileID: 21300000, guid: 26c3a56fbc143cb42b1f553f28efaace, type: 3}
+  - {fileID: 21300000, guid: c3d333636dff0714197632ec1f55470b, type: 3}
+  - {fileID: 21300000, guid: e8e1fd08100e6204b806b831c17fc611, type: 3}
+  - {fileID: 21300000, guid: 7051b151016b6b644b4c35afcb095fb4, type: 3}
+  - {fileID: 21300000, guid: ddffe2bd3ccb8224aa6026ba6fc0e8a1, type: 3}
+  - {fileID: 21300000, guid: 2ac1091a77d139f41ad0545cc143264b, type: 3}
+  HaroldList: []
+  YuriList:
+  - {fileID: 21300000, guid: 770adfcdcb22015499be095739ef4f61, type: 3}
+  - {fileID: 21300000, guid: 4c592904b1fc61c4692efc5e419086c1, type: 3}
+  - {fileID: 21300000, guid: 87de763fc9ff8e74c84e3d08cb34b35b, type: 3}
+  - {fileID: 21300000, guid: f78d85f005085644faeae9b147140242, type: 3}
+  - {fileID: 21300000, guid: 72750954ce417324d851bdd727fe052a, type: 3}
+  - {fileID: 21300000, guid: 3aa468bedf9f783469950fef7dcd266a, type: 3}
+  - {fileID: 21300000, guid: d6a2fda85ef1f7d4c8c02fe87144ef66, type: 3}
+  - {fileID: 21300000, guid: bc0b80c8ade8f89489a591df740098af, type: 3}
+  - {fileID: 21300000, guid: 2af9d0063a15ba14485779e31904fef9, type: 3}
+--- !u!4 &970336460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970336458}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 171.56036, y: -752.08984, z: 995.0971}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &974801513
 GameObject:
   m_ObjectHideFlags: 0
@@ -4132,7 +4206,7 @@ RectTransform:
   - {fileID: 1720241465}
   - {fileID: 578473096}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4520,7 +4594,7 @@ RectTransform:
   - {fileID: 1369753417}
   - {fileID: 1482968707}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5130,6 +5204,7 @@ MonoBehaviour:
   protection: 0
   initialCardCount: 0
   ultiCount: 1
+  passiveCount: 0
   sideList: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   attackDisableList: 01000000040000000500000006000000
   chargeDisableList: 03000000
@@ -5269,7 +5344,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1369753416
 GameObject:
@@ -5453,7 +5528,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6844,6 +6919,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 19268772264820501, guid: e59a83af17f30d1439cfb8e255c16af1,
     type: 3}
   ultiCard: {fileID: 0}
+  cardSprite: {fileID: 0}
 --- !u!222 &1766803232
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7342,7 +7418,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1830905002
 GameObject:
@@ -7502,6 +7578,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 19268772264820501, guid: e59a83af17f30d1439cfb8e255c16af1,
     type: 3}
   ultiCard: {fileID: 0}
+  cardSprite: {fileID: 0}
 --- !u!222 &1830905010
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7826,7 +7903,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 583163ab788a8714eb6aedb4cdad32b1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0d87a1299940dab4e9ab1c97155c9419, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7857,9 +7934,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PV: {fileID: 3326205339169454883, guid: 192259f703b3e6243b48c74dc59a307c, type: 3}
   buttonColors:
-  - {fileID: 21300000, guid: 583163ab788a8714eb6aedb4cdad32b1, type: 3}
-  - {fileID: 21300000, guid: 9e34525874f6d9c4a8bc6ec762cda8ba, type: 3}
-  - {fileID: 21300000, guid: d88deb61128b7364a8d269777f984d25, type: 3}
+  - {fileID: 21300000, guid: 0d87a1299940dab4e9ab1c97155c9419, type: 3}
+  - {fileID: 21300000, guid: 27cface992c8fbb4d887b2dc51b3955a, type: 3}
   pointerOver: 0
 --- !u!114 &1959110041
 MonoBehaviour:
@@ -7928,8 +8004,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67bb6602ee2ec674fbc661c9d773398b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageList:
-  - {fileID: 21300000, guid: 97acc544c5556e64a8f9da5391b7f4d4, type: 3}
   myManager: {fileID: 263414358}
   enemyManager: {fileID: 1335958031}
   interfaceScript: {fileID: 1031177108}

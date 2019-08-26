@@ -9,6 +9,9 @@ public class AudioManager : MonoBehaviour {
     public Sound[] sounds;
     public bool mainMenu = true;
 
+    [HideInInspector]
+    bool alreadyInBattle = false;
+
     private void Start()
     {
         Play("MainMenuTheme");
@@ -38,6 +41,12 @@ public class AudioManager : MonoBehaviour {
     {
         if (SceneManager.GetActiveScene().buildIndex == 2) {
             Stop("MainMenuTheme");
+        }
+
+        if (SceneManager.GetActiveScene().buildIndex == 3 && !alreadyInBattle) {
+            Stop("BattleTheme");
+            Play("BattleTheme");
+            alreadyInBattle = true;
         }
     }
 

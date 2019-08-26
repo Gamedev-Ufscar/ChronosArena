@@ -27,21 +27,55 @@ public class BugaScream : Card
     }
 }
 
-public class WatchAdjustments : Card, Interfacer
+public class WatchAdjustments : Card, ChargeInterface, Limit, Interfacer
 {
+    public int charge { get; set; }
+    public int limit { get; set; }
+    public int limitMax { get; set; }
     public Sprite[] interfaceList { get; set; }
     public string[] textList { get; set; }
     public int interfaceSignal { get; set; }
 
 
     // Two choices
+    public void raiseCharge(int charge, PlayerManager target)
+    {
+        target.Charge += charge;
+    }
+
+    public void raiseLimit(int amount, PlayerManager target) {
+        for (int i = 0; i < target.cardList.Length; i++) { 
+            if (target.cardList[i] as Charge != null) {
+                Charge cc = target.cardList[i] as Charge;
+                cc.limit += amount;
+                target.cardList[i] = cc as Card;
+                if (cc.limit >= cc.limitMax) {
+                    disableCards(target.chargeDisableList, target.cardList);
+                }
+            }
+        }
+    }
+
+    public void disableCards(List<CardTypes> disables, Card[] playerHand) {
+        for (int i = 0; i < playerHand.Length; i++) {
+            if (playerHand[i] != null) {
+                foreach (CardTypes d in disables) {
+                    if (playerHand[i].type == d) {
+                        playerHand[i].turnsTillPlayable = 1;
+                        Debug.Log(playerHand[i].name + " Disabled");
+                    }
+                }
+            }
+        }
+    }
+
     public void interfacing()
     {
         interfaceList = new Sprite[2];
         textList = new string[2];
-        interfaceList[0] = HeroDecks.HD.imageList[0];
+        interfaceList[0] = ImageStash.IS.UgaList[0];
         textList[0] = "+1c .";
-        interfaceList[1] = HeroDecks.HD.imageList[0];
+        interfaceList[1] = ImageStash.IS.UgaList[0];
         textList[1] = "+2c , -2g   .";
 
         interfacingSetup(2, interfaceList, (Card)this, textList);
@@ -53,11 +87,12 @@ public class WatchAdjustments : Card, Interfacer
         {
             case 14:
                 if (interfaceSignal == 0) {
-                    user.Charge++;
+                    raiseCharge(1, user);
                 } else if (interfaceSignal == 1) {
-                    user.Charge += 2;
+                    raiseCharge(2, user);
                     user.HP -= 2;
                 }
+                raiseLimit(1, user);
                 break;
         }
     }
@@ -115,9 +150,9 @@ public class ChronosMachine : Card, Interfacer
         {
             interfaceList = new Sprite[2];
             textList = new string[2];
-            interfaceList[0] = HeroDecks.HD.imageList[0];
+            interfaceList[0] = ImageStash.IS.UgaList[0];
             textList[0] = "VOLTA O g      DO USUÁRIO.";
-            interfaceList[1] = HeroDecks.HD.imageList[0];
+            interfaceList[1] = ImageStash.IS.UgaList[0];
             textList[1] = "VOLTA O g      DO INIMIGO.";
 
             interfacingSetup(2, interfaceList, this, textList);

@@ -14,6 +14,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
     public int sideListSize = 0;
     public int handSize;
     public int ultiCount;
+    public int passiveCount = 0;
     public List<CardTypes> attackDisableList = new List<CardTypes>();
     public Sprite profile;
     public HermesScript hermesScript;
@@ -31,10 +32,12 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
 
 
         // On Player Hover (Ignore if char already chosen)
-        if (mouseOver && (GameOverseer.GO.myHero == HeroEnum.None || GameOverseer.GO.myHero == hero)) {
-            GameOverseer.GO.myheroHover = hero;
-            GetComponentInParent<HeroSelection>().myTitle.text = heroName;
-            GetComponentInParent<HeroSelection>().myPortrait.sprite = profile;
+        if (mouseOver && (GameOverseer.GO.myConfirm == false || hermesScript.hero == hero)) {
+            if (GameOverseer.GO.myHero == HeroEnum.None || GameOverseer.GO.myHero == hero) {
+                GameOverseer.GO.myheroHover = hero;
+                GetComponentInParent<HeroSelection>().myTitle.text = heroName;
+                GetComponentInParent<HeroSelection>().myPortrait.sprite = profile;
+            }
 
             // Highlight button
             if (selectionMode != 1 && GameOverseer.GO.enemyHero != hero) {
@@ -43,27 +46,27 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
             }
 
             // Juicy feeling of pressing a button
-            if (Input.GetMouseButton(0) && selectionMode != 2)
-            {
+            if (Input.GetMouseButton(0) && selectionMode != 2) {
                 transform.localScale = new Vector3(1f, 1f);
             } //else { transform.localScale = new Vector3(1.1f, 1.1f); }
 
 
             if (Input.GetMouseButtonUp(0) && selectionMode != 2) {
                 // Selecting hero
-                if (hermesScript.hero == HeroEnum.None) {
+                if (hermesScript.hero != hero) {
                     hermesScript.hero = hero;
                     hermesScript.sideListSize = sideListSize;
                     hermesScript.handSize = handSize;
                     hermesScript.profile = profile;
                     hermesScript.ultiCount = ultiCount;
+                    hermesScript.passiveCount = passiveCount;
                     hermesScript.attackDisableList = attackDisableList;
                     GameOverseer.GO.myHero = hero;
                     selectionMode = 1;
                     GetComponent<Image>().color = new Color(1f, 1f, 1f);
                     Debug.Log("Selected hero!");
 
-                // Unselecting hero
+                // Explicitly unselecting hero
                 } else if (hermesScript.hero == hero) {
                     hermesScript.hero = HeroEnum.None;
                     GameOverseer.GO.myConfirm = false;
@@ -88,6 +91,12 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
             if (selectionMode != 1) {
                 GetComponent<Image>().color = new Color(0.55f, 0.55f - red, 0.55f - red);
                 transform.localScale = new Vector3(1f, 1f);
+            }
+        } else {
+            // Automatically unselecting hero
+            if (hermesScript.hero != hero) {
+                selectionMode = 0;
+                GetComponent<Image>().color = new Color(0.8f, 0.8f, 0.8f);
             }
         }
 
@@ -115,6 +124,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
             hermesScript.enemyHandSize = handSize;
             hermesScript.enemyProfile = profile;
             hermesScript.enemyUltiCount = ultiCount;
+            hermesScript.enemyPassiveCount = passiveCount;
             hermesScript.enemyAttackDisableList = attackDisableList;
             selectionMode = 2;
             red = 0.3f; 

@@ -69,12 +69,16 @@ public class InterfaceScript : MonoBehaviour
                 if (cardList != null) { // Received cards
                     optionCreated.transform.GetChild(0).GetComponent<Text>().text = cardList[i].name;
                     optionCreated.transform.GetChild(1).GetComponent<Text>().text = cardList[i].typeString(cardList[i].type);
-                    optionCreated.transform.GetChild(2).GetComponent<Text>().text = cardList[i].text;
+                    optionCreated.transform.GetChild(2).GetComponent<Text>().text = cardList[i].text.Replace("\\n", "\n");
+                    optionCreated.transform.GetChild(3).GetComponent<Text>().text = HeroDecks.HD.value(cardList[i], 1);
+                    optionCreated.transform.GetChild(4).GetComponent<Text>().text = HeroDecks.HD.value(cardList[i], 2);
                     optionCreated.transform.GetChild(5).GetComponent<Text>().text = cardList[i].heroString(cardList[i].hero);
                 } else {  // Received texts
                     optionCreated.transform.GetChild(0).GetComponent<Text>().text = baseCard.name;
                     optionCreated.transform.GetChild(1).GetComponent<Text>().text = baseCard.typeString(baseCard.type);
-                    optionCreated.transform.GetChild(2).GetComponent<Text>().text = textList[i];
+                    optionCreated.transform.GetChild(2).GetComponent<Text>().text = textList[i].Replace("\\n", "\n");
+                    optionCreated.transform.GetChild(3).GetComponent<Text>().text = HeroDecks.HD.value(cardList[i], 1);
+                    optionCreated.transform.GetChild(4).GetComponent<Text>().text = HeroDecks.HD.value(cardList[i], 2);
                     optionCreated.transform.GetChild(5).GetComponent<Text>().text = baseCard.heroString(baseCard.hero);
                 }
 

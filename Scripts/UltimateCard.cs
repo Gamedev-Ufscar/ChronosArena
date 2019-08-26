@@ -24,9 +24,23 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     {
         GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f);
         if (deckManager.gameObject == HeroDecks.HD.myManager.myHand) {
-            transform.GetChild(2).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].text;
+            cardSprite = HeroDecks.HD.myManager.cardList[thisCard].image;
+            transform.GetComponent<Image>().sprite = HeroDecks.HD.myManager.cardList[thisCard].image;
+            transform.GetChild(0).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].name;
+            transform.GetChild(1).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].typeString(HeroDecks.HD.myManager.cardList[thisCard].type);
+            transform.GetChild(2).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].text.Replace("\\n", "\n");
+            transform.GetChild(3).GetComponent<Text>().text = HeroDecks.HD.value(HeroDecks.HD.myManager.cardList[thisCard], 1);
+            transform.GetChild(4).GetComponent<Text>().text = HeroDecks.HD.value(HeroDecks.HD.myManager.cardList[thisCard], 2);
+            transform.GetChild(5).GetComponent<Text>().text = HeroDecks.HD.myManager.cardList[thisCard].heroString(HeroDecks.HD.myManager.hero);
         } else {
-            transform.GetChild(2).GetComponent<Text>().text = HeroDecks.HD.enemyManager.cardList[thisCard].text;
+            cardSprite = HeroDecks.HD.enemyManager.cardList[thisCard].image;
+            transform.GetComponent<Image>().sprite = HeroDecks.HD.enemyManager.cardList[thisCard].image;
+            transform.GetChild(0).GetComponent<Text>().text = HeroDecks.HD.enemyManager.cardList[thisCard].name;
+            transform.GetChild(1).GetComponent<Text>().text = HeroDecks.HD.enemyManager.cardList[thisCard].typeString(HeroDecks.HD.enemyManager.cardList[thisCard].type);
+            transform.GetChild(2).GetComponent<Text>().text = HeroDecks.HD.enemyManager.cardList[thisCard].text.Replace("\\n", "\n");
+            transform.GetChild(3).GetComponent<Text>().text = HeroDecks.HD.value(HeroDecks.HD.enemyManager.cardList[thisCard], 1);
+            transform.GetChild(4).GetComponent<Text>().text = HeroDecks.HD.value(HeroDecks.HD.enemyManager.cardList[thisCard], 2);
+            transform.GetChild(5).GetComponent<Text>().text = HeroDecks.HD.enemyManager.cardList[thisCard].heroString(HeroDecks.HD.enemyManager.hero);
         }
     }
 
@@ -89,21 +103,21 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
             if (HeroDecks.HD.myManager.cardList[thisCard] != null) { 
                 if (HeroDecks.HD.myManager.Charge < HeroDecks.HD.myManager.cardList[thisCard].cost) { // Unpurchaseable
                     GetComponent<Image>().color = new Color(0.3f, 0.3f - red, 0.3f - red);
-                    transform.GetChild(2).GetComponent<Text>().color = new Color32(16, 16, 16, 255);
+                    transformColor(16);
                 } else if (zoomCard) {  // Reading card
                     GetComponent<Image>().color = new Color(0.8f, 0.8f - red, 0.8f - red);
-                    transform.GetChild(2).GetComponent<Text>().color = new Color32(50, 50, 50, 255);
+                    transformColor(50);
                 } else {  // Available card
                     GetComponent<Image>().color = new Color(0.6f, 0.6f - red, 0.6f - red);
-                    transform.GetChild(2).GetComponent<Text>().color = new Color32(32, 32, 32, 255);
+                    transformColor(32);
                 }
             } else {
                 if (zoomCard) { // Reading enemy card
                     GetComponent<Image>().color = new Color(0.8f, 0.8f - red, 0.8f - red);
-                    transform.GetChild(2).GetComponent<Text>().color = new Color32(50, 50, 50, 255);
+                    transformColor(50);
                 } else {  // Resting enemy card
                     GetComponent<Image>().color = new Color(0.6f, 0.6f - red, 0.6f - red);
-                    transform.GetChild(2).GetComponent<Text>().color = new Color32(32, 32, 32, 255);
+                    transformColor(32);
                 }
             }
         }
@@ -116,6 +130,14 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
         } else {
             red = 0f;
         }
+    }
+
+    void transformColor (byte color)
+    {
+        transform.GetChild(0).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        transform.GetChild(1).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        transform.GetChild(2).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        transform.GetChild(5).GetComponent<Text>().color = new Color32(color, color, color, 255);
     }
 
 
@@ -155,8 +177,8 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     public void ZoomCard()
     {
         // Control location and scale
-        transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, HeroDecks.cardMoveUp, 0f),
-                                                    deckManager.ultiLocations[cardIndex - 100], Time.deltaTime * 5f);
+        transform.localPosition = Vector2.Lerp(transform.localPosition + new Vector3(0f, HeroDecks.cardMoveUp-3f, 0f),
+                                                    deckManager.ultiLocations[cardIndex - 100], 0.1f);
         transform.localScale = new Vector3(HeroDecks.cardZoomSize * 0.8665f, HeroDecks.cardZoomSize * 1.177f, 1f); //0.8665, 1.177
 
         // Put it on the forefront
