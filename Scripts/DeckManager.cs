@@ -101,10 +101,14 @@ public class DeckManager : MonoBehaviour
         for (int i = 0; i < ultiList.Length; i++)
         {
             if (ultiList[i] != null) { 
+                // If this is my card or is offline...
                 if (ultiList[i].activeInHierarchy == false || ultiList[i].GetComponent<UltimateCard>().staticCardIndex == staticCardIndex) {
+                    // Choose this place if haven't yet
                     if (myCardIndex == 200) { myCardIndex = ultiList[i].GetComponent<UltimateCard>().cardIndex; }
-                    break;
+                    //break;
+                // If this is supposed to be further right than me...
                 } else if (ultiList[i].GetComponent<UltimateCard>().staticCardIndex > staticCardIndex) {
+                    // Choose this place if haven't yet, push current to right
                     if (myCardIndex == 200) { myCardIndex = ultiList[i].GetComponent<UltimateCard>().cardIndex; }
                     ultiList[i].GetComponent<UltimateCard>().cardIndex++;
                 }

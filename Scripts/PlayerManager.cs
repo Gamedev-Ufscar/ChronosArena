@@ -172,7 +172,7 @@ public class PlayerManager : MonoBehaviour
         myHand.GetComponent<DeckManager>().cardTotalCount = initialCardCount;
         myHand.GetComponent<DeckManager>().activeCardCount = initialCardCount;
         for (int i = 0; i < ultiCount; i++) {
-            CreateUlti(i);
+            myHand.GetComponent<DeckManager>().ultiList[i] = CreateUlti(i);
         }
     }
 

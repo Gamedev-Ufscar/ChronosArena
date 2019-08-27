@@ -47,8 +47,8 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     private void OnEnable()
     {
         bought = false;
-        GameOverseer.GO.ultiBuy[cardIndex - 100] = false;
-        GameOverseer.GO.enemyUltiBuy[cardIndex - 100] = false;
+        GameOverseer.GO.ultiBuy[staticCardIndex - 100] = false;
+        GameOverseer.GO.enemyUltiBuy[staticCardIndex - 100] = false;
         if (deckManager != null)
             cardIndex = deckManager.placeUltimate(staticCardIndex);
     }
@@ -58,7 +58,7 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     {
         // Enemy Card stuff
         if (deckManager.gameObject == HeroDecks.HD.enemyManager.myHand) {
-            if (GameOverseer.GO.enemyUltiBuy[cardIndex-100]) { bought = true; }
+            if (GameOverseer.GO.enemyUltiBuy[staticCardIndex - 100]) { bought = true; }
             else { bought = false; }
         }
 
@@ -137,6 +137,8 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
         transform.GetChild(0).GetComponent<Text>().color = new Color32(color, color, color, 255);
         transform.GetChild(1).GetComponent<Text>().color = new Color32(color, color, color, 255);
         transform.GetChild(2).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        transform.GetChild(3).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        transform.GetChild(4).GetComponent<Text>().color = new Color32(color, color, color, 255);
         transform.GetChild(5).GetComponent<Text>().color = new Color32(color, color, color, 255);
     }
 
@@ -165,7 +167,8 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
                 deckManager.activeCardCount++;
                 card.GetComponent<EnemyCardInHand>().ultiCard = gameObject;
             }
-
+            bought = false;
+            GameOverseer.GO.enemyUltiBuy[staticCardIndex - 100] = false;
             deckManager.recedeUlti(cardIndex);
             HeroDecks.HD.audioManager.CardSound();
             gameObject.SetActive(false);
@@ -201,12 +204,12 @@ public class UltimateCard : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
                     HeroDecks.HD.myManager.Charge -= HeroDecks.HD.myManager.cardList[thisCard].cost;
                     bought = true;
 
-                    GameOverseer.GO.ultiBuy[cardIndex-100] = true;
+                    GameOverseer.GO.ultiBuy[staticCardIndex-100] = true;
                 }
             } else {
                 HeroDecks.HD.myManager.Charge += HeroDecks.HD.myManager.cardList[thisCard].cost;
                 bought = false;
-                GameOverseer.GO.ultiBuy[cardIndex-100] = false;
+                GameOverseer.GO.ultiBuy[staticCardIndex - 100] = false;
             }
         }
     }

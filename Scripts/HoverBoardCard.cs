@@ -21,7 +21,8 @@ public class HoverBoardCard : MonoBehaviour
     void Update()
     {
         if (SceneManager.GetActiveScene().buildIndex == 3
-            && (GameOverseer.GO.state == GameState.Revelation || GameOverseer.GO.state == GameState.Effects) 
+            && ((GameOverseer.GO.state == GameState.Choice && GameOverseer.GO.enemyPredicted) || 
+            GameOverseer.GO.state == GameState.Revelation || GameOverseer.GO.state == GameState.Effects) 
             && !HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().holdingCard)
         {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);

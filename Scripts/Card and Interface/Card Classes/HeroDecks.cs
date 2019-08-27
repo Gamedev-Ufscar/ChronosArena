@@ -269,7 +269,7 @@ public class HeroDecks : MonoBehaviour
                 boneSpear.text = "CAUSA 3a      .";
                 boneSpear.id = 5;
                 boneSpear.minmax = 1616;
-                boneSpear.damage = 4;
+                boneSpear.damage = 3;
                 boneSpear.isUnblockable = false;
                 boneSpear.protection = 0;
                 boneSpear.charge = 0;
@@ -282,7 +282,7 @@ public class HeroDecks : MonoBehaviour
                 rawMeat.image = ImageStash.IS.UgaList[5];
                 rawMeat.text = "CURA 2g   .";
                 rawMeat.id = 6;
-                rawMeat.minmax = 1414;
+                rawMeat.minmax = 1212;
                 rawMeat.damage = -2;
                 rawMeat.isUnblockable = false;
                 return rawMeat;
@@ -338,6 +338,9 @@ public class HeroDecks : MonoBehaviour
                 watchAdjustments.text = "+1c   OU +2c , -2g   .";
                 watchAdjustments.id = 2;
                 watchAdjustments.minmax = 1414;
+                watchAdjustments.charge = 1;
+                watchAdjustments.limit = 0;
+                watchAdjustments.limitMax = 3;
                 return watchAdjustments;
 
             case 3:

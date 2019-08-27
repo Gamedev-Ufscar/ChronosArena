@@ -73,9 +73,9 @@ public class WatchAdjustments : Card, ChargeInterface, Limit, Interfacer
     {
         interfaceList = new Sprite[2];
         textList = new string[2];
-        interfaceList[0] = ImageStash.IS.UgaList[0];
+        interfaceList[0] = ImageStash.IS.TimothyList[2];
         textList[0] = "+1c .";
-        interfaceList[1] = ImageStash.IS.UgaList[0];
+        interfaceList[1] = ImageStash.IS.TimothyList[2];
         textList[1] = "+2c , -2g   .";
 
         interfacingSetup(2, interfaceList, (Card)this, textList);
@@ -445,6 +445,7 @@ public class PerverseEngineering : Card, Interfacer
                     (HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard].type == CardTypes.Nullification ||
                     HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard].type == CardTypes.Skill))
                 {
+                    interfaceList[ultimateCount] = HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard].image;
                     cardList[ultimateCount] = HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard];
                     ultimateList[ultimateCount] = i;
                     ultimateCount++;
