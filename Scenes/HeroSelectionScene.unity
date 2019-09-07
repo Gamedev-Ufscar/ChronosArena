@@ -566,81 +566,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 413326340}
   m_CullTransparentMesh: 0
---- !u!1 &527729729
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 527729731}
-  - component: {fileID: 527729730}
-  m_Layer: 0
-  m_Name: Game Overseer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &527729730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 527729729}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 976c52b9ddb3c424cbbae625825a5868, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  myHero: 0
-  enemyHero: 0
-  myheroHover: 0
-  enemyheroHover: 0
-  countdown: 2
-  state: 0
-  changingStates: 0
-  receivedAState: 0
-  myConfirm: 0
-  enemyConfirm: 0
-  amIHoveringMyself: 0
-  hoveringCard: -1
-  hoveringCardPos: {x: 0, y: 0, z: 0}
-  hoveringCardLocalPos: {x: 0, y: 0, z: 0}
-  sentCard: 0
-  isEnemyHoveringHimself: 0
-  enemyHoveringCard: -1
-  enemyHoveringCardPos: {x: 0, y: 0, z: 0}
-  enemyHoveringCardLocalPos: {x: 0, y: 0, z: 0}
-  enemySentCard: 1
-  alreadyReceived: 0
-  predicted: 0
-  enemyPredicted: 0
-  interfaceSignalSent: 200
-  ultiBuy: 000000
-  enemyUltiBuy: 000000
-  shuffled: 0
-  sentDeckList: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
-  enemyShuffled: 0
-  receivedDeckList: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
-  myCardPlayed: 200
-  enemyCardPlayed: 200
---- !u!4 &527729731
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 527729729}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 171.56036, y: -752.08984, z: 995.0971}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &759293168
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,6 +641,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 759293168}
   m_CullTransparentMesh: 0
+--- !u!1 &818879910
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 818879911}
+  m_Layer: 0
+  m_Name: Selection Overseer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &818879911
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818879910}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 120.29405, y: -322.41318, z: 7455.802}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &873913574
 GameObject:
   m_ObjectHideFlags: 0

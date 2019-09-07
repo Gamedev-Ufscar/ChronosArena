@@ -32,7 +32,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
         // On Player Hover (Ignore if char already chosen)
         if (mouseOver && (GameOverseer.GO.myConfirm == false || heroSelection.hermesScript.hero == hero)) {
             if (GameOverseer.GO.myHero == HeroEnum.None || GameOverseer.GO.myHero == hero) {
-                heroSelection.eventHeroHover(hero);
+                GameOverseer.GO.myHero = hero;
                 GetComponentInParent<HeroSelection>().myTitle.text = heroName;
                 GetComponentInParent<HeroSelection>().myPortrait.sprite = profile;
             }
@@ -67,7 +67,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
                 // Explicitly unselecting hero
                 } else if (heroSelection.hermesScript.hero == hero) {
                     heroSelection.hermesScript.hero = HeroEnum.None;
-                    GameOverseer.GO.eventMyConfirm(false);
+                    GameOverseer.GO.myConfirm = false;
                     GameOverseer.GO.myHero = HeroEnum.None;
                     selectionMode = 0;
                     GetComponent<Image>().color = new Color(0.8f, 0.8f, 0.8f);
@@ -77,7 +77,7 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
 
         // Out Player Hover
         } else if (GameOverseer.GO.myheroHover == hero) {
-            heroSelection.eventHeroHover(HeroEnum.None);
+            GameOverseer.GO.myHero = HeroEnum.None;
 
             // Change portrait
             if (GameOverseer.GO.myHero == HeroEnum.None) {

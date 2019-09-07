@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MenuButton : Button
+public class CharacterButton : Button
 {
-    public MenuOverseer menuOverseer;
-    private int type = 0;
-
+    public SelectionOverseer selectionOverseer;
+    int characterIndex;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -17,21 +18,27 @@ public class MenuButton : Button
     // Update is called once per frame
     void Update()
     {
+        
+    }
+
+    // Getter
+    public int GetCharIndex()
+    {
+        return characterIndex;
     }
 
     public override void PointerDown()
     {
-        menuOverseer.Selected(type);
+        selectionOverseer.CharacterClicked(this);
     }
 
     public override void PointerEnter()
     {
-        throw new System.NotImplementedException();
+        selectionOverseer.CharacterHover(this);
     }
 
     public override void PointerExit()
     {
-        throw new System.NotImplementedException();
+        selectionOverseer.CharacterStopHover();
     }
-
 }

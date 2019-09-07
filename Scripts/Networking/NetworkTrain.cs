@@ -6,8 +6,21 @@ using UnityEngine.SceneManagement;
 
 public class NetworkTrain : MonoBehaviour
 {
+    GameOverseer gameOverseer;
+    SelectionOverseer selectionOverseer;
     PhotonView PV;
     float time = 0f;
+
+    // Constructor
+    public NetworkTrain(GameOverseer gameOverseer)
+    {
+        this.gameOverseer = gameOverseer;
+    }
+
+    public NetworkTrain(SelectionOverseer selectionOverseer)
+    {
+        this.selectionOverseer = selectionOverseer;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -41,14 +54,6 @@ public class NetworkTrain : MonoBehaviour
                 PV.RPC("RPC_ecoHoverPos", RpcTarget.OthersBuffered);
             }
 
-            // Summon Card
-            if (GameOverseer.GO.sentCard > 0 && (GameOverseer.GO.state == GameState.Choice || GameOverseer.GO.state == GameState.Revelation)) {
-                for (int i = 1; i <= 8; i++) {
-                    PV.RPC("RPC_sentCard", RpcTarget.OthersBuffered);
-                    Debug.Log("Sent Card");
-                }
-            }
-
             // Send Interface
             if (GameOverseer.GO.interfaceSignalSent != 200 && GameOverseer.GO.state == GameState.Revelation) {
                 if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed] is Interfacer)
@@ -68,20 +73,6 @@ public class NetworkTrain : MonoBehaviour
                 GameOverseer.GO.changingStates = false;
             }
 
-            // Send Confirm
-            PV.RPC("RPC_SendClick", RpcTarget.OthersBuffered, GameOverseer.GO.myConfirm);
-
-
-            // Send hovering hero
-            if (GameOverseer.GO.myheroHover != HeroEnum.None) {
-            PV.RPC("RPC_heroHover", RpcTarget.OthersBuffered, (byte)GameOverseer.GO.myheroHover);
-            } else {
-                PV.RPC("RPC_ecoHeroHover", RpcTarget.OthersBuffered);
-            }
-
-            // Send chosen Hero
-            PV.RPC("RPC_SendHero", RpcTarget.OthersBuffered, (byte)GameOverseer.GO.myHero);
-
             // Reset bool signals
             if (GameOverseer.GO.sentCard > 0) {
                 GameOverseer.GO.sentCard--;
@@ -97,6 +88,42 @@ public class NetworkTrain : MonoBehaviour
         }
     }
 
+    
+    // Send functions
+    public void SendConfirm(bool myConfirm)
+    {
+        // Send Confirm
+        PV.RPC("RPC_SendClick", RpcTarget.OthersBuffered, myConfirm);
+    }
+
+    public void SendCard()
+    {
+        // Summon Card
+        PV.RPC("RPC_sentCard", RpcTarget.OthersBuffered);
+        Debug.Log("Sent Card");
+
+    }
+
+    public void SendChosenHero(int heroIndex)
+    {
+        // Send chosen Hero
+        PV.RPC("RPC_SendHero", RpcTarget.OthersBuffered, (byte)heroIndex);
+    }
+
+    public void SendHoverHero(int heroIndex)
+    {
+            // Send hovering hero
+            PV.RPC("RPC_heroHover", RpcTarget.OthersBuffered, heroIndex);
+                PV.RPC("RPC_ecoHeroHover", RpcTarget.OthersBuffered);
+    }
+
+    public void StopHoverHero()
+    {
+        // Stop hovering hero
+        PV.RPC("RPC_stopHeroHover", RpcTarget.OthersBuffered);
+    }
+
+    // RPC functions
     [PunRPC]
     public void RPC_hoverPos(byte hoverCard, bool amIHoveringMyself, Vector2 hoverPos, Vector2 hoverLocalPos)
     {
@@ -117,14 +144,14 @@ public class NetworkTrain : MonoBehaviour
     }
 
     [PunRPC]
-    public void RPC_heroHover(byte heroHover)
+    public void RPC_heroHover(int heroHover)
     {
-        GameOverseer.GO.enemyheroHover = (HeroEnum)heroHover;
+        selectionOverseer.EnemyHoverHero(heroHover);
     }
     [PunRPC]
-    public void RPC_ecoHeroHover()
+    public void RPC_stopHeroHover()
     {
-        GameOverseer.GO.enemyheroHover = HeroEnum.None;
+        selectionOverseer.EnemyHoverHero(200);
     }
 
     [PunRPC]
@@ -137,9 +164,9 @@ public class NetworkTrain : MonoBehaviour
     }
 
     [PunRPC]
-    public void RPC_SendHero(byte myHero)
+    public void RPC_SendHero(int myHero)
     {
-        GameOverseer.GO.enemyHero = (HeroEnum)myHero;
+        selectionOverseer.SetEnemyHero(myHero);
     }
 
     [PunRPC]
@@ -185,6 +212,6 @@ public class NetworkTrain : MonoBehaviour
     [PunRPC]
     public void RPC_SendClick(bool sentButton)
     {
-        GameOverseer.GO.enemyConfirm = sentButton;
+        selectionOverseer.SetEnemyConfirm(sentButton);
     }
 }

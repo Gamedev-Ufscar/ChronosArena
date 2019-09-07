@@ -14,6 +14,8 @@ public class HeroSelection : MonoBehaviour
     public Sprite confirm;
     public Sprite confirmed;
 
+    public HermesScript hermesScript;
+
     // Start is called before the first frame update
     void Start()
     {

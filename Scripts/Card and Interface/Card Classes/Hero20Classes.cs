@@ -13,6 +13,10 @@ public class Dexterity : Card, Interfacer
 
     bool bugCatcher = true;
 
+    public Dexterity(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
+        base(hero, name, cardID, image, text, type, minmax)
+    { }
+
     // Run through deckList, if card not active, add it to Interface List
     public void interfacing() {
         interfaceList = new Sprite[HeroDecks.HD.myManager.cardList.Length];

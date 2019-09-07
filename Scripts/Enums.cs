@@ -82,6 +82,13 @@ public enum GameState
     Reset
 }
 
+public enum CountEnum
+{
+    CardCount,
+    UltiCount,
+    PassiveCount
+}
+
 public enum WinCondition
 {
     Victory,

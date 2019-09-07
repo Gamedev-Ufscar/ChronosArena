@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class BugaScream : Card
 {
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    public BugaScream(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
+        base(hero, name, cardID, image, text, type, minmax)
+    { }
+
+    public override void effect(Player user, Player enemy, int priority)
     {
         switch (priority) {
             case 16:
@@ -36,6 +40,9 @@ public class WatchAdjustments : Card, ChargeInterface, Limit, Interfacer
     public string[] textList { get; set; }
     public int interfaceSignal { get; set; }
 
+    public WatchAdjustments(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
+        base(hero, name, cardID, image, text, type, minmax)
+    { }
 
     // Two choices
     public void raiseCharge(int charge, PlayerManager target)
@@ -100,8 +107,11 @@ public class WatchAdjustments : Card, ChargeInterface, Limit, Interfacer
 
 public class TimeLock : Card
 {
+    public TimeLock(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
+        base(hero, name, cardID, image, text, type, minmax)
+    { }
 
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    public override void effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {
@@ -120,13 +130,17 @@ public class TimeLock : Card
 }
 
 public class DejaVu : Card
-{ 
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+{
+    public DejaVu(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
+        base(hero, name, cardID, image, text, type, minmax)
+    { }
+
+    public override void effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {
             case 8:
-                user.protection += 2;
+                user.Protect(2);
                 break;
             case 17:
                 user.sideList[2] = 2;
@@ -142,6 +156,11 @@ public class ChronosMachine : Card, Interfacer
     public int interfaceSignal { get; set; }
     public bool isChronos { get; set; }
 
+    public ChronosMachine(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax, bool isChronos) :
+        base(hero, name, cardID, image, text, type, minmax)
+    {
+        this.isChronos = isChronos;
+    }
 
     // Two choices
     public void interfacing()
@@ -163,7 +182,7 @@ public class ChronosMachine : Card, Interfacer
     }
 
 
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    public override void effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {
@@ -222,12 +241,12 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
         target.protection += this.protection;
     }
 
-    public void myNullify()
+    public void myNullify(PlayerManager target)
     {
         wronged = true;
         for (int i = 0; i < nullificationList.Length; i++) {
-            if (HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed].type == nullificationList[i]) {
-                HeroDecks.HD.enemyManager.cardList[GameOverseer.GO.enemyCardPlayed].isNullified = true;
+            if (target.cardList[GameOverseer.GO.enemyCardPlayed].type == nullificationList[i]) {
+                target.cardList[GameOverseer.GO.enemyCardPlayed].isNullified = true;
                 wronged = false;
             }
         }

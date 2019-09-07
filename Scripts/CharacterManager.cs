@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class Hero
+public class CharacterManager : MonoBehaviour
 {
-    public string name;
-    public Sprite profile;
-    public Card[] cards;
+    [SerializeField]
+    private Character[] characterList;
 
     // Start is called before the first frame update
     void Start()
@@ -19,5 +17,10 @@ public class Hero
     void Update()
     {
         
+    }
+
+    public Character GetCharacter(int index)
+    {
+        return characterList[index];
     }
 }

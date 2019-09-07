@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,12 +7,6 @@ public class HeroDecks : MonoBehaviour
     public static HeroDecks HD;
     public static float cardZoomSize = 2.8f;
     public static float cardMoveUp = 11f;
-
-    public PlayerManager myManager;
-    public PlayerManager enemyManager;
-    public InterfaceScript interfaceScript;
-    public AudioManager audioManager;
-    public VoicelineManager voicelineManager;
 
 
     private void Awake()
@@ -34,15 +28,6 @@ public class HeroDecks : MonoBehaviour
                 HeroDecks.HD = this;
             }
         }
-
-        HeroDecks.HD.myManager = GameObject.Find("Player Manager").GetComponent<PlayerManager>();
-        for (int i = 0; i < myManager.sideList.Length; i++) { myManager.sideList[i] = 0; }
-
-        HeroDecks.HD.enemyManager = GameObject.Find("Enemy Manager").GetComponent<PlayerManager>();
-        for (int i = 0; i < enemyManager.sideList.Length; i++) { enemyManager.sideList[i] = 0; }
-
-        HeroDecks.HD.audioManager = GameObject.Find("Audio Manager").GetComponent<AudioManager>();
-        HeroDecks.HD.voicelineManager = GameObject.Find("Audio Manager").GetComponent<VoicelineManager>();
     }
 
     // Start is called before the first frame update
@@ -92,7 +77,7 @@ public class HeroDecks : MonoBehaviour
             case CardTypes.Ultimate:
                 if (value == 2)
                 {
-                    return "" + cardd.cost;
+                    return "" + cardd.GetCost();
                 } else
                 {
                     return "";
@@ -664,4 +649,4 @@ public class HeroDecks : MonoBehaviour
                 return null;
         }
     }
-}
+}*/

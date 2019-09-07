@@ -4,24 +4,199 @@ using UnityEngine;
 
 public abstract class Card
 {
-    public HeroEnum hero = HeroEnum.Timothy;
-    public string name = "";
-    public int id;
-    public Sprite image;
-    public string text = "";
-    public int turnsTillPlayable = 0;
-    public bool isNullified = false;
-    public CardTypes type;
-    public int minmax = 0000;
+    Hashtable heroHashtable = new Hashtable();
+    static CardTypes[] defaultAttackDisableList = new CardTypes[5] { CardTypes.Attack, CardTypes.Nullification, CardTypes.Skill, CardTypes.Ultimate, CardTypes.Item };
+
+    private HeroEnum hero = HeroEnum.Timothy;
+    private string name = "";
+    private int id;
+    private Sprite image;
+    private string text = "";
+    private int turnsTillPlayable = 0;
+    private bool isNullified = false;
+    private CardTypes type;
+    private int minmax = 0000;
 
     // ULTIMATE AND NEUTRAL SKILL ONLY
-    public bool isReaction = false;
-    public int cost = 200;
+    private bool isReaction = false;
+    private int cost = 200;
 
-    public abstract void effect(PlayerManager user, PlayerManager enemy, int priority);
+    public Card(HeroEnum hero, int cardID)
+    {
+        // Declaration
+        Hashtable heroHT = new Hashtable();
+        Hashtable timothyHT = new Hashtable();
+        Hashtable haroldHT = new Hashtable();
+        Hashtable ugaHT = new Hashtable();
+        Hashtable yuriHT = new Hashtable();
+
+        // Hero HT
+        heroHashtable.Add(HeroEnum.Timothy, timothyHT);
+        heroHashtable.Add(HeroEnum.Harold, haroldHT);
+        heroHashtable.Add(HeroEnum.Uga, ugaHT);
+        heroHashtable.Add(HeroEnum.Yuri, yuriHT);
+
+        // Timothy
+        timothyHT.Add(0, new Attack(hero, name, cardID, image, text, type, minmax, 2, false, 2));
+        timothyHT.Add(1, new Defense(hero, name, cardID, image, text, type, minmax, 2));
+        timothyHT.Add(2, new WatchAdjustments(hero, name, cardID, image, text, type, minmax));
+        timothyHT.Add(3, new Nullification(hero, name, cardID, image, text, type, minmax, defaultAttackDisableList));
+        timothyHT.Add(4, new Nullification(hero, name, cardID, image, text, type, minmax, defaultAttackDisableList));
+        timothyHT.Add(5, new TimeLock(hero, name, cardID, image, text, type, minmax));
+        timothyHT.Add(6, new TimeLock(hero, name, cardID, image, text, type, minmax));
+        timothyHT.Add(7, new DejaVu(hero, name, cardID, image, text, type, minmax));
+        timothyHT.Add(8, new ChronosMachine(hero, name, cardID, image, text, type, minmax, true));
+        timothyHT.Add(9, new ChronosMachine(hero, name, cardID, image, text, type, minmax, false));
+
+        // Uga
+        ugaHT.Add(0, new Attack(hero, name, cardID, image, text, type, minmax, 2, false, 2));
+        ugaHT.Add(1, new Defense(hero, name, cardID, image, text, type, minmax, 2));
+        ugaHT.Add(2, new Charge(hero, name, cardID, image, text, type, minmax, 1, 3));
+        ugaHT.Add(3, new Nullification(hero, name, cardID, image, text, type, minmax, defaultAttackDisableList));
+        ugaHT.Add(4, new Nullification(hero, name, cardID, image, text, type, minmax, defaultAttackDisableList));
+        ugaHT.Add(5, new BasicSkill(hero, name, cardID, image, text, type, minmax, 3, false, 0, 0));
+        ugaHT.Add(6, new AutoHealSkill(hero, name, cardID, image, text, type, minmax, 2, false));
+        ugaHT.Add(7, new BugaScream(hero, name, cardID, image, text, type, minmax));
+
+        // Yuri
+        yuriHT.Add(0, new Attack(hero, name, cardID, image, text, type, minmax, 3, false, 1));
+        yuriHT.Add(1, new Defense(hero, name, cardID, image, text, type, minmax, 1));
+        yuriHT.Add(2, new Charge(hero, name, cardID, image, text, type, minmax, 1, 3));
+        yuriHT.Add(3, new Nullification(hero, name, cardID, image, text, type, minmax, defaultAttackDisableList));
+        yuriHT.Add(4, new Attack(hero, name, cardID, image, text, type, minmax, 4, false, 1));
+        yuriHT.Add(5, new BasicSkill(hero, name, cardID, image, text, type, minmax, 3, false, 0, 0));
+        yuriHT.Add(6, new AutoHealSkill(hero, name, cardID, image, text, type, minmax, 2, false));
+        yuriHT.Add(7, new Dexterity(hero, name, cardID, image, text, type, minmax));
+
+    }
+
+    public Card (HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax)
+    {
+        this.hero = hero;
+        this.name = name;
+        this.text = text;
+        this.type = type;
+        this.minmax = minmax;
+    }
+
+    public string value (Card cardd, int value)
+    {
+        switch (cardd.type)
+        {
+            case CardTypes.Attack:
+                if (value == 1) {
+                    Damage damageCardd = (Damage)cardd;
+                    return "" + damageCardd.damage;
+                } else {
+                    Limit limitCardd = (Limit)cardd;
+                    return "" + limitCardd.limitMax;
+                }
+
+            case CardTypes.Defense:
+                if (value == 1)
+                {
+                    Defense defenseCardd = (Defense)cardd;
+                    return "" + defenseCardd.protection;
+                } else
+                {
+                    return "";
+                }
+
+            case CardTypes.Charge:
+                if (value == 1) {
+                    ChargeInterface chargeCardd = (ChargeInterface)cardd;
+                    return "" + chargeCardd.charge;
+                } else {
+                    Limit limitCardd = (Limit)cardd;
+                    return "" + limitCardd.limitMax;
+                }
+
+            case CardTypes.Ultimate:
+                if (value == 2)
+                {
+                    return "" + cardd.cost;
+                } else
+                {
+                    return "";
+                }
+
+            default:
+                return "";
+        }
+    }
+
+    // Getters
+    public HeroEnum GetHero()
+    {
+        return hero;
+    }
+
+    public string GetName()
+    {
+        return name;
+    }
+
+    public Sprite Image()
+    {
+        return image;
+    }
+
+    public string GetText()
+    {
+        return text;
+    }
+
+    public CardTypes GetCardType()
+    {
+        return type;
+    }
+
+    public int GetTurnsTill()
+    {
+        return turnsTillPlayable;
+    }
+
+    public int GetMinOrMax(bool wantMin)
+    {
+        if (wantMin)
+        {
+            return minmax % 100;
+        } else
+        {
+            return minmax / 100;
+        }
+    }
+
+    public bool GetIsNullified()
+    {
+        return isNullified;
+    }
+
+    public bool GetIsReaction()
+    {
+        return isReaction;
+    }
+
+    public int GetCost()
+    {
+        return cost;
+    }
+
+    // Setters
+    public void SetIsNullified(bool isNullified)
+    {
+        this.isNullified = isNullified;
+    }
+
+    public void SetTurnsTill(int turnsTillPlayable)
+    {
+        this.turnsTillPlayable = turnsTillPlayable;
+    }
+
+    public abstract void effect(Player user, Player enemy, int priority);
 
     // This setup is for choices - use the same card, only change text
-    public void interfacingSetup(int cardAmount, Sprite[] interfaceList, Card baseCard, string[] textList)
+    /*public void interfacingSetup(int cardAmount, Sprite[] interfaceList, Card baseCard, string[] textList)
     {
         HeroDecks.HD.interfaceScript.cardAmount = cardAmount;
         HeroDecks.HD.interfaceScript.interfaceList = interfaceList;
@@ -41,7 +216,7 @@ public abstract class Card
         HeroDecks.HD.interfaceScript.invoker = this;
         HeroDecks.HD.interfaceScript.optionMenu = true;
         HeroDecks.HD.interfaceScript.gameObject.SetActive(true);
-    }
+    }*/
 
     public string typeString (CardTypes typer)
     {
@@ -109,6 +284,8 @@ public abstract class Card
         }
     }
 
+    // Hashtables
+    
 }
 
 public interface Damage
@@ -116,8 +293,7 @@ public interface Damage
     int damage { get; set; }
     bool isUnblockable { get; set; }
 
-    void causeDamage(int damage, PlayerManager target);
-    
+    void causeDamage(int damage, Player target);
 }
 
 public interface Limit
@@ -125,7 +301,7 @@ public interface Limit
     int limit { get; set; }
     int limitMax { get; set; }
 
-    void raiseLimit(int amount, PlayerManager target);
+    void raiseLimit(int amount, Player target);
     void disableCards(List<CardTypes> disables, Card[] playerHand);
 
 }
@@ -133,14 +309,14 @@ public interface Limit
 public interface ChargeInterface
 {
     int charge { get; set; }
-    void raiseCharge(int charge, PlayerManager target);
+    void raiseCharge(int charge, Player target);
 }
 
 public interface Protection
 {
     int protection { get; set; }
 
-    void protect(int protection, PlayerManager target);
+    void protect(int protection, Player target);
 
 }
 

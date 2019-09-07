@@ -6,8 +6,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class ConfirmButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
+public class ConfirmButton : Button
 {
+    GameOverseer gameOverseer;
+    SelectionOverseer selectionOverseer;
+
     public PhotonView PV;
     public Sprite[] buttonColors = new Sprite[3];
     private Image image;
@@ -25,20 +28,35 @@ public class ConfirmButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
     // Update is called once per frame
     void Update()
     {
-        MouseClick();
     }
 
-    public void MouseClick()
+    public override void PointerEnter()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void PointerExit()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void PointerDown()
     {
         // Click
         if (pointerOver == true && Input.GetMouseButtonUp(0))
         {
-            if (SceneManager.GetActiveScene().buildIndex == 2 && GameOverseer.GO.myHero != HeroEnum.None) {
-                GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
+            if (SceneManager.GetActiveScene().buildIndex == 2) {
+                selectionOverseer.InvertMyConfirm();
 
-            } else if (SceneManager.GetActiveScene().buildIndex == 3 && HeroDecks.HD.interfaceScript.gameObject.activeInHierarchy == false
-                 && (GameOverseer.GO.state != GameState.Choice || GameOverseer.GO.myCardPlayed != 200)) {
-                GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
+                // Colors
+                if (selectionOverseer.GetMyConfirm()) {
+                    image.sprite = buttonColors[1];
+                } else {
+                    image.sprite = buttonColors[0];
+                }
+
+            } else if (SceneManager.GetActiveScene().buildIndex == 3) {
+                //GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
             }
 
         }
@@ -51,30 +69,5 @@ public class ConfirmButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
         {
             transform.localScale = new Vector2(1.2f, 1.2f);
         }
-
-        // Button Colors
-        if (GameOverseer.GO.myConfirm == true)
-        {
-            image.sprite = buttonColors[1];
-        }
-        else
-        {
-            image.sprite = buttonColors[0];
-        }
-
-
-    }
-
-    // Pointer Stuff
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        pointerOver = true;
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-
-        pointerOver = false;
     }
 }
