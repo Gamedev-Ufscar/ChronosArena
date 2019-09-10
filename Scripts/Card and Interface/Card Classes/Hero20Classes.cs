@@ -48,7 +48,7 @@ public class Dexterity : Card, Interfacer
         }
     }
 
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    public override void effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {

@@ -17,37 +17,33 @@ public class Attack : Card, Damage, Limit
     }
 
     public void causeDamage(int damage, Player target) {
-        if (!isUnblockable) {
-            target.DealDamage(damage);
-        } else {
-            target.DealDamageUnblock(damage);
-        }
+        target.DealDamage(damage, isUnblockable);
     }
 
     public int limit { get; set; }
     public int limitMax { get; set; }
 
     public void raiseLimit(int amount, Player target) {
-        for (int i = 0; i < target.cardList.Length; i++) { 
-            if (target.cardList[i] as Attack != null) {
-                Attack cc = target.cardList[i] as Attack;
+        for (int i = 0; i < 14; i++) { 
+            if (target.GetCard(i) as Attack != null) {
+                Attack cc = target.GetCard(i) as Attack;
                 cc.limit += amount;
-                target.cardList[i] = cc as Card;
+                target.SetCard(cc as Card, i);
                 Debug.Log(target.gameObject.name + "'s Attack Limit: " + limit);
                 if (cc.limit >= cc.limitMax) {
-                    disableCards(target.attackDisableList, target.cardList);
+                    disableCards(target);
                 }
             }
         }
     }
 
-    public void disableCards(List<CardTypes> disables, Card[] playerHand) {
-        for (int i = 0; i < playerHand.Length; i++) {
-            if (playerHand[i] != null) {
-                foreach (CardTypes d in disables) {
-                    if (playerHand[i].GetCardType() == d) {
-                        playerHand[i].SetTurnsTill(1);
-                        Debug.Log(playerHand[i].GetName() + " Disabled");
+    public void disableCards(Player target) {
+        for (int i = 0; i < 14; i++) {
+            if (target.GetCard(i) != null) {
+                foreach (CardTypes d in target.GetAttackDisable()) {
+                    if (target.GetCard(i).GetCardType() == d) {
+                        target.GetCard(i).SetTurnsTill(1);
+                        Debug.Log(target.GetCard(i).GetName() + " Disabled");
                     }
                 }
             }
@@ -114,25 +110,25 @@ public class Charge : Card, ChargeInterface, Limit
     }
 
     public void raiseLimit(int amount, Player target) {
-        for (int i = 0; i < target.cardList.Length; i++) { 
-            if (target.cardList[i] as Charge != null) {
-                Charge cc = target.cardList[i] as Charge;
+        for (int i = 0; i < 14; i++) { 
+            if (target.GetCard(i) as Charge != null) {
+                Charge cc = target.GetCard(i) as Charge;
                 cc.limit += amount;
-                target.cardList[i] = cc as Card;
+                target.SetCard(cc as Card, i);
                 if (cc.limit >= cc.limitMax) {
-                    disableCards(target.chargeDisableList, target.cardList);
+                    disableCards(target);
                 }
             }
         }
     }
 
-    public void disableCards(List<CardTypes> disables, Card[] playerHand) {
-        for (int i = 0; i < playerHand.Length; i++) {
-            if (playerHand[i] != null) {
-                foreach (CardTypes d in disables) {
-                    if (playerHand[i].GetCardType() == d) {
-                        playerHand[i].SetTurnsTill(1);
-                        Debug.Log(playerHand[i].GetName() + " Disabled");
+    public void disableCards(Player target) {
+        for (int i = 0; i < 14; i++) {
+            if (target.GetCard(i) != null) {
+                foreach (CardTypes d in target.GetChargeDisable()) {
+                    if (target.GetCard(i).GetCardType() == d) {
+                        target.GetCard(i).SetTurnsTill(1);
+                        Debug.Log(target.GetCard(i).GetName() + " Disabled");
                     }
                 }
             }
@@ -168,9 +164,9 @@ public class Nullification : Card, NullInterface
         wronged = true;
         for (int i = 0; i < nullificationList.Length; i++)
         {
-            if (target.GetDeck().GetHandCard(i).GetCard().GetCardType() == nullificationList[i])
+            if (target.GetCard(i).GetCardType() == nullificationList[i])
             {
-                target.GetDeck().GetHandCard(i).GetCard().SetIsNullified(true);
+                target.GetCard(i).SetIsNullified(true);
                 wronged = false;
             }
         }
@@ -205,11 +201,7 @@ public class BasicSkill : Card, Damage, Protection, ChargeInterface
 
     public void causeDamage(int damage, Player target)
     {
-        if (!isUnblockable) {
-            target.DealDamage(damage);
-        } else {
-            target.DealDamageUnblock(damage);
-        }
+        target.DealDamage(damage, isUnblockable);
     }
 
     public void protect(int protection, Player target)

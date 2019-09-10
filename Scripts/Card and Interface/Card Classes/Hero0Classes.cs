@@ -12,19 +12,17 @@ public class BugaScream : Card
     {
         switch (priority) {
             case 16:
-                if (1 - enemy.protection >= 0) {
-                    enemy.HP -= (1 - enemy.protection);
-                }
+                enemy.DealDamage(1, false);
                 Debug.Log(user.gameObject.name + "'s Buga Scream");
                 break;
 
             case 17:
-                if (user.cardList[0] != null) {
-                    Attack cc = (Attack)user.cardList[0];
+                if (user.GetCard(0) != null) {
+                    Attack cc = (Attack)user.GetCard(0);
                     cc.damage++;
-                    user.cardList[0] = (Card)cc;
+                    user.SetCard((Card)cc, 0);
                 }
-                cost++;
+                RaiseCost(1);
 
                 break;
         }
@@ -122,7 +120,7 @@ public class TimeLock : Card
                 break;
 
             case 14:
-                user.Charge++;
+                user.RaiseCharge(1);
                 break;
 
         }
@@ -228,17 +226,14 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
 
     public int nullType = 0;
 
-    public void causeDamage(int damage, PlayerManager target)
+    public void causeDamage(int damage, Player target)
     {
-        if (damage - target.protection >= 0)
-        {
-            target.HP -= (damage - target.protection);
-        }
+        target.DealDamage(2, false);
     }
 
-    public void protect(int protection, PlayerManager target)
+    public void protect(int protection, Player target)
     {
-        target.protection += this.protection;
+        target.Protect(2);
     }
 
     public void myNullify(PlayerManager target)
@@ -309,7 +304,7 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
         }
     }
 
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    public override void effect(Player user, Player enemy, int priority)
     {
         switch (priority) {
             case 4:

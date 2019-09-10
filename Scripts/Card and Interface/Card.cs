@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class Card
 {
     Hashtable heroHashtable = new Hashtable();
-    static CardTypes[] defaultAttackDisableList = new CardTypes[5] { CardTypes.Attack, CardTypes.Nullification, CardTypes.Skill, CardTypes.Ultimate, CardTypes.Item };
+    static CardTypes[] defaultAttackDisableList = new CardTypes[4] { CardTypes.Charge, CardTypes.Skill, CardTypes.Ultimate, CardTypes.Item };
 
     private HeroEnum hero = HeroEnum.Timothy;
     private string name = "";
@@ -183,6 +183,11 @@ public abstract class Card
     }
 
     // Setters
+    public void RaiseCost(int raise)
+    {
+        cost += raise;
+    }
+
     public void SetIsNullified(bool isNullified)
     {
         this.isNullified = isNullified;
@@ -302,7 +307,7 @@ public interface Limit
     int limitMax { get; set; }
 
     void raiseLimit(int amount, Player target);
-    void disableCards(List<CardTypes> disables, Card[] playerHand);
+    void disableCards(Player target);
 
 }
 

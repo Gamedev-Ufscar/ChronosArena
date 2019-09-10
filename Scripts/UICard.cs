@@ -66,6 +66,11 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         transform.SetAsFirstSibling();
     }
 
+    public void SetCard(Card card)
+    {
+        this.card = card;
+    }
+
     // Getters
     public Card GetCard()
     {

@@ -15,6 +15,10 @@ public class Player : MonoBehaviour
     private int Charge = 4;
     private int protection = 0;
     private HeroEnum hero;
+    private List<CardTypes> attackDisableList = new List<CardTypes>();
+    private List<CardTypes> chargeDisableList = new List<CardTypes>();
+    private SideEffect[] sideList = new SideEffect[12];
+    private Card cardPlayed;
 
     // Start is called before the first frame update
     void Start()
@@ -35,15 +39,14 @@ public class Player : MonoBehaviour
     }
 
     // Change Variables
-    public void DealDamage(int damage)
+    public void DealDamage(int damage, bool isUnblockable)
     {
-        if (damage - protection > 0)
-            HP -= (damage- protection);
-    }
-
-    public void DealDamageUnblock(int damage)
-    {
-        HP -= damage;
+        if (isUnblockable) {
+            HP -= damage;
+        } else {
+            if (damage - protection > 0)
+                HP -= (damage - protection);
+        }
     }
 
     public void Protect(int protection)
@@ -66,11 +69,74 @@ public class Player : MonoBehaviour
     }
 
     // Getters
+    public List<CardTypes> GetAttackDisable()
+    {
+        return attackDisableList;
+    }
+
+    public List<CardTypes> GetChargeDisable()
+    {
+        return chargeDisableList;
+    }
+
     public Deck GetDeck()
     {
         return deck;
     }
 
+    public HeroEnum GetHero()
+    {
+        return hero;
+    }
+
+    public HandCard GetHandCard(int cardID)
+    {
+        return GetDeck().GetHandCard(cardID);
+    }
+
+    public Card GetCard(int cardID)
+    {
+        if (GetHandCard(cardID) == null)
+        {
+            return null;
+        }
+        else
+        {
+            return GetHandCard(cardID).GetCard();
+        }
+    }
+
+    public Card GetCardPlayed()
+    {
+        return cardPlayed;
+    }
+
+    // Setters
+
+    public void SetCard(Card card, int cardID)
+    {
+        if (GetHandCard(cardID) == null)
+        {
+            GetHandCard(cardID).SetCard(card);
+        }
+    }
+
+    // Side Effects
+    public void ActivateSideEffects(int phase)
+    {
+        foreach (SideEffect SE in sideList)
+        {
+            if (SE is SideEffectTimed) {
+                SideEffectTimed SET = (SideEffectTimed)SE;
+                if (SET.GetTimer() > 0) {
+                    if (SE.GetPhase() == phase) {
+
+                    }
+                }
+            }
+        }
+    }
+       
 
     // Summon
     /*public void SummonCard(HandCard handCard)

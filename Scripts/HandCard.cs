@@ -70,7 +70,7 @@ public class HandCard : UICard, IPointerDownHandler, IPointerUpHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         // Control variables and override
-        deck.setHoldingCard(true);
+        deck.SetHoldingCard(true);
         beingHeld = true;
         center = transform.position - Input.mousePosition;
     }
@@ -84,7 +84,7 @@ public class HandCard : UICard, IPointerDownHandler, IPointerUpHandler
         }
 
         // Control variables and override
-        deck.setHoldingCard(false);
+        deck.SetHoldingCard(false);
         beingHeld = false;
     }
 

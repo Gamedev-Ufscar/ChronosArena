@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class Deck : MonoBehaviour
 {
-    public Player player;
-    public Vector2[] cardLocations = new Vector2[10];
-    public Vector2[] reactionLocations = new Vector2[4];
-    public GameObject prefabCard;
+    [SerializeField]
+    private Player player;
+    [SerializeField]
+    private Vector2[] cardLocations = new Vector2[10];
+    [SerializeField]
+    private Vector2[] reactionLocations = new Vector2[4];
+    [SerializeField]
+    private GameObject prefabCard;
 
     private HandCard[] cardsInDeck = new HandCard[10];
     private int[] cardIndexes = new int[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
