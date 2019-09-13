@@ -69,4 +69,14 @@ public class MenuOverseer : MonoBehaviour
                 break;
         }
     }
+
+    public void ButtonHover(MenuButton menuButton)
+    {
+        menuButton.ChangeTone(1f);
+    }
+
+    public void ButtonStopHover(MenuButton menuButton)
+    {
+        menuButton.ChangeTone(0.57f);
+    }
 }

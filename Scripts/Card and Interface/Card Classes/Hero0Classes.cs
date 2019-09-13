@@ -8,7 +8,7 @@ public class BugaScream : Card
         base(hero, name, cardID, image, text, type, minmax)
     { }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority) {
             case 16:
@@ -43,31 +43,31 @@ public class WatchAdjustments : Card, ChargeInterface, Limit, Interfacer
     { }
 
     // Two choices
-    public void raiseCharge(int charge, PlayerManager target)
+    public void RaiseCharge(int charge, Player target)
     {
-        target.Charge += charge;
+        target.RaiseCharge(charge);
     }
 
-    public void raiseLimit(int amount, PlayerManager target) {
-        for (int i = 0; i < target.cardList.Length; i++) { 
-            if (target.cardList[i] as Charge != null) {
-                Charge cc = target.cardList[i] as Charge;
+    public void RaiseLimit(int amount, Player target) {
+        for (int i = 0; i < 14; i++) { 
+            if (target.GetCard(i) as Charge != null) {
+                Charge cc = target.GetCard(i) as Charge;
                 cc.limit += amount;
-                target.cardList[i] = cc as Card;
+                target.SetCard(cc as Card, i);
                 if (cc.limit >= cc.limitMax) {
-                    disableCards(target.chargeDisableList, target.cardList);
+                    DisableCards(target);
                 }
             }
         }
     }
 
-    public void disableCards(List<CardTypes> disables, Card[] playerHand) {
-        for (int i = 0; i < playerHand.Length; i++) {
-            if (playerHand[i] != null) {
-                foreach (CardTypes d in disables) {
-                    if (playerHand[i].type == d) {
-                        playerHand[i].turnsTillPlayable = 1;
-                        Debug.Log(playerHand[i].name + " Disabled");
+    public void DisableCards(Player target) {
+        for (int i = 0; i < 14; i++) {
+            if (target.GetCard(i) != null) {
+                foreach (CardTypes d in target.GetChargeDisable()) {
+                    if (target.GetCard(i).GetCardType() == d) {
+                        target.GetCard(i).SetTurnsTill(1);
+                        Debug.Log(target.GetCard(i).GetName() + " Disabled");
                     }
                 }
             }
@@ -86,7 +86,7 @@ public class WatchAdjustments : Card, ChargeInterface, Limit, Interfacer
         interfacingSetup(2, interfaceList, (Card)this, textList);
     }
 
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    public override void Effect(PlayerManager user, PlayerManager enemy, int priority)
     {
         switch (priority)
         {
@@ -109,7 +109,7 @@ public class TimeLock : Card
         base(hero, name, cardID, image, text, type, minmax)
     { }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {
@@ -133,7 +133,7 @@ public class DejaVu : Card
         base(hero, name, cardID, image, text, type, minmax)
     { }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {
@@ -180,7 +180,7 @@ public class ChronosMachine : Card, Interfacer
     }
 
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {
@@ -226,12 +226,23 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
 
     public int nullType = 0;
 
-    public void causeDamage(int damage, Player target)
+    public Sabotage(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
+        base(hero, name, cardID, image, text, type, minmax)
+    {
+        this.protection = protection;
+    }
+
+    public void CauseDamage(int damage, Player target)
     {
         target.DealDamage(2, false);
     }
 
-    public void protect(int protection, Player target)
+    public void SetIsUnblockable(bool isUnblockable)
+    {
+        this.isUnblockable = isUnblockable;
+    }
+
+    public void Protect(int protection, Player target)
     {
         target.Protect(2);
     }
@@ -304,7 +315,7 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
         }
     }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority) {
             case 4:
@@ -395,7 +406,7 @@ public class Catastrophe : Card, Interfacer
         }
     }
 
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    public override void Effect(PlayerManager user, PlayerManager enemy, int priority)
     {
         switch (priority)
         {
@@ -478,7 +489,7 @@ public class PerverseEngineering : Card, Interfacer
         }
     }
 
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    public override void Effect(PlayerManager user, PlayerManager enemy, int priority)
     {
         switch (priority)
         {
@@ -516,20 +527,24 @@ public class PerverseEngineering : Card, Interfacer
 
 public class TemporalShieldTwo : Card
 {
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    public TemporalShieldTwo(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
+        base(hero, name, cardID, image, text, type, minmax)
+    { }
+
+    public override void Effect(Player user, Player enemy, int priority)
     {
-        user.protection += 1;
+        user.Protect(1);
     }
 }
 
 public class CloningMachine : Card
 {
-    public override void effect(PlayerManager user, PlayerManager enemy, int priority)
+    public CloningMachine(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
+        base(hero, name, cardID, image, text, type, minmax)
+    { }
+
+    public override void Effect(Player user, Player enemy, int priority)
     {
-        if (enemy == HeroDecks.HD.enemyManager) {
-            enemy.cardList[GameOverseer.GO.enemyCardPlayed].effect(user, enemy, priority);
-        } else if (enemy == HeroDecks.HD.myManager) {
-            enemy.cardList[GameOverseer.GO.myCardPlayed].effect(user, enemy, priority);
-        }
+        enemy.GetCardPlayed().Effect(user, enemy, priority);
     }
 }

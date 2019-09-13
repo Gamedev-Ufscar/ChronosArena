@@ -3,37 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuButton : Button
+public class Profile : Button
 {
-    public MenuOverseer menuOverseer;
-    private int type = 0;
+    [SerializeField]
+    private Player player;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+    }
+
+    public void SetImage(Sprite image)
+    {
+        GetComponent<Image>().sprite = image;
     }
 
     public override void PointerDown()
     {
-        menuOverseer.Selected(type);
+        player.OnShufflePress();
     }
 
-    public override void RightPointerDown() { }
+    public override void RightPointerDown() {
+        player.InvokeSummary();
+    }
 
     public override void PointerEnter()
     {
-        menuOverseer.ButtonHover(this);
+
     }
 
     public override void PointerExit()
     {
-        menuOverseer.ButtonStopHover(this);
-    }
 
+    }
 }

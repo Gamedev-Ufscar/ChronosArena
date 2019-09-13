@@ -40,12 +40,6 @@ public class NetworkTrain : MonoBehaviour
 
         if (time >= 0.2f)
         {
-            // Send shuffle
-            if (GameOverseer.GO.shuffled > 0) {
-                PV.RPC("RPC_Shuffled", RpcTarget.OthersBuffered, GameOverseer.GO.sentDeckList);
-            }
-
-
             // Send hovering card
             if (GameOverseer.GO.hoveringCard != 200) {
             PV.RPC("RPC_hoverPos", RpcTarget.OthersBuffered, (byte)GameOverseer.GO.hoveringCard, GameOverseer.GO.amIHoveringMyself,
@@ -121,6 +115,12 @@ public class NetworkTrain : MonoBehaviour
     {
         // Stop hovering hero
         PV.RPC("RPC_stopHeroHover", RpcTarget.OthersBuffered);
+    }
+
+    public void SendShuffle(int[] cardIndexes)
+    {
+        // Send shuffle
+        PV.RPC("RPC_Shuffled", RpcTarget.OthersBuffered, cardIndexes);
     }
 
     // RPC functions
@@ -203,10 +203,9 @@ public class NetworkTrain : MonoBehaviour
     }
 
     [PunRPC]
-    public void RPC_Shuffled(int[] sentDeckList)
+    public void RPC_Shuffled(int[] receivedCardIndexes)
     {
-        GameOverseer.GO.receivedDeckList = sentDeckList;
-        GameOverseer.GO.enemyShuffled = true;
+        gameOverseer.ReceiveShuffle(receivedCardIndexes);
     }
 
     [PunRPC]

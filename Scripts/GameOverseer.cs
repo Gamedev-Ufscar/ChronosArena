@@ -32,5 +32,15 @@ public class GameOverseer : MonoBehaviour
         networkTrain.SendCard();
     }
 
+    public void SendShuffle(int[] cardIndexes)
+    {
+        networkTrain.SendShuffle(cardIndexes);
+    }
+
+    // Network Receiver
+    public void ReceiveShuffle(int[] receivedCardIndexes)
+    {
+        enemyPlayer.ReceiveShuffle(receivedCardIndexes);
+    }
 
 }

@@ -42,6 +42,8 @@ public abstract class Button : MonoBehaviour, IPointerExitHandler, IPointerEnter
 
     public abstract void PointerDown();
 
+    public abstract void RightPointerDown();
+
     public abstract void PointerEnter();
 
     public abstract void PointerExit();
@@ -49,9 +51,12 @@ public abstract class Button : MonoBehaviour, IPointerExitHandler, IPointerEnter
     // Pointer stuff
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (mouseOver)
+        if (mouseOver && eventData.button == PointerEventData.InputButton.Left)
         {
-            PointerDown();
+            if (eventData.button == PointerEventData.InputButton.Left)
+                PointerDown();
+            else if (eventData.button == PointerEventData.InputButton.Right)
+                RightPointerDown();
         }
     }
 

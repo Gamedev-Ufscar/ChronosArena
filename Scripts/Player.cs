@@ -16,9 +16,12 @@ public class Player : MonoBehaviour
     private int protection = 0;
     private HeroEnum hero;
     private List<CardTypes> attackDisableList = new List<CardTypes>();
-    private List<CardTypes> chargeDisableList = new List<CardTypes>();
+    private List<CardTypes> chargeDisableList = new List<CardTypes>() { CardTypes.Charge };
     private SideEffect[] sideList = new SideEffect[12];
     private Card cardPlayed;
+    private bool predicted = false;
+    private Profile profile;
+
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +39,23 @@ public class Player : MonoBehaviour
     public Player(GameOverseer gameOverseer)
     {
         this.gameOverseer = gameOverseer;
+    }
+
+    // Creator
+    public void CreatePlayer(HeroEnum hero, int cardCount, int ultiCount, List<CardTypes> attackDisableList, Sprite profile)
+    {
+        this.hero = hero;
+        this.attackDisableList = attackDisableList;
+        this.profile.SetImage(profile);
+        CreateDeck(hero, cardCount, ultiCount);
+    }
+
+    private void CreateDeck(HeroEnum hero, int cardCount, int ultiCount)
+    {
+        for (int i = 0; i < cardCount; i++)
+        {
+
+        }
     }
 
     // Change Variables
@@ -111,6 +131,15 @@ public class Player : MonoBehaviour
         return cardPlayed;
     }
 
+    public SideEffect GetSideEffect(int index)
+    {
+        return sideList[index];
+    }
+
+    public void SetCardPlayed(Card cardPlayed) {
+        this.cardPlayed = cardPlayed;
+    }
+
     // Setters
 
     public void SetCard(Card card, int cardID)
@@ -119,6 +148,11 @@ public class Player : MonoBehaviour
         {
             GetHandCard(cardID).SetCard(card);
         }
+    }
+
+    public void SetPredicted(bool predicted)
+    {
+        this.predicted = predicted;
     }
 
     // Side Effects
@@ -136,7 +170,31 @@ public class Player : MonoBehaviour
             }
         }
     }
-       
+
+    // Shuffle
+    public void OnShufflePress()
+    {
+        deck.Shuffle();
+    }
+
+    // Summary
+    public void InvokeSummary()
+    {
+        deck.Shuffle();
+    }
+
+    // Network Sender
+    public void SendShuffle(int[] cardIndexes)
+    {
+        gameOverseer.SendShuffle(cardIndexes);
+    }
+
+    // Network Receiver
+    public void ReceiveShuffle(int[] receivedCardIndexes)
+    {
+        deck.UpdateCardPositions(receivedCardIndexes);
+    }
+
 
     // Summon
     /*public void SummonCard(HandCard handCard)

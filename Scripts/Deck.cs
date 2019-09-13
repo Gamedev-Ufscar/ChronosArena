@@ -43,6 +43,17 @@ public class Deck : MonoBehaviour
         }
     }
 
+    public void UpdateCardPositions(int[] newCardPositions)
+    {
+        cardIndexes = newCardPositions;
+
+        for (int i = 0; i < cardsInDeck.Length; i++)
+        {
+            if (cardsInDeck[i] != null)
+                cardsInDeck[i].ChangePosition(cardLocations[cardIndexes[i]]);
+        }
+    }
+
     public void Shuffle()
     {
         int helper, rando = 0;
@@ -59,6 +70,7 @@ public class Deck : MonoBehaviour
         }
 
         UpdateCardPositions();
+        player.SendShuffle(cardIndexes);
 
         for (int i = 0; i < cardsInDeck.Length; i++) {
             if (cardsInDeck[i] != null) { }

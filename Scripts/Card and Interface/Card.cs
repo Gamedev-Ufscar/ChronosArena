@@ -198,7 +198,7 @@ public abstract class Card
         this.turnsTillPlayable = turnsTillPlayable;
     }
 
-    public abstract void effect(Player user, Player enemy, int priority);
+    public abstract void Effect(Player user, Player enemy, int priority);
 
     // This setup is for choices - use the same card, only change text
     /*public void interfacingSetup(int cardAmount, Sprite[] interfaceList, Card baseCard, string[] textList)
@@ -298,7 +298,9 @@ public interface Damage
     int damage { get; set; }
     bool isUnblockable { get; set; }
 
-    void causeDamage(int damage, Player target);
+    void SetIsUnblockable(bool isUnblockable);
+
+    void CauseDamage(int damage, Player target);
 }
 
 public interface Limit
@@ -306,22 +308,22 @@ public interface Limit
     int limit { get; set; }
     int limitMax { get; set; }
 
-    void raiseLimit(int amount, Player target);
-    void disableCards(Player target);
+    void RaiseLimit(int amount, Player target);
+    void DisableCards(Player target);
 
 }
 
 public interface ChargeInterface
 {
     int charge { get; set; }
-    void raiseCharge(int charge, Player target);
+    void RaiseCharge(int charge, Player target);
 }
 
 public interface Protection
 {
     int protection { get; set; }
 
-    void protect(int protection, Player target);
+    void Protect(int protection, Player target);
 
 }
 

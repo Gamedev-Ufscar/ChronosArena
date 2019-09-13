@@ -70,4 +70,6 @@ public class ConfirmButton : Button
             transform.localScale = new Vector2(1.2f, 1.2f);
         }
     }
+
+    public override void RightPointerDown() { }
 }

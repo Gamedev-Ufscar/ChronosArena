@@ -21,8 +21,6 @@ public class HermesScript : MonoBehaviour
     public List<CardTypes> enemyAttackDisableList = new List<CardTypes>();
     public Sprite enemyProfile;
 
-    private bool delivered = false;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -32,11 +30,16 @@ public class HermesScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 3 && delivered == false)
+        if (SceneManager.GetActiveScene().buildIndex == 3)
         {
-            delivered = true;
+            GameOverseer gameOverseer = GameObject.Find("Game Overseer").GetComponent<GameOverseer>();
 
-            // My Manager
+            gameOverseer.myPlayer.CreatePlayer(hero, handSize, ultiCount, attackDisableList, profile);
+            gameOverseer.enemyPlayer.CreatePlayer(enemyHero, enemyHandSize, enemyUltiCount, enemyAttackDisableList, enemyProfile);
+            gameObject.SetActive(false);
+
+
+            /*
             HeroDecks.HD.myManager.hero = hero;
             HeroDecks.HD.myManager.sideList = new int[sideListSize];
             HeroDecks.HD.myManager.initialCardCount = handSize;
@@ -53,6 +56,7 @@ public class HermesScript : MonoBehaviour
             HeroDecks.HD.enemyManager.passiveCount = enemyPassiveCount;
             HeroDecks.HD.enemyManager.attackDisableList = enemyAttackDisableList;
             GameObject.Find("Enemy Profile").GetComponent<ProfileScript>().profile = enemyProfile;
+            */
         }
     }
 }

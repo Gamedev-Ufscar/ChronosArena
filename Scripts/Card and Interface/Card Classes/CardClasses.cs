@@ -16,14 +16,18 @@ public class Attack : Card, Damage, Limit
         this.limitMax = limitMax;
     }
 
-    public void causeDamage(int damage, Player target) {
+    public void SetIsUnblockable(bool isUnblockable) {
+        this.isUnblockable = isUnblockable;
+    }
+
+    public void CauseDamage(int damage, Player target) {
         target.DealDamage(damage, isUnblockable);
     }
 
     public int limit { get; set; }
     public int limitMax { get; set; }
 
-    public void raiseLimit(int amount, Player target) {
+    public void RaiseLimit(int amount, Player target) {
         for (int i = 0; i < 14; i++) { 
             if (target.GetCard(i) as Attack != null) {
                 Attack cc = target.GetCard(i) as Attack;
@@ -31,13 +35,13 @@ public class Attack : Card, Damage, Limit
                 target.SetCard(cc as Card, i);
                 Debug.Log(target.gameObject.name + "'s Attack Limit: " + limit);
                 if (cc.limit >= cc.limitMax) {
-                    disableCards(target);
+                    DisableCards(target);
                 }
             }
         }
     }
 
-    public void disableCards(Player target) {
+    public void DisableCards(Player target) {
         for (int i = 0; i < 14; i++) {
             if (target.GetCard(i) != null) {
                 foreach (CardTypes d in target.GetAttackDisable()) {
@@ -50,12 +54,12 @@ public class Attack : Card, Damage, Limit
         }
     }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority) {
             case 16:
-                causeDamage(damage, enemy);
-                raiseLimit(1, user);
+                CauseDamage(damage, enemy);
+                RaiseLimit(1, user);
                 Debug.Log(user.gameObject.name + "'s Attack");
                 break;
         }
@@ -73,16 +77,16 @@ public class Defense : Card, Protection
         this.protection = protection;
     }
 
-    public void protect(int protection, Player target)
+    public void Protect(int protection, Player target)
     {
         target.Protect(this.protection);
     }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority) {
             case 8:
-                protect(protection, user);
+                Protect(protection, user);
                 Debug.Log(user.gameObject.name + "'s Defense");
                 break;
         }
@@ -109,20 +113,25 @@ public class Charge : Card, ChargeInterface, Limit
         this.limitMax = limitMax;
     }
 
-    public void raiseLimit(int amount, Player target) {
+    public void RaiseCharge(int charge, Player target)
+    {
+        target.RaiseCharge(charge);
+    }
+
+    public void RaiseLimit(int amount, Player target) {
         for (int i = 0; i < 14; i++) { 
             if (target.GetCard(i) as Charge != null) {
                 Charge cc = target.GetCard(i) as Charge;
                 cc.limit += amount;
                 target.SetCard(cc as Card, i);
                 if (cc.limit >= cc.limitMax) {
-                    disableCards(target);
+                    DisableCards(target);
                 }
             }
         }
     }
 
-    public void disableCards(Player target) {
+    public void DisableCards(Player target) {
         for (int i = 0; i < 14; i++) {
             if (target.GetCard(i) != null) {
                 foreach (CardTypes d in target.GetChargeDisable()) {
@@ -135,12 +144,12 @@ public class Charge : Card, ChargeInterface, Limit
         }
     }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority) {
             case 14:
-                raiseCharge(charge, user);
-                raiseLimit(1, user);
+                RaiseCharge(charge, user);
+                RaiseLimit(1, user);
                 Debug.Log(user.gameObject.name + "'s Charge");
                 break;
         }
@@ -172,7 +181,7 @@ public class Nullification : Card, NullInterface
         }
     }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority) {
             case 4:
@@ -199,34 +208,38 @@ public class BasicSkill : Card, Damage, Protection, ChargeInterface
         this.charge = charge;
     }
 
-    public void causeDamage(int damage, Player target)
+    public void SetIsUnblockable(bool isUnblockable) {
+        this.isUnblockable = isUnblockable;
+    }
+
+    public void CauseDamage(int damage, Player target)
     {
         target.DealDamage(damage, isUnblockable);
     }
 
-    public void protect(int protection, Player target)
+    public void Protect(int protection, Player target)
     {
         target.Protect(this.protection);
     }
 
-    public void raiseCharge(int charge, Player target)
+    public void RaiseCharge(int charge, Player target)
     {
         target.RaiseCharge(charge);
     }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {
             case 8:
-                protect(protection, user);
+                Protect(protection, user);
                 Debug.Log(user.gameObject.name + "'s BasicSkill");
                 break;
             case 14:
-                raiseCharge(charge, user);
+                RaiseCharge(charge, user);
                 break;
             case 16:
-                causeDamage(damage, enemy);
+                CauseDamage(damage, enemy);
                 break;
         }
     }
@@ -245,17 +258,21 @@ public class AutoHealSkill : Card, Damage
         this.isUnblockable = isUnblockable;
     }
 
-    public void causeDamage(int heal, Player target)
+    public void SetIsUnblockable(bool isUnblockable) {
+        this.isUnblockable = isUnblockable;
+    }
+
+    public void CauseDamage(int heal, Player target)
     {
         target.Heal(heal);
     }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {
             case 12:
-                causeDamage(damage, user);
+                CauseDamage(damage, user);
                 break;
         }
     }
@@ -274,7 +291,7 @@ public class SideEffectSkill : Card
         this.duration = duration;
     }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {

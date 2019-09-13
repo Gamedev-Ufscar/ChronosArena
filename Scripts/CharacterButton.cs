@@ -32,6 +32,8 @@ public class CharacterButton : Button
         selectionOverseer.CharacterClicked(this);
     }
 
+    public override void RightPointerDown() { }
+
     public override void PointerEnter()
     {
         selectionOverseer.CharacterHover(this);
