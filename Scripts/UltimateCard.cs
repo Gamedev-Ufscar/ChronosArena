@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, IPointerEnterHandler
 {
     private Card card;
-    private Deck deck;
+    private UltiArea ultiArea;
     private bool playable = false;
     private bool bought = false;
 
@@ -24,31 +24,42 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     }
 
     // Constructor
-    public UltimateCard(Card card, Deck deck) : base(card, deck)
+    public UltimateCard(Card card, UltiArea ultiArea) : base(card)
     {
         this.card = card;
-        this.deck = deck;
+        this.ultiArea = ultiArea;
     }
 
     // Setter
-    public void setPlayable(bool playable)
+    public void SetPlayable(bool playable)
     {
         this.playable = playable;
     }
 
+    public void SetBought(bool bought)
+    {
+        this.bought = bought;
+    }
+
+
     // Getter 
+
+    public bool GetBought()
+    {
+        return bought;
+    }
 
     // On Pointer
     public new void OnPointerEnter(PointerEventData eventData)
     {
         base.OnPointerEnter(eventData);
-        if (!bought) changeColor(0.8f);
+        if (!bought) ChangeColor(0.8f);
     }
 
     public new void OnPointerExit(PointerEventData eventData)
     {
         base.OnPointerExit(eventData);
-        if (!bought) changeColor(0.6f);
+        if (!bought) ChangeColor(0.6f);
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -56,20 +67,13 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
         if (playable && !bought)
         {
             bought = true;
-            changeColor(1f);
+            ChangeColor(1f);
 
         } else
         {
             bought = false;
-            changeColor(0.8f);
+            ChangeColor(0.8f);
 
         }
-    }
-
-    public void acquireCard(Card card)
-    {
-        deck.acquireUICard(card);
-        bought = false;
-        gameObject.SetActive(false);
     }
 }

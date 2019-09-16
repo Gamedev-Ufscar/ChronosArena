@@ -4,9 +4,6 @@ using UnityEngine;
 
 public abstract class Card
 {
-    Hashtable heroHashtable = new Hashtable();
-    static CardTypes[] defaultAttackDisableList = new CardTypes[4] { CardTypes.Charge, CardTypes.Skill, CardTypes.Ultimate, CardTypes.Item };
-
     private HeroEnum hero = HeroEnum.Timothy;
     private string name = "";
     private int id;
@@ -21,55 +18,6 @@ public abstract class Card
     private bool isReaction = false;
     private int cost = 200;
 
-    public Card(HeroEnum hero, int cardID)
-    {
-        // Declaration
-        Hashtable heroHT = new Hashtable();
-        Hashtable timothyHT = new Hashtable();
-        Hashtable haroldHT = new Hashtable();
-        Hashtable ugaHT = new Hashtable();
-        Hashtable yuriHT = new Hashtable();
-
-        // Hero HT
-        heroHashtable.Add(HeroEnum.Timothy, timothyHT);
-        heroHashtable.Add(HeroEnum.Harold, haroldHT);
-        heroHashtable.Add(HeroEnum.Uga, ugaHT);
-        heroHashtable.Add(HeroEnum.Yuri, yuriHT);
-
-        // Timothy
-        timothyHT.Add(0, new Attack(hero, name, cardID, image, text, type, minmax, 2, false, 2));
-        timothyHT.Add(1, new Defense(hero, name, cardID, image, text, type, minmax, 2));
-        timothyHT.Add(2, new WatchAdjustments(hero, name, cardID, image, text, type, minmax));
-        timothyHT.Add(3, new Nullification(hero, name, cardID, image, text, type, minmax, defaultAttackDisableList));
-        timothyHT.Add(4, new Nullification(hero, name, cardID, image, text, type, minmax, defaultAttackDisableList));
-        timothyHT.Add(5, new TimeLock(hero, name, cardID, image, text, type, minmax));
-        timothyHT.Add(6, new TimeLock(hero, name, cardID, image, text, type, minmax));
-        timothyHT.Add(7, new DejaVu(hero, name, cardID, image, text, type, minmax));
-        timothyHT.Add(8, new ChronosMachine(hero, name, cardID, image, text, type, minmax, true));
-        timothyHT.Add(9, new ChronosMachine(hero, name, cardID, image, text, type, minmax, false));
-
-        // Uga
-        ugaHT.Add(0, new Attack(hero, name, cardID, image, text, type, minmax, 2, false, 2));
-        ugaHT.Add(1, new Defense(hero, name, cardID, image, text, type, minmax, 2));
-        ugaHT.Add(2, new Charge(hero, name, cardID, image, text, type, minmax, 1, 3));
-        ugaHT.Add(3, new Nullification(hero, name, cardID, image, text, type, minmax, defaultAttackDisableList));
-        ugaHT.Add(4, new Nullification(hero, name, cardID, image, text, type, minmax, defaultAttackDisableList));
-        ugaHT.Add(5, new BasicSkill(hero, name, cardID, image, text, type, minmax, 3, false, 0, 0));
-        ugaHT.Add(6, new AutoHealSkill(hero, name, cardID, image, text, type, minmax, 2, false));
-        ugaHT.Add(7, new BugaScream(hero, name, cardID, image, text, type, minmax));
-
-        // Yuri
-        yuriHT.Add(0, new Attack(hero, name, cardID, image, text, type, minmax, 3, false, 1));
-        yuriHT.Add(1, new Defense(hero, name, cardID, image, text, type, minmax, 1));
-        yuriHT.Add(2, new Charge(hero, name, cardID, image, text, type, minmax, 1, 3));
-        yuriHT.Add(3, new Nullification(hero, name, cardID, image, text, type, minmax, defaultAttackDisableList));
-        yuriHT.Add(4, new Attack(hero, name, cardID, image, text, type, minmax, 4, false, 1));
-        yuriHT.Add(5, new BasicSkill(hero, name, cardID, image, text, type, minmax, 3, false, 0, 0));
-        yuriHT.Add(6, new AutoHealSkill(hero, name, cardID, image, text, type, minmax, 2, false));
-        yuriHT.Add(7, new Dexterity(hero, name, cardID, image, text, type, minmax));
-
-    }
-
     public Card (HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax)
     {
         this.hero = hero;
@@ -79,23 +27,34 @@ public abstract class Card
         this.minmax = minmax;
     }
 
-    public string value (Card cardd, int value)
+    public Card(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax, bool isReaction, int cost)
     {
-        switch (cardd.type)
+        this.hero = hero;
+        this.name = name;
+        this.text = text;
+        this.type = type;
+        this.minmax = minmax;
+        this.isReaction = isReaction;
+        this.cost = cost;
+    }
+
+    public string Value (int value)
+    {
+        switch (type)
         {
             case CardTypes.Attack:
                 if (value == 1) {
-                    Damage damageCardd = (Damage)cardd;
+                    Damage damageCardd = (Damage)this;
                     return "" + damageCardd.damage;
                 } else {
-                    Limit limitCardd = (Limit)cardd;
+                    Limit limitCardd = (Limit)this;
                     return "" + limitCardd.limitMax;
                 }
 
             case CardTypes.Defense:
                 if (value == 1)
                 {
-                    Defense defenseCardd = (Defense)cardd;
+                    Defense defenseCardd = (Defense)this;
                     return "" + defenseCardd.protection;
                 } else
                 {
@@ -104,17 +63,17 @@ public abstract class Card
 
             case CardTypes.Charge:
                 if (value == 1) {
-                    ChargeInterface chargeCardd = (ChargeInterface)cardd;
+                    ChargeInterface chargeCardd = (ChargeInterface)this;
                     return "" + chargeCardd.charge;
                 } else {
-                    Limit limitCardd = (Limit)cardd;
+                    Limit limitCardd = (Limit)this;
                     return "" + limitCardd.limitMax;
                 }
 
             case CardTypes.Ultimate:
                 if (value == 2)
                 {
-                    return "" + cardd.cost;
+                    return "" + cost;
                 } else
                 {
                     return "";
@@ -136,7 +95,12 @@ public abstract class Card
         return name;
     }
 
-    public Sprite Image()
+    public int GetID()
+    {
+        return id;
+    }
+
+    public Sprite GetImage()
     {
         return image;
     }
@@ -338,5 +302,7 @@ public interface Interfacer
     Sprite[] interfaceList { get; set; }
     int interfaceSignal { get; set; }
 
-    void interfacing();
+    void SetSignal(int interfaceSignal);
+
+    void Interfacing(Player user, Player enemy);
 }

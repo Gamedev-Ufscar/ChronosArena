@@ -6,40 +6,57 @@ using UnityEngine.UI;
 public class MainUIManager : MonoBehaviour
 {
     //public Slider myHealthbar;
-    public PlayerManager myManager;
-    public PlayerManager enemyManager;
+    [SerializeField]
+    private GameOverseer gameOverseer;
+    [SerializeField]
+    private Player myPlayer;
+    [SerializeField]
+    private Player enemyPlayer;
 
-    public Sprite[] healthSprites = new Sprite[7];
-    public Sprite[] chargeSprites = new Sprite[7];
+    [SerializeField]
+    private Sprite[] healthSprites = new Sprite[7];
+    [SerializeField]
+    private Sprite[] chargeSprites = new Sprite[7];
 
-    public Image[] myHealthbar = new Image[10];
-    [HideInInspector]
-    public int myHealthbarSprite = 6;
+    [SerializeField]
+    private Image[] myHealthbar = new Image[10];
+    private int myHealthbarSprite = 6;
 
-    public Image[] enemyHealthbar = new Image[10];
-    [HideInInspector]
-    public int enemyHealthbarSprite = 6;
+    [SerializeField]
+    private Image[] enemyHealthbar = new Image[10];
+    private int enemyHealthbarSprite = 6;
 
-    public Image[] myChargebar = new Image[10];
-    [HideInInspector]
-    public int myChargebarSprite = 6;
+    [SerializeField]
+    private Image[] myChargebar = new Image[10];
+    private int myChargebarSprite = 6;
 
-    public Image[] enemyChargebar = new Image[10];
-    [HideInInspector]
-    public int enemyChargebarSprite = 6;
+    [SerializeField]
+    private Image[] enemyChargebar = new Image[10];
+    private int enemyChargebarSprite = 6;
 
-    public Text stateText;
-    public Text cardText;
-    public Text enemyCardText;
-    public Text MHP;
-    public Text MCHP;
-    public Text EHP;
-    public Text ECHP;
-    public string hoveredCard = "";
-    public string enemyRevealedCard = "";
+    [SerializeField]
+    private Text stateText;
+    [SerializeField]
+    private Text cardText;
+    [SerializeField]
+    private Text enemyCardText;
+    [SerializeField]
+    private Text MHP;
+    [SerializeField]
+    private Text MCHP;
+    [SerializeField]
+    private Text EHP;
+    [SerializeField]
+    private Text ECHP;
+    [SerializeField]
+    private string hoveredCard = "";
+    [SerializeField]
+    private string enemyRevealedCard = "";
 
-    public GameObject playerConfirmedHue;
-    public GameObject enemyConfirmedHue;
+    [SerializeField]
+    private GameObject playerConfirmedHue;
+    [SerializeField]
+    private GameObject enemyConfirmedHue;
 
     int myHealthbarValue = 10;
     int myChargebarValue = 0;
@@ -51,21 +68,19 @@ public class MainUIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        myManager = HeroDecks.HD.myManager;
-        enemyManager = HeroDecks.HD.enemyManager;
     }
 
     // Update is called once per frame
     void Update()
     {
         // Text and Debug
-        stateText.text = " State: " + (int)GameOverseer.GO.state;
+        stateText.text = " State: " + (int)gameOverseer.GetState();
         cardText.text = " Current Card: " + hoveredCard;
         enemyCardText.text = "Enemy Card: " + enemyRevealedCard;
-        MHP.text = "" + myManager.HP;
-        MCHP.text = "" + myManager.Charge;
-        EHP.text = "" + enemyManager.HP;
-        ECHP.text = "" + enemyManager.Charge;
+        MHP.text = "" + myPlayer.GetHP();
+        MCHP.text = "" + myPlayer.GetCharge();
+        EHP.text = "" + enemyPlayer.GetHP();
+        ECHP.text = "" + enemyPlayer.GetCharge();
 
         // Confirmed Hue
         if (GameOverseer.GO.myConfirm) { playerConfirmedHue.SetActive(true); }

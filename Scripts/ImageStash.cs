@@ -5,15 +5,20 @@ using UnityEngine;
 public class ImageStash : MonoBehaviour
 {
     public static ImageStash IS;
-    public Sprite[] UgaList;
-    public Sprite[] TimothyList;
-    public Sprite[] HaroldList;
-    public Sprite[] YuriList;
+    private Sprite[] UgaList;
+    private Sprite[] TimothyList;
+    private Sprite[] HaroldList;
+    private Sprite[] YuriList;
+    Hashtable heroHashtable = new Hashtable();
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        // Hero HT
+        heroHashtable.Add(HeroEnum.Timothy, TimothyList);
+        heroHashtable.Add(HeroEnum.Harold, HaroldList);
+        heroHashtable.Add(HeroEnum.Uga, UgaList);
+        heroHashtable.Add(HeroEnum.Yuri, YuriList);
     }
 
     private void Awake() {
@@ -35,6 +40,12 @@ public class ImageStash : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public Sprite GetImage(HeroEnum hero, int id)
+    {
+        Sprite[] list = (Sprite[])heroHashtable[hero];
+        return list[id];
     }
 
     public Texture2D textureFromSprite(Sprite sprite)

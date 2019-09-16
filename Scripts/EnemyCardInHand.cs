@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -180,4 +180,4 @@ public class EnemyCardInHand : MonoBehaviour, IPointerExitHandler, IPointerEnter
     {
         zoomCard = false;
     }
-}
+}*/

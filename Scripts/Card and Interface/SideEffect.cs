@@ -7,14 +7,14 @@ public abstract class SideEffect : MonoBehaviour
     // Phases: 0 Choice, 1 Revelation, 2 EffectsBefore, 3 EffectsAfter
     [SerializeField]
     protected Player player;
-    private int phase; 
+    private SEPhase phase; 
 
-    public SideEffect(int phase)
+    public SideEffect(SEPhase phase)
     {
         this.phase = phase;
     }
 
-    public int GetPhase()
+    public SEPhase GetPhase()
     {
         return phase;
     }
@@ -24,7 +24,7 @@ public abstract class SideEffectTimed : SideEffect
 {
     public int timer;
 
-    public SideEffectTimed(int timer, int phase) : base(phase)
+    public SideEffectTimed(int timer, SEPhase phase) : base(phase)
     {
         this.timer = timer;
     }
@@ -49,7 +49,7 @@ public abstract class SideEffectVariable : SideEffect
 {
     public int variable;
 
-    public SideEffectVariable(int variable, int phase) : base(phase)
+    public SideEffectVariable(int variable, SEPhase phase) : base(phase)
     {
         this.variable = variable;
     }
@@ -68,7 +68,7 @@ public abstract class SideEffectVariable : SideEffect
 
 public class Vodka : SideEffectTimed
 {
-    public Vodka(int timer, int phase) : base(timer, phase)
+    public Vodka(int timer, SEPhase phase) : base(timer, phase)
     {
     }
 
@@ -84,7 +84,7 @@ public class Vodka : SideEffectTimed
 
 public class WeakSpot : SideEffectTimed
 {
-    public WeakSpot(int timer, int phase) : base(timer, phase)
+    public WeakSpot(int timer, SEPhase phase) : base(timer, phase)
     {
     }
 
@@ -101,7 +101,7 @@ public class WeakSpot : SideEffectTimed
 public class DejaVuSE : SideEffectTimed
 {
 
-    public DejaVuSE(int timer, int phase) : base(timer, phase)
+    public DejaVuSE(int timer, SEPhase phase) : base(timer, phase)
     {
     }
 
@@ -121,7 +121,7 @@ public class DejaVuSE : SideEffectTimed
 public class Chronos : SideEffectVariable
 {
 
-    public Chronos(int variable, int phase) : base(variable, phase)
+    public Chronos(int variable, SEPhase phase) : base(variable, phase)
     {
     }
 

@@ -9,7 +9,12 @@ public class Dexterity : Card, Interfacer
     public Card[] cardList { get; set; }
     public int interfaceSignal { get; set; }
 
-    int[] discardedCardList = new int[10]; // Lists the deckList indexes of discarded cards
+    public void SetSignal(int interfaceSignal)
+    {
+        this.interfaceSignal = interfaceSignal;
+    }
+
+    int[] discardedCardList = new int[Constants.maxHandSize]; // Lists the deckList indexes of discarded cards
 
     bool bugCatcher = true;
 
@@ -18,63 +23,37 @@ public class Dexterity : Card, Interfacer
     { }
 
     // Run through deckList, if card not active, add it to Interface List
-    public void interfacing() {
-        interfaceList = new Sprite[HeroDecks.HD.myManager.cardList.Length];
-        cardList = new Card[HeroDecks.HD.myManager.cardList.Length];
+    public void Interfacing(Player user, Player enemy) {
+        cardList = new Card[Constants.maxHandSize];
         int discardedCount = 0;
 
 
-        // Run through Deck List, check if it's a disabled card - if yes, then add to discard card list
-        for (int i = 0; i < HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList.Length; i++) {
-            if (HeroDecks.HD.myManager.cardList[i] != null && HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList != null) {
-                if (HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard] != null)
-                {
-                    if (HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard] != this &&
-                        HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].activeInHierarchy == false)
-                    {
-                        interfaceList[discardedCount] = HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard].image;
-                        cardList[discardedCount] = HeroDecks.HD.myManager.cardList[HeroDecks.HD.myManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<CardInHand>().thisCard];
-                        discardedCardList[discardedCount] = i;
-                        discardedCount++;
-                        bugCatcher = false;
-                    }
-                }
+        // Run through Deck List, check if it's a disabled skill or null card - if yes, then add to discard card list
+        for (int i = 0; i < Constants.maxHandSize; i++) {
+            if (user.GetCard(i) != null && user.GetCard(i) != this && !user.GetHandCard(i).isActiveAndEnabled &&
+                (user.GetCard(i).GetCardType() == CardTypes.Nullification || user.GetCard(i).GetCardType() == CardTypes.Skill)) { 
+                cardList[discardedCount] = user.GetCard(i);
+                discardedCardList[discardedCount] = i;
+                discardedCount++;
+                bugCatcher = false;
             }
         }
 
         // Interface script setup
         if (!bugCatcher) {
-            interfacingSetup(discardedCount, interfaceList, cardList);
+            user.Interfacing(cardList, this);
         }
     }
 
-    public override void effect(Player user, Player enemy, int priority)
+    public override void Effect(Player user, Player enemy, int priority)
     {
         switch (priority)
         {
             case 18:
-                // Setup discarded list for enemy
-                if (user == HeroDecks.HD.enemyManager) {
-                    int discardedCount = 0;
-                    for (int i = 0; i < HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList.Length; i++) {
-                        if (HeroDecks.HD.enemyManager.cardList[i] != null && HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList != null) {
-                            if (HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard] != null)
-                            {
-                                if (HeroDecks.HD.enemyManager.cardList[HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].GetComponent<EnemyCardInHand>().thisCard] != this &&
-                                HeroDecks.HD.enemyManager.myHand.GetComponent<DeckManager>().deckList[i].activeInHierarchy == false)
-                                {
-                                    discardedCardList[discardedCount] = i;
-                                    discardedCount++;
-                                    bugCatcher = false;
-                                }
-                            }
-                        }
-                    }
-                }
-
                 if (!bugCatcher) { 
                     user.RestoreCard(discardedCardList[interfaceSignal]);
                     Debug.Log("Discarded: " + discardedCardList[interfaceSignal]);
+                    // CHECK LATER
                 }
                 break;
         }

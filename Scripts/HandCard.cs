@@ -13,6 +13,8 @@ public class HandCard : UICard, IPointerDownHandler, IPointerUpHandler
     private bool isReaction = false;
     private bool outOfHand = false;
 
+    private GameObject ultiCard;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,12 +29,12 @@ public class HandCard : UICard, IPointerDownHandler, IPointerUpHandler
             HoldCard();
 
         } else {
-            returnCard();
+            ReturnCard();
         }
     }
 
     // Constructor
-    public HandCard(Card card, Deck deck) : base(card, deck)
+    public HandCard(Card card, Deck deck) : base(card)
     {
         this.deck = deck;
         this.card = card;
@@ -52,12 +54,25 @@ public class HandCard : UICard, IPointerDownHandler, IPointerUpHandler
         this.isReaction = isReaction;
     }
 
+	public void SetCard(Card card) {
+		this.card = card;
+	}
+
     // Getter
     public bool GetIsReaction()
     {
         return isReaction;
     }
 
+    public GameObject GetUltiCard()
+    {
+        return ultiCard;
+    }
+
+    public UltimateCard GetUltiCardScript()
+    {
+        return ultiCard.GetComponent<UltimateCard>();
+    }
 
     // Position Manipulators
     public void HoldCard()
@@ -65,6 +80,17 @@ public class HandCard : UICard, IPointerDownHandler, IPointerUpHandler
         // Control offset
         transform.position = new Vector3(center.x, center.y) + Input.mousePosition;
         center = Vector3.Lerp(center, new Vector3(0f, 0f, 0f), 0.1f);
+    }
+
+    public new void OnPointerEnter(PointerEventData eventData)
+    {
+        if (!deck.GetHoldingCard())
+        {
+            ChangeScale(2);
+            SetAsLastSibling();
+            ChangeColor(1f);
+            transform.localPosition = transform.localPosition + new Vector3(0f, 5f, 0f);
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)

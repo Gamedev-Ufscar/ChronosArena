@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,11 +9,11 @@ using UnityEngine.UI;
 public class PointerHandler : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler
 {
     private bool canvasComp = false;
-    private CardInHand cardH;
+    private UICard cardH;
 
     void Start()
     {
-        cardH = GetComponent<CardInHand>();
+        cardH = GetComponent<UICard>();
     }
 
     void Update()
@@ -76,4 +76,4 @@ public class PointerHandler : MonoBehaviour, IPointerExitHandler, IPointerEnterH
         Destroy(c);
         canvasComp = false;
     }
-}
+}*/

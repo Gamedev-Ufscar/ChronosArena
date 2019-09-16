@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+﻿/*using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -184,4 +184,4 @@ public class PlayerManager : MonoBehaviour
         PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
     }
 
-}
+}*/

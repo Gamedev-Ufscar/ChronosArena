@@ -6,13 +6,14 @@ using UnityEngine.UI;
 
 public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 {
-    private Deck deck;
-    //private bool pointerOver = false;
+    private bool pointerOver = false;
     private Vector3 targetPosition;
     private float scale;
     private float color;
     private int category;
     private Card card;
+
+    private int cardIndex;
 
     // Start is called before the first frame update
     void Start()
@@ -24,18 +25,23 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     void Update()
     {
         // Control Position
-        returnCard();
+        ReturnCard();
     }
 
     // Constructor
-    public UICard(Card card, Deck deck)
+    public UICard(Card card)
     {
         this.card = card;
-        this.deck = deck;
+        transform.GetChild(0).GetComponent<Text>().text = card.GetName();
+        transform.GetChild(1).GetComponent<Text>().text = card.typeString(card.GetCardType());
+        transform.GetChild(2).GetComponent<Text>().text = card.GetText().Replace("\\n", "\n");
+        transform.GetChild(3).GetComponent<Text>().text = card.Value(1);
+        transform.GetChild(4).GetComponent<Text>().text = card.Value(2);
+        transform.GetChild(5).GetComponent<Text>().text = card.heroString(card.GetHero());
     }
 
     // Position Manipulators
-    public void returnCard()
+    public void ReturnCard()
     {
         transform.localPosition = Vector2.Lerp(transform.localPosition, targetPosition, 0.1f);
     }
@@ -71,6 +77,21 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         this.card = card;
     }
 
+    public void SetIndex(int cardIndex)
+    {
+        this.cardIndex = cardIndex;
+    }
+
+    public void RecedeIndex()
+    {
+        cardIndex--;
+    }
+
+    public void PushIndex()
+    {
+        cardIndex++;
+    }
+
     // Getters
     public Card GetCard()
     {
@@ -82,20 +103,30 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         return category;
     }
 
+    public bool GetIsActive()
+    {
+        return gameObject.activeInHierarchy;
+    }
+
+    public bool GetPointerOver()
+    {
+        return pointerOver;
+    }
+
+    public int GetIndex()
+    {
+        return cardIndex;
+    }
+
     // On Pointer
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!deck.getHoldingCard())
-        {
-            ChangeScale(2);
-            SetAsLastSibling();
-            ChangeColor(1f);
-            transform.localPosition = transform.localPosition + new Vector3(0f, 5f, 0f);
-        }
+        pointerOver = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        pointerOver = false;
         ChangeScale(1);
         SetAsFirstSibling();
         ChangeColor(0.6f);

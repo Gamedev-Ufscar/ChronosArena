@@ -34,8 +34,8 @@ public class HermesScript : MonoBehaviour
         {
             GameOverseer gameOverseer = GameObject.Find("Game Overseer").GetComponent<GameOverseer>();
 
-            gameOverseer.myPlayer.CreatePlayer(hero, handSize, ultiCount, attackDisableList, profile);
-            gameOverseer.enemyPlayer.CreatePlayer(enemyHero, enemyHandSize, enemyUltiCount, enemyAttackDisableList, enemyProfile);
+            gameOverseer.GetMyPlayer().CreatePlayer(hero, handSize, ultiCount, passiveCount, attackDisableList, profile);
+            gameOverseer.GetEnemyPlayer().CreatePlayer(enemyHero, enemyHandSize, enemyUltiCount, enemyPassiveCount, enemyAttackDisableList, enemyProfile);
             gameObject.SetActive(false);
 
 

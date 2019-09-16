@@ -296,7 +296,7 @@ public class SideEffectSkill : Card
         switch (priority)
         {
             case 17:
-                user.sideList[sideEffect] = duration;
+                user.SetSideEffect(sideEffect, duration);
                 Debug.Log(user.gameObject.name + "'s SideEffectSkill");
                 break;
         }

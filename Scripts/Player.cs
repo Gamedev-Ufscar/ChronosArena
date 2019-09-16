@@ -7,7 +7,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Deck deck;
     [SerializeField]
-    private GameObject cardPrefab;
+    private UltiArea ultiArea;
+    [SerializeField]
+    private GameObject ultiPrefab;
+    [SerializeField]
+    private GameObject boardPrefab;
     [SerializeField]
     private GameOverseer gameOverseer;
 
@@ -17,8 +21,8 @@ public class Player : MonoBehaviour
     private HeroEnum hero;
     private List<CardTypes> attackDisableList = new List<CardTypes>();
     private List<CardTypes> chargeDisableList = new List<CardTypes>() { CardTypes.Charge };
-    private SideEffect[] sideList = new SideEffect[12];
-    private Card cardPlayed;
+    private SideEffect[] sideList = new SideEffect[Constants.maxSideListSize];
+    private BoardCard cardPlayed = null;
     private bool predicted = false;
     private Profile profile;
 
@@ -42,20 +46,87 @@ public class Player : MonoBehaviour
     }
 
     // Creator
-    public void CreatePlayer(HeroEnum hero, int cardCount, int ultiCount, List<CardTypes> attackDisableList, Sprite profile)
+    public void CreatePlayer(HeroEnum hero, int cardCount, int ultiCount, int passiveCount, List<CardTypes> attackDisableList, Sprite profile)
     {
         this.hero = hero;
         this.attackDisableList = attackDisableList;
         this.profile.SetImage(profile);
-        CreateDeck(hero, cardCount, ultiCount);
+        CreateSummary();
+        deck.CreateDeck(hero, cardCount, ultiCount, passiveCount);
+        ultiArea.CreateUltiArea(hero, cardCount, ultiCount);
     }
 
-    private void CreateDeck(HeroEnum hero, int cardCount, int ultiCount)
+    public void CreateSummary()
     {
-        for (int i = 0; i < cardCount; i++)
-        {
 
+    }
+
+    public void AcquireCards()
+    {
+        for (int i = 0; i < Constants.maxUltiAreaSize; i++)
+        {
+            if (ultiArea.GetUltiCard(i).GetBought())
+            {
+                deck.GetHandCard(ultiArea.GetCard(i).GetID()).gameObject.SetActive(true);
+                ultiArea.GetUltiCard(i).gameObject.SetActive(false);
+                ultiArea.RecedeUlti(i);
+            }
+
+            // CHECK LATER
+            //GameOverseer.GO.enemyUltiBuy[staticCardIndex - 100] = false;
+            AudioManager.AM.CardSound();
         }
+    }
+
+    // Summon
+    public void SummonCard(HandCard handCard)
+    {
+        // Instantiate Board Card
+        Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 12f));
+        GameObject g = Instantiate(boardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));
+
+        // Set as Card Played
+        SetCardPlayed(g.GetComponent<BoardCard>());
+
+        // Modify and Initiate variables
+        if (handCard.GetCard().GetCardType() == CardTypes.Ultimate)
+        {
+            cardPlayed.ConstructBoardCard(handCard.GetCard(), this, handCard.GetUltiCard());
+        }
+        else
+        {
+            cardPlayed.ConstructBoardCard(handCard.GetCard(), this, handCard.gameObject);
+        }
+
+        deck.SetHoldingCard(false);
+
+        // Activate slot
+        if (predicted == false) { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, false); }
+        else { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, true); }
+    }
+
+    // Restore Card
+    public void RestoreCard(int cardId)
+    {
+        GetHandCard(cardId).gameObject.SetActive(true);
+        GetHandCard(cardId).SetIndex(GetActiveCardCount());
+    }
+
+    public void RestoreUlti(int cardId)
+    {
+        GetHandCard(cardId).GetUltiCard().SetActive(true);
+        GetHandCard(cardId).GetUltiCardScript().SetIndex(ultiArea.PlaceUltimate(GetHandCard(cardId).GetUltiCardScript().GetCard().GetID()));
+    }
+
+    // Discard Card
+    public void DiscardCard(int cardId)
+    {
+        if (GetCard(cardId).GetCardType() == CardTypes.Ultimate)
+        {
+            RestoreUlti(cardId);
+        }
+        GetHandCard(cardId).gameObject.SetActive(false);
+        deck.RecedeDeck(cardId);
     }
 
     // Change Variables
@@ -80,6 +151,7 @@ public class Player : MonoBehaviour
     public void RaiseCharge(int charge)
     {
         Charge += charge;
+        if (Charge < 0) { Charge = 0; }
     }
 
     public void Heal(int heal)
@@ -89,6 +161,16 @@ public class Player : MonoBehaviour
     }
 
     // Getters
+    public int GetHP()
+    {
+        return HP;
+    }
+
+    public int GetCharge()
+    {
+        return Charge;
+    }
+
     public List<CardTypes> GetAttackDisable()
     {
         return attackDisableList;
@@ -128,7 +210,14 @@ public class Player : MonoBehaviour
 
     public Card GetCardPlayed()
     {
-        return cardPlayed;
+        if (cardPlayed == null)
+        {
+            return null;
+        }
+        else
+        {
+            return cardPlayed.GetCardPlayed();
+        }
     }
 
     public SideEffect GetSideEffect(int index)
@@ -136,11 +225,57 @@ public class Player : MonoBehaviour
         return sideList[index];
     }
 
-    public void SetCardPlayed(Card cardPlayed) {
-        this.cardPlayed = cardPlayed;
+    public int GetSideEffectValue(int index)
+    {
+        if (sideList[index] is SideEffectTimed)
+        {
+            SideEffectTimed set = (SideEffectTimed)sideList[index];
+            return set.GetTimer();
+
+        } else if (sideList[index] is SideEffectVariable) {
+
+            SideEffectVariable sev = (SideEffectVariable)sideList[index];
+            return sev.GetVariable();
+
+        } else {
+            return 0;
+        }
+    }
+
+    public bool HasReactionCard()
+    {
+        for (int i = 0; i <= 10; i++)
+        {
+            if (GetCard(i).GetIsReaction() == true)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int GetActiveCardCount()
+    {
+        int count = 0;
+        for (int i = 0; i < Constants.maxCardAmount; i++)
+        {
+            if (GetHandCard(i) != null && GetHandCard(i).GetIndex() > count)
+                count = GetHandCard(i).GetIndex();
+        }
+
+        return count+1;
     }
 
     // Setters
+    public void SetHP(int HP)
+    {
+        this.HP = HP;
+    }
+
+    public void SetCharge(int Charge)
+    {
+        this.Charge = Charge;
+    }
 
     public void SetCard(Card card, int cardID)
     {
@@ -150,13 +285,33 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void SetCardPlayed(BoardCard cardPlayed)
+    {
+        this.cardPlayed = cardPlayed;
+        gameOverseer.UpdatedCardPlayed(this, true);
+    }
+
     public void SetPredicted(bool predicted)
     {
         this.predicted = predicted;
     }
 
+    public void SetSideEffect(int index, int value)
+    {
+        if (sideList[index] is SideEffectTimed) {
+            SideEffectTimed set = (SideEffectTimed)sideList[index];
+            set.SetTimer(value);
+            sideList[index] = (SideEffect)set;
+        } else if (sideList[index] is SideEffectVariable)
+        {
+            SideEffectVariable sev = (SideEffectVariable)sideList[index];
+            sev.SetVariable(value);
+            sideList[index] = (SideEffect)sev;
+        }
+    }
+
     // Side Effects
-    public void ActivateSideEffects(int phase)
+    public void ActivateSideEffects(SEPhase phase, Player enemy)
     {
         foreach (SideEffect SE in sideList)
         {
@@ -164,11 +319,22 @@ public class Player : MonoBehaviour
                 SideEffectTimed SET = (SideEffectTimed)SE;
                 if (SET.GetTimer() > 0) {
                     if (SE.GetPhase() == phase) {
-
+                        SET.Effect(this, enemy);
                     }
                 }
             }
         }
+    }
+
+    // Interfacing
+    public void Interfacing(Card[] cardList, Card invoker)
+    {
+        gameOverseer.Interfacing(cardList, invoker);
+    }
+
+    public void Interfacing(Card baseCard, string[] textList, Card invoker)
+    {
+        gameOverseer.Interfacing(baseCard, textList, invoker);
     }
 
     // Shuffle
@@ -180,7 +346,18 @@ public class Player : MonoBehaviour
     // Summary
     public void InvokeSummary()
     {
-        deck.Shuffle();
+        Card[] cardList = new Card[Constants.maxCardAmount];
+        for (int i = 0; i < Constants.maxCardAmount; i++)
+        {
+            cardList[i] = GetHandCard(i).GetCard();
+        }
+        gameOverseer.Interfacing(cardList, null);
+    }
+
+    // Purchase
+    public void PurchaseCards()
+    {
+
     }
 
     // Network Sender
@@ -194,51 +371,4 @@ public class Player : MonoBehaviour
     {
         deck.UpdateCardPositions(receivedCardIndexes);
     }
-
-
-    // Summon
-    /*public void SummonCard(HandCard handCard)
-    {
-        // Summon card
-        if (gameOverseer.GetState() == GameState.Choice && !handCard.GetCard().isReaction)
-        {
-            gameOverseer.sendCard();
-
-            // Invoke physical card
-            Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zValue));
-            GameObject g = Instantiate(cardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));
-
-            // Setup variables
-            g.GetComponent<CardInBoard>().thisCard = thisCard;
-            g.GetComponent<CardInBoard>().owner = HeroDecks.HD.myManager;
-            deckManager.holdingCard = false;
-
-            // Setup text
-            g.GetComponent<CardInBoard>().cardSprite = cardSprite;
-            g.transform.GetChild(6).GetComponent<Renderer>().material.mainTexture = ImageStash.IS.textureFromSprite(cardSprite);
-            g.transform.GetChild(0).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].name;
-            g.transform.GetChild(1).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].typeString(HeroDecks.HD.myManager.cardList[thisCard].type);
-            g.transform.GetChild(2).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].text.Replace("\\n", "\n");
-            g.transform.GetChild(3).GetComponent<TextMesh>().text = HeroDecks.HD.value(HeroDecks.HD.myManager.cardList[thisCard], 1);
-            g.transform.GetChild(4).GetComponent<TextMesh>().text = HeroDecks.HD.value(HeroDecks.HD.myManager.cardList[thisCard], 2);
-            g.transform.GetChild(5).GetComponent<TextMesh>().text = HeroDecks.HD.myManager.cardList[thisCard].heroString(HeroDecks.HD.myManager.cardList[thisCard].hero);
-
-            // Activate slot
-            if (GameOverseer.GO.predicted == false) { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, false); }
-            else { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, true); }
-
-            // Preparing to turn this on later
-            g.GetComponent<CardInBoard>().thisCardInHand = gameObject;
-            if (HeroDecks.HD.myManager.cardList[GameOverseer.GO.myCardPlayed].type == CardTypes.Ultimate)
-            {
-                g.GetComponent<CardInBoard>().thisUltimateCard = ultiCard;
-            }
-            gameObject.SetActive(false);
-        }
-        // Reveal reaction
-        else if (gameOverseer.GetState() == GameState.Revelation && handCard.GetCard().isReaction)
-        {
-            handCard.SetIsReaction(true);
-        }
-    }*/
 }

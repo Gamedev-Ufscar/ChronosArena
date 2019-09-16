@@ -2,6 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+static class Constants
+{
+    public const int maxHandSize = 10;
+    public const int maxCardAmount = 14;
+    public const int maxUltiAreaSize = 3;
+    public const int maxSideListSize = 12;
+    public const int SpeedOfLight = 300000;
+}
+
 public enum HeroEnum
 {
     None,
@@ -76,10 +85,18 @@ public enum GameState
 {
     Purchase,
     Choice,
-    Revelation,
+    Interface,
     Reaction,
     Effects,
     Reset
+}
+
+public enum SEPhase
+{
+    Choice,
+    Reaction,
+    EffectsBefore,
+    EffectsAfter
 }
 
 public enum CountEnum
