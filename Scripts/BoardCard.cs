@@ -8,7 +8,6 @@ public class BoardCard : MonoBehaviour
     private Player player;
 
     private GameObject cardToRestore;
-    private PlayerManager owner;
     private int revealAnimState = 0;
     private bool waiting = false;
 
@@ -39,9 +38,26 @@ public class BoardCard : MonoBehaviour
         
     }
 
+    // Getter
     public Card GetCardPlayed()
     {
         return cardPlayed;
+    }
+
+    // Setter
+    public void SetAnimState(int animState)
+    {
+        this.revealAnimState = animState;
+    }
+
+    public void RaiseAnimState()
+    {
+        revealAnimState++;
+    }
+
+    public void SetWaiting(bool waiting)
+    {
+        this.waiting = waiting;
     }
 
     public void Activate(SlotsOnBoard place, bool faceUp)

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,4 +22,5 @@ public class GameBeginsIn : MonoBehaviour
             GetComponent<Text>().text = "Game starts in 1 second...";
         }
     }
-}
+
+}*/

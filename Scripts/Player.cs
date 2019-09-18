@@ -26,6 +26,16 @@ public class Player : MonoBehaviour
     private bool predicted = false;
     private Profile profile;
 
+    [SerializeField]
+    private SlotsOnBoard boardSlot;
+
+    private int sentCardID;
+    private Vector2 sentCardPosition;
+    private Vector2 sentCardLocalPosition;
+    private bool sent = false;
+
+    private float time = 0f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -36,7 +46,22 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (time >= 0.2f)
+        {
+            if (sent)
+            {
+                SendCardPosition(sentCardID, sentCardPosition, sentCardLocalPosition);
+                sent = false;
+            } else
+            {
+                gameOverseer.SendPositionStop();
+            }
+
+            // Time stuff
+            time = 0f;
+        } else {
+            time += Time.deltaTime;
+        }
     }
 
     // Constructor
@@ -67,7 +92,7 @@ public class Player : MonoBehaviour
         {
             if (ultiArea.GetUltiCard(i).GetBought())
             {
-                deck.GetHandCard(ultiArea.GetCard(i).GetID()).gameObject.SetActive(true);
+                deck.GetDeckCard(ultiArea.GetCard(i).GetID()).gameObject.SetActive(true);
                 ultiArea.GetUltiCard(i).gameObject.SetActive(false);
                 ultiArea.RecedeUlti(i);
             }
@@ -79,7 +104,7 @@ public class Player : MonoBehaviour
     }
 
     // Summon
-    public void SummonCard(HandCard handCard)
+    public void SummonCard(DeckCard deckCard)
     {
         // Instantiate Board Card
         Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 12f));
@@ -89,33 +114,36 @@ public class Player : MonoBehaviour
         SetCardPlayed(g.GetComponent<BoardCard>());
 
         // Modify and Initiate variables
-        if (handCard.GetCard().GetCardType() == CardTypes.Ultimate)
+        if (deckCard.GetCard().GetCardType() == CardTypes.Ultimate)
         {
-            cardPlayed.ConstructBoardCard(handCard.GetCard(), this, handCard.GetUltiCard());
+            cardPlayed.ConstructBoardCard(deckCard.GetCard(), this, deckCard.GetUltiCard());
         }
         else
         {
-            cardPlayed.ConstructBoardCard(handCard.GetCard(), this, handCard.gameObject);
+            cardPlayed.ConstructBoardCard(deckCard.GetCard(), this, deckCard.gameObject);
         }
 
         deck.SetHoldingCard(false);
 
         // Activate slot
-        if (predicted == false) { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, false); }
-        else { g.GetComponent<CardInBoard>().Activate(SlotsOnBoard.PlayerCard, true); }
+        if (predicted == false) { g.GetComponent<BoardCard>().Activate(boardSlot, false); }
+        else { g.GetComponent<BoardCard>().Activate(boardSlot, true); }
+
+        // Networking info
+        gameOverseer.SummonCard(deckCard.GetID());
     }
 
     // Restore Card
     public void RestoreCard(int cardId)
     {
-        GetHandCard(cardId).gameObject.SetActive(true);
-        GetHandCard(cardId).SetIndex(GetActiveCardCount());
+        GetDeckCard(cardId).gameObject.SetActive(true);
+        GetDeckCard(cardId).SetIndex(GetActiveCardCount());
     }
 
     public void RestoreUlti(int cardId)
     {
-        GetHandCard(cardId).GetUltiCard().SetActive(true);
-        GetHandCard(cardId).GetUltiCardScript().SetIndex(ultiArea.PlaceUltimate(GetHandCard(cardId).GetUltiCardScript().GetCard().GetID()));
+        GetDeckCard(cardId).GetUltiCard().SetActive(true);
+        GetDeckCard(cardId).GetUltiCardScript().SetIndex(ultiArea.PlaceUltimate(GetDeckCard(cardId).GetUltiCardScript().GetCard().GetID()));
     }
 
     // Discard Card
@@ -125,7 +153,7 @@ public class Player : MonoBehaviour
         {
             RestoreUlti(cardId);
         }
-        GetHandCard(cardId).gameObject.SetActive(false);
+        GetDeckCard(cardId).gameObject.SetActive(false);
         deck.RecedeDeck(cardId);
     }
 
@@ -191,20 +219,20 @@ public class Player : MonoBehaviour
         return hero;
     }
 
-    public HandCard GetHandCard(int cardID)
+    public DeckCard GetDeckCard(int cardID)
     {
-        return GetDeck().GetHandCard(cardID);
+        return GetDeck().GetDeckCard(cardID);
     }
 
     public Card GetCard(int cardID)
     {
-        if (GetHandCard(cardID) == null)
+        if (GetDeckCard(cardID) == null)
         {
             return null;
         }
         else
         {
-            return GetHandCard(cardID).GetCard();
+            return GetDeckCard(cardID).GetCard();
         }
     }
 
@@ -218,6 +246,11 @@ public class Player : MonoBehaviour
         {
             return cardPlayed.GetCardPlayed();
         }
+    }
+
+    public UltimateCard GetUltiCard(int i)
+    {
+        return ultiArea.GetUltiCard(i);
     }
 
     public SideEffect GetSideEffect(int index)
@@ -242,6 +275,11 @@ public class Player : MonoBehaviour
         }
     }
 
+    public bool GetPredicted()
+    {
+        return predicted;
+    }
+
     public bool HasReactionCard()
     {
         for (int i = 0; i <= 10; i++)
@@ -259,8 +297,8 @@ public class Player : MonoBehaviour
         int count = 0;
         for (int i = 0; i < Constants.maxCardAmount; i++)
         {
-            if (GetHandCard(i) != null && GetHandCard(i).GetIndex() > count)
-                count = GetHandCard(i).GetIndex();
+            if (GetDeckCard(i) != null && GetDeckCard(i).GetIndex() > count)
+                count = GetDeckCard(i).GetIndex();
         }
 
         return count+1;
@@ -279,9 +317,9 @@ public class Player : MonoBehaviour
 
     public void SetCard(Card card, int cardID)
     {
-        if (GetHandCard(cardID) == null)
+        if (GetDeckCard(cardID) == null)
         {
-            GetHandCard(cardID).SetCard(card);
+            GetDeckCard(cardID).SetCard(card);
         }
     }
 
@@ -308,6 +346,14 @@ public class Player : MonoBehaviour
             sev.SetVariable(value);
             sideList[index] = (SideEffect)sev;
         }
+    }
+
+    public void SetCardPosition(int id, Vector2 position, Vector2 localPosition)
+    {
+        sentCardID = id;
+        sentCardPosition = position;
+        sentCardLocalPosition = localPosition;
+        sent = true;
     }
 
     // Side Effects
@@ -349,7 +395,7 @@ public class Player : MonoBehaviour
         Card[] cardList = new Card[Constants.maxCardAmount];
         for (int i = 0; i < Constants.maxCardAmount; i++)
         {
-            cardList[i] = GetHandCard(i).GetCard();
+            cardList[i] = GetDeckCard(i).GetCard();
         }
         gameOverseer.Interfacing(cardList, null);
     }
@@ -360,15 +406,30 @@ public class Player : MonoBehaviour
 
     }
 
-    // Network Sender
+    // Sender
     public void SendShuffle(int[] cardIndexes)
     {
         gameOverseer.SendShuffle(cardIndexes);
+    }
+
+    public void SendCardPosition(int id, Vector2 position, Vector2 localPosition)
+    {
+        gameOverseer.SendCardPosition(id, this, position, localPosition);
+    }
+
+    public void SendUltiPurchase(int cardID, bool bought)
+    {
+        gameOverseer.SendUltiPurchase(cardID, bought, GetCharge());
     }
 
     // Network Receiver
     public void ReceiveShuffle(int[] receivedCardIndexes)
     {
         deck.UpdateCardPositions(receivedCardIndexes);
+    }
+
+    public void ReceiveSummon()
+    {
+        SummonCard(GetDeckCard(sentCardID));
     }
 }

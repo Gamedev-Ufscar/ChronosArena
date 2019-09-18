@@ -25,10 +25,15 @@ public class HeroSelection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameOverseer.GO.enemyConfirm)
+    }
+
+    public void SetConfirm(bool confirming)
+    {
+        if (confirming)
         {
             enemyConfirmButton.sprite = confirmed;
-        } else
+        }
+        else
         {
             enemyConfirmButton.sprite = confirm;
         }

@@ -292,7 +292,7 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
                 {
                     if (user.GetCard(i) != null)
                     {
-                        if (user.GetCard(i) != this && user.GetHandCard(i).gameObject.activeInHierarchy == false &&
+                        if (user.GetCard(i) != this && user.GetDeckCard(i).gameObject.activeInHierarchy == false &&
                             user.GetCard(i).GetCardType() == CardTypes.Nullification)
                         {
                             cardList[discardedCount] = user.GetCard(i);
@@ -368,7 +368,7 @@ public class Catastrophe : Card, Interfacer
         {
             if (enemy.GetCard(i) != null)
             {
-                if (enemy.GetCard(i) != this && enemy.GetHandCard(i).gameObject.activeInHierarchy && enemy.GetCard(i).GetCardType() == CardTypes.Ultimate)
+                if (enemy.GetCard(i) != this && enemy.GetDeckCard(i).gameObject.activeInHierarchy && enemy.GetCard(i).GetCardType() == CardTypes.Ultimate)
                 {
                     cardList[ultimateCount] = enemy.GetCard(i);
                     ultimateList[ultimateCount] = i;
@@ -436,7 +436,7 @@ public class PerverseEngineering : Card, Interfacer
         {
             if (enemy.GetCard(i) != null)
             {
-                if (enemy.GetCard(i) != this && enemy.GetHandCard(i).gameObject.activeInHierarchy == true &&
+                if (enemy.GetCard(i) != this && enemy.GetDeckCard(i).gameObject.activeInHierarchy == true &&
                     (enemy.GetCard(i).GetCardType() == CardTypes.Nullification || enemy.GetCard(i).GetCardType() == CardTypes.Skill))
                 {
                     cardList[ultimateCount] = enemy.GetCard(i);

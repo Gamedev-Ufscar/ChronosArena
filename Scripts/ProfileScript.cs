@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -88,4 +88,4 @@ public class ProfileScript : MonoBehaviour, IPointerExitHandler, IPointerEnterHa
         mouseOver = false;
         GetComponent<Image>().color = new Color(0.8f, 0.8f, 0.8f);
     }
-}
+}*/

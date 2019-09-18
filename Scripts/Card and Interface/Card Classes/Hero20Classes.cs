@@ -30,7 +30,7 @@ public class Dexterity : Card, Interfacer
 
         // Run through Deck List, check if it's a disabled skill or null card - if yes, then add to discard card list
         for (int i = 0; i < Constants.maxHandSize; i++) {
-            if (user.GetCard(i) != null && user.GetCard(i) != this && !user.GetHandCard(i).isActiveAndEnabled &&
+            if (user.GetCard(i) != null && user.GetCard(i) != this && !user.GetDeckCard(i).isActiveAndEnabled &&
                 (user.GetCard(i).GetCardType() == CardTypes.Nullification || user.GetCard(i).GetCardType() == CardTypes.Skill)) { 
                 cardList[discardedCount] = user.GetCard(i);
                 discardedCardList[discardedCount] = i;

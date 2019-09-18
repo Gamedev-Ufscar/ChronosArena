@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class Interface : MonoBehaviour
 {
+    [SerializeField]
+    private GameOverseer gameOverseer;
+
     private GameObject backButton;
     private int cardAmount = 0;
     private int interfaceSignal = 200;
@@ -93,6 +96,7 @@ public class Interface : MonoBehaviour
         {
             Interfacer cc = (Interfacer)invoker;
             cc.SetSignal(interfaceSignal);
+            gameOverseer.SendInterfaceSignal(interfaceSignal);
             invoker = (Card)cc;
         }
 

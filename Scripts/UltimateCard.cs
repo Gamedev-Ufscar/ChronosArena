@@ -11,6 +11,8 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     private bool playable = false;
     private bool bought = false;
 
+    private int cardID;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,8 +43,18 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
         this.bought = bought;
     }
 
+    public void SetID(int cardID)
+    {
+        this.cardID = cardID;
+    }
+
 
     // Getter 
+
+    public int GetID()
+    {
+        return cardID;
+    }
 
     public bool GetBought()
     {
@@ -75,5 +87,6 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
             ChangeColor(0.8f);
 
         }
+        ultiArea.SendUltiPurchase(cardID, bought);
     }
 }

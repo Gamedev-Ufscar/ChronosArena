@@ -9,7 +9,6 @@ public class MenuOverseer : MonoBehaviour
     public FadingScript back;
     public SlidingParent mainMenu;
     public SlidingParent libraryMenu;
-    public InterfaceScript interfaceScript;
 
     // Start is called before the first frame update
     void Start()
@@ -59,10 +58,6 @@ public class MenuOverseer : MonoBehaviour
                 logo.setMinguant(false);
                 logo.waitTime = 0.5f;
                 back.setMinguant(true);
-                break;
-
-            case 8: // Back Summary
-                interfaceScript.Close();
                 break;
 
             default:

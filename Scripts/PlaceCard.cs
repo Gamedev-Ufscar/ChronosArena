@@ -61,8 +61,8 @@ public class PlaceCard : MonoBehaviour
                 go.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 go.GetComponent<Rigidbody>().useGravity = true;
             } else {
-                go.GetComponent<CardInBoard>().revealAnimState++;
-                go.GetComponent<CardInBoard>().waiting = false;
+                go.GetComponent<BoardCard>().RaiseAnimState();
+                go.GetComponent<BoardCard>().SetWaiting(false);
             }
 
             //go.name = go.name + "1";

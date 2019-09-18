@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameOverseer : MonoBehaviour
@@ -12,12 +13,19 @@ public class GameOverseer : MonoBehaviour
     [SerializeField]
     private Player enemyPlayer;
     [SerializeField]
+    private MainUIManager UIManager;
+    [SerializeField]
     private NetworkTrain networkTrain;
     [SerializeField]
     private Interface interfface;
 
     private bool myConfirm = false;
     private bool enemyConfirm = false;
+
+    public LayerMask layerMask;
+    public GameObject viewCard;
+    private GameObject boardCardReader;
+    private List<GameObject> destroyList = new List<GameObject>();
 
     private GameState state = GameState.Purchase;
 
@@ -26,6 +34,16 @@ public class GameOverseer : MonoBehaviour
         GameObject netObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
         networkTrain = netObject.AddComponent<NetworkTrain>();
         networkTrain = new NetworkTrain(this);
+    }
+
+    // Hover Card
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().buildIndex == 3&& ((GetState() == GameState.Choice && GetEnemyPlayer().GetPredicted()) ||
+            GetState() == GameState.Reaction || GetState() == GameState.Effects) && !GetMyPlayer().GetDeck().GetHoldingCard())
+        {
+            HoverCarding();
+        }
     }
 
     // State Stuff
@@ -141,6 +159,7 @@ public class GameOverseer : MonoBehaviour
     private void ToPurchaseState()
     {
         state = GameState.Purchase;
+        DestroyHoverCards();
     }
 
     // Interfacing
@@ -154,6 +173,40 @@ public class GameOverseer : MonoBehaviour
     {
         interfface.gameObject.SetActive(true);
         interfface.Setup(baseCard, textList, invoker);
+    }
+
+    public void HoverCarding()
+    {
+        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        Physics.Raycast(mouseRay, out hitInfo, 300, layerMask, QueryTriggerInteraction.Collide);
+
+        Debug.Log("I'm alive");
+
+        if (hitInfo.collider != null)
+        {
+            if (hitInfo.collider.transform.parent != null)
+            {
+                Debug.Log("HoverCard");
+                GameObject cardInBoard = hitInfo.collider.transform.parent.gameObject;
+
+                boardCardReader = Instantiate(viewCard, Camera.main.WorldToScreenPoint(hitInfo.collider.transform.position), Quaternion.identity, myPlayer.GetDeck().transform);
+                destroyList.Add(boardCardReader);
+                boardCardReader.GetComponent<HoverCard>().ConstructHoverCard(cardInBoard);
+            }
+        }
+        else if (boardCardReader != null)
+        {
+            DestroyHoverCards();
+        }
+    }
+
+    public void DestroyHoverCards()
+    {
+        foreach (GameObject destroyed in destroyList)
+        {
+            Destroy(destroyed);
+        }
     }
 
 
@@ -177,19 +230,21 @@ public class GameOverseer : MonoBehaviour
     public void SetMyConfirm(bool myConfirm)
     {
         this.myConfirm = myConfirm;
+        UIManager.SetPlayerHue(myConfirm);
         StateMachine();
     }
 
     public void SetEnemyConfirm(bool enemyConfirm)
     {
         this.enemyConfirm = enemyConfirm;
+        UIManager.SetEnemyHue(myConfirm);
         StateMachine();
     }
 
     // Network Sender
-    public void SendCard()
+    public void SummonCard(int cardID)
     {
-        networkTrain.SendCard();
+        networkTrain.SummonCard(cardID);
     }
 
     public void SendShuffle(int[] cardIndexes)
@@ -197,10 +252,37 @@ public class GameOverseer : MonoBehaviour
         networkTrain.SendShuffle(cardIndexes);
     }
 
+    public void SendInterfaceSignal(int interfaceSignal)
+    {
+        networkTrain.SendInterfaceSignal(interfaceSignal);
+    }
+
+    public void SendCardPosition(int id, Player playerHovered, Vector2 position, Vector2 localPosition)
+    {
+        bool hoveringMyself;
+        hoveringMyself = (playerHovered == myPlayer) ? true : false;
+        networkTrain.SendCardPosition(id, hoveringMyself, position, localPosition);
+    }
+
+    public void SendPositionStop()
+    {
+        networkTrain.SendPositionStop();
+    }
+
+    public void SendUltiPurchase(int cardID, bool bought, int charge)
+    {
+        if (state == GameState.Purchase && SceneManager.GetActiveScene().buildIndex == 3)
+            networkTrain.SendUltiPurchase(cardID, bought, charge);
+    }
+
     // Network Receiver
     public void ReceiveShuffle(int[] receivedCardIndexes)
     {
         enemyPlayer.ReceiveShuffle(receivedCardIndexes);
+    }
+
+    public void ReceiveSummon() {
+        enemyPlayer.ReceiveSummon();
     }
 
 }

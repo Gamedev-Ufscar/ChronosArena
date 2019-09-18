@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -142,4 +142,4 @@ public class ChooseCharacter : MonoBehaviour, IPointerExitHandler, IPointerEnter
         selectionMode = 0;
     }
 
-}
+}*/

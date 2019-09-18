@@ -13,7 +13,7 @@ public class Deck : MonoBehaviour
     [SerializeField]
     private Vector2[] reactionLocations = new Vector2[4];
 
-    private HandCard[] cardsInDeck = new HandCard[Constants.maxCardAmount];
+    private DeckCard[] cardsInDeck = new DeckCard[Constants.maxCardAmount];
     //private int[] cardIndexes = new int[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     private bool holdingCard = false;
 
@@ -107,12 +107,12 @@ public class Deck : MonoBehaviour
         return holdingCard;
     }
 
-    public HandCard GetHandCard(int id)
+    public DeckCard GetDeckCard(int id)
     {
         return cardsInDeck[id];
     }
 
-    public HandCard[] GetHandCards()
+    public DeckCard[] GetHandCards()
     {
         return cardsInDeck;
     }
@@ -144,18 +144,31 @@ public class Deck : MonoBehaviour
         // Instantiate
         GameObject card = Instantiate(cardPrefab, new Vector3(507f, -286.2f), Quaternion.identity);
         card.transform.parent = transform;
-        card.GetComponent<HandCard>().SetIndex(i);
-        cardsInDeck[i] = card.GetComponent<HandCard>();
+        AddToDeck(card.GetComponent<DeckCard>(), i);
 
         // Add Plato Card
         Card platoCard = CardMaker.CM.MakeCard(hero, i);
-        card.GetComponent<HandCard>().SetCard(platoCard);
+        card.GetComponent<DeckCard>().SetCard(platoCard);
 
         return card;
     }
 
+    public void AddToDeck(DeckCard card, int id)
+    {
+        card.SetIndex(id);
+        card.SetID(id);
+        cardsInDeck[id] = card;
+    }
+
     public void UnleashedCard(HandCard handCard)
     {
-        player.SummonCard(handCard);
+        if (handCard.GetOutOfHand() && !handCard.GetIsReaction())
+            player.SummonCard(handCard);
+    }
+
+    // Sender
+    public void SendCardPosition(int id, Vector2 position, Vector2 localPosition)
+    {
+        player.SendCardPosition(id, position, localPosition);
     }
 }

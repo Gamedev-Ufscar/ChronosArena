@@ -5,6 +5,8 @@ using UnityEngine;
 public class UltiArea : MonoBehaviour
 {
     [SerializeField]
+    Player player;
+    [SerializeField]
     private Vector2[] ultiLocations = new Vector2[Constants.maxUltiAreaSize];
     [SerializeField]
     private GameObject ultiPrefab;
@@ -31,8 +33,7 @@ public class UltiArea : MonoBehaviour
             // Instantiate
             GameObject card = Instantiate(ultiPrefab, new Vector3(507f, -286.2f), Quaternion.identity);
             card.transform.parent = transform;
-            card.GetComponent<UltimateCard>().SetIndex(i + 100);
-            cardsInArea[i] = card.GetComponent<UltimateCard>();
+            AddToArea(card.GetComponent<UltimateCard>(), i);
 
             // Add Plato Card
             Card platoCard = CardMaker.CM.MakeCard(hero, i);
@@ -43,6 +44,7 @@ public class UltiArea : MonoBehaviour
     public void AddToArea(UltimateCard card, int id)
     {
         card.SetIndex(id + 100);
+        card.SetID(id);
         cardsInArea[id] = card;
     }
 
@@ -100,5 +102,11 @@ public class UltiArea : MonoBehaviour
         {
             return null;
         }
+    }
+
+    // Sender
+    public void SendUltiPurchase(int cardID, bool bought)
+    {
+        player.SendUltiPurchase(cardID, bought);
     }
 }

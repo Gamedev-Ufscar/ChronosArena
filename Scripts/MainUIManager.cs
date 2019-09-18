@@ -73,21 +73,36 @@ public class MainUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+    }
+
+    // Hues
+    public void SetPlayerHue(bool active)
+    {
+        // Confirmed Hue
+        playerConfirmedHue.SetActive(active);
+    }
+
+    public void SetEnemyHue(bool active)
+    {
+        // Confirmed Hue
+        enemyConfirmedHue.SetActive(active);
+    }
+
+    public void DebugText()
+    {
         // Text and Debug
         stateText.text = " State: " + (int)gameOverseer.GetState();
         cardText.text = " Current Card: " + hoveredCard;
         enemyCardText.text = "Enemy Card: " + enemyRevealedCard;
+    }
+
+    // Bar stuff
+    public void UpdateHP()
+    {
         MHP.text = "" + myPlayer.GetHP();
         MCHP.text = "" + myPlayer.GetCharge();
         EHP.text = "" + enemyPlayer.GetHP();
         ECHP.text = "" + enemyPlayer.GetCharge();
-
-        // Confirmed Hue
-        if (GameOverseer.GO.myConfirm) { playerConfirmedHue.SetActive(true); }
-        else { playerConfirmedHue.SetActive(false); }
-
-        if (GameOverseer.GO.enemyConfirm) { enemyConfirmedHue.SetActive(true); }
-        else { enemyConfirmedHue.SetActive(false); }
 
         // Healthbar animation
         barAnimation();
@@ -108,7 +123,7 @@ public class MainUIManager : MonoBehaviour
 
     void myHealthbarAnimation()
     {
-        if (myManager.HP < myHealthbarValue) { // If health decreases
+        if (myPlayer.GetHP() < myHealthbarValue) { // If health decreases
             myHealthbarSprite--;
             if (myHealthbarSprite < 0)
             {
@@ -119,7 +134,7 @@ public class MainUIManager : MonoBehaviour
             if (myHealthbarValue > 0 && myHealthbarValue <= 10)
                 myHealthbar[myHealthbarValue - 1].sprite = healthSprites[myHealthbarSprite];
         }
-        else if (myManager.HP >= myHealthbarValue) { // If health increases
+        else if (myPlayer.GetHP() >= myHealthbarValue) { // If health increases
             myHealthbarSprite++;
             if (myHealthbarSprite > 6)
             {
@@ -134,7 +149,7 @@ public class MainUIManager : MonoBehaviour
 
     void enemyHealthbarAnimation()
     {
-        if (enemyManager.HP < enemyHealthbarValue)
+        if (enemyPlayer.GetHP() < enemyHealthbarValue)
         { // If health decreases
             enemyHealthbarSprite--;
             if (enemyHealthbarSprite < 0)
@@ -146,7 +161,7 @@ public class MainUIManager : MonoBehaviour
             if (enemyHealthbarValue > 0 && enemyHealthbarValue <= 10)
                 enemyHealthbar[enemyHealthbarValue - 1].sprite = healthSprites[enemyHealthbarSprite];
         }
-        else if (enemyManager.HP >= enemyHealthbarValue)
+        else if (enemyPlayer.GetHP() >= enemyHealthbarValue)
         { // If health increases
             enemyHealthbarSprite++;
             if (enemyHealthbarSprite > 6)
@@ -162,7 +177,7 @@ public class MainUIManager : MonoBehaviour
 
     void myChargebarAnimation()
     {
-        if (myManager.Charge < myChargebarValue)
+        if (myPlayer.GetCharge() < myChargebarValue)
         { // If charge decreases
             myChargebarSprite--;
             if (myChargebarSprite < 0)
@@ -174,7 +189,7 @@ public class MainUIManager : MonoBehaviour
             if (myChargebarValue > 0 && myChargebarValue <= 10)
                 myChargebar[myChargebarValue - 1].sprite = chargeSprites[myChargebarSprite];
         }
-        else if (myManager.Charge >= myChargebarValue)
+        else if (myPlayer.GetCharge() >= myChargebarValue)
         { // If charge increases
             myChargebarSprite++;
             if (myChargebarSprite > 6)
@@ -189,7 +204,7 @@ public class MainUIManager : MonoBehaviour
 
     void enemyChargebarAnimation()
     {
-        if (enemyManager.Charge < enemyChargebarValue)
+        if (enemyPlayer.GetCharge() < enemyChargebarValue)
         { // If charge decreases
             enemyChargebarSprite--;
             if (enemyChargebarSprite < 0)
@@ -201,7 +216,7 @@ public class MainUIManager : MonoBehaviour
             if (enemyChargebarValue > 0 && myChargebarValue <= 10)
                 enemyChargebar[enemyChargebarValue - 1].sprite = chargeSprites[enemyChargebarSprite];
         }
-        else if (enemyManager.Charge >= enemyChargebarValue)
+        else if (enemyPlayer.GetCharge() >= enemyChargebarValue)
         { // If charge increases
             enemyChargebarSprite++;
             if (enemyChargebarSprite > 6)
