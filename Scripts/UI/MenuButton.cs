@@ -5,8 +5,12 @@ using UnityEngine.UI;
 
 public class MenuButton : Button
 {
-    public MenuOverseer menuOverseer;
+    [SerializeField]
+    private MenuOverseer menuOverseer;
+    [SerializeField]
     private int type = 0;
+    [SerializeField]
+    private int childCount = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -19,12 +23,26 @@ public class MenuButton : Button
     {
     }
 
+    public int GetChildCount()
+    {
+        return childCount;
+    }
+
     public override void PointerDown()
     {
         menuOverseer.Selected(type);
+        Debug.Log("selected");
     }
 
     public override void RightPointerDown() { }
+
+    public override void PointerUp()
+    {
+    }
+
+    public override void RightPointerUp()
+    {
+    }
 
     public override void PointerEnter()
     {

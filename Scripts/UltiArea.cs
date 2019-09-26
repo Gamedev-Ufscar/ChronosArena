@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UltiArea : MonoBehaviour
 {
@@ -12,7 +13,8 @@ public class UltiArea : MonoBehaviour
     private GameObject ultiPrefab;
 
 
-    private UltimateCard[] cardsInArea = new UltimateCard[Constants.maxUltiAreaSize];
+    private int handCount;
+    private UltimateCard[] cardsInArea;
 
     // Start is called before the first frame update
     void Start()
@@ -28,8 +30,12 @@ public class UltiArea : MonoBehaviour
 
     public void CreateUltiArea(HeroEnum hero, int cardCount, int ultiCount)
     {
+        cardsInArea = new UltimateCard[Constants.maxUltiAreaSize];
+
         for (int i = cardCount; i < cardCount + ultiCount; i++)
         {
+            handCount = cardCount;
+
             // Instantiate
             GameObject card = Instantiate(ultiPrefab, new Vector3(507f, -286.2f), Quaternion.identity);
             card.transform.parent = transform;
@@ -45,7 +51,8 @@ public class UltiArea : MonoBehaviour
     {
         card.SetIndex(id + 100);
         card.SetID(id);
-        cardsInArea[id] = card;
+        card.SetUltiArea(this);
+        cardsInArea[id - handCount] = card;
     }
 
     public void RecedeUlti(int cardIndex)
@@ -88,6 +95,23 @@ public class UltiArea : MonoBehaviour
         return myCardIndex;
     }
 
+    public void BeingHighlighted(int cardID)
+    {
+        UltimateCard uc = cardsInArea[cardID];
+        uc.ChangeScale(2);
+        uc.SetAsLastSibling();
+        uc.ChangePosition(uc.transform.localPosition + new Vector3(0f, 5f, 0f));
+    }
+
+    public void StopHighlighted(int cardID)
+    {
+        Debug.Log("cardID: " + cardID + ", handCount: " + handCount);
+        UltimateCard uc = cardsInArea[cardID - handCount];
+        uc.ChangeScale(1);
+        uc.SetAsFirstSibling();
+        uc.ChangePosition(ultiLocations[cardID - handCount]);
+    }
+
     // Getter
     public UltimateCard GetUltiCard(int i)
     {
@@ -104,9 +128,16 @@ public class UltiArea : MonoBehaviour
         }
     }
 
+    public bool GetHoldingCard()
+    {
+        return player.GetHoldingCard();
+    }
+
     // Sender
     public void SendUltiPurchase(int cardID, bool bought)
     {
         player.SendUltiPurchase(cardID, bought);
     }
+
+    
 }

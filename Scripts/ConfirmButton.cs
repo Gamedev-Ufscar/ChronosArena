@@ -8,10 +8,12 @@ using UnityEngine.SceneManagement;
 
 public class ConfirmButton : Button
 {
+    [SerializeField]
     GameOverseer gameOverseer;
+    [SerializeField]
     SelectionOverseer selectionOverseer;
 
-    public PhotonView PV;
+    //public PhotonView PV;
     public Sprite[] buttonColors = new Sprite[3];
     private Image image;
 
@@ -32,43 +34,46 @@ public class ConfirmButton : Button
 
     public override void PointerEnter()
     {
-        throw new System.NotImplementedException();
+
     }
 
     public override void PointerExit()
     {
-        throw new System.NotImplementedException();
+
+    }
+
+    public override void PointerUp()
+    {
+        transform.localScale = new Vector2(1.2f, 1.2f);
+        if (SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            selectionOverseer.ConfirmButton();
+
+            // Colors
+            if (selectionOverseer.GetMyConfirm())
+            {
+                image.sprite = buttonColors[1];
+            }
+            else
+            {
+                image.sprite = buttonColors[0];
+            }
+
+        }
+        else if (SceneManager.GetActiveScene().buildIndex == 3)
+        {
+            //GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
+        }
+    }
+
+    public override void RightPointerUp()
+    {
     }
 
     public override void PointerDown()
     {
-        // Click
-        if (pointerOver == true && Input.GetMouseButtonUp(0))
-        {
-            if (SceneManager.GetActiveScene().buildIndex == 2) {
-                selectionOverseer.InvertMyConfirm();
-
-                // Colors
-                if (selectionOverseer.GetMyConfirm()) {
-                    image.sprite = buttonColors[1];
-                } else {
-                    image.sprite = buttonColors[0];
-                }
-
-            } else if (SceneManager.GetActiveScene().buildIndex == 3) {
-                //GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
-            }
-
-        }
-
         // Juicy feeling
-        if (pointerOver == true && Input.GetMouseButton(0))
-        {
-            transform.localScale = new Vector2(1.1f, 1.1f);
-        } else
-        {
-            transform.localScale = new Vector2(1.2f, 1.2f);
-        }
+        transform.localScale = new Vector2(1.1f, 1.1f);
     }
 
     public override void RightPointerDown() { }

@@ -35,14 +35,14 @@ public class MenuOverseer : MonoBehaviour
                 break;
 
             case 4: // Characters
-                GetComponentInParent<SlidingParent>().Recede();
+                mainMenu.Recede();
                 libraryMenu.Slide();
-                libraryMenu.waitTime = 0.4f;
+                libraryMenu.SetWaitTime(0.4f);
                 libraryMenu.GetComponent<LibraryHub>().enabled = true;
                 back.gameObject.SetActive(true);
-                back.setMinguant(false);
-                back.waitTime = 0.5f;
-                logo.setMinguant(true);
+                back.SetMinguant(false);
+                back.SetWaitTime(0.5f);
+                logo.SetMinguant(true);
                 break;
 
             case 6: // Quit
@@ -53,11 +53,11 @@ public class MenuOverseer : MonoBehaviour
                 libraryMenu.Recede();
                 libraryMenu.GetComponent<LibraryHub>().enabled = false;
                 mainMenu.Slide();
-                mainMenu.waitTime = 0.4f;
+                mainMenu.SetWaitTime(0.4f);
                 logo.gameObject.SetActive(true);
-                logo.setMinguant(false);
-                logo.waitTime = 0.5f;
-                back.setMinguant(true);
+                logo.SetMinguant(false);
+                logo.SetWaitTime(0.5f);
+                back.SetMinguant(true);
                 break;
 
             default:
@@ -68,10 +68,14 @@ public class MenuOverseer : MonoBehaviour
     public void ButtonHover(MenuButton menuButton)
     {
         menuButton.ChangeTone(1f);
+        menuButton.ChangeChildTone(menuButton.GetChildCount(), 1f);
+        menuButton.transform.SetAsLastSibling();
     }
 
     public void ButtonStopHover(MenuButton menuButton)
     {
         menuButton.ChangeTone(0.57f);
+        menuButton.ChangeChildTone(menuButton.GetChildCount(), 0.57f);
+        menuButton.transform.SetAsFirstSibling();
     }
 }

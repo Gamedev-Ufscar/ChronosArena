@@ -9,8 +9,7 @@ public class InterfaceCard : UICard
     private bool option;
     private Interface interfface;
 
-    // Constructor
-    public InterfaceCard(Card card, Interface interfface) : base(card)
+    public void SetInterface(Interface interfface)
     {
         this.interfface = interfface;
     }

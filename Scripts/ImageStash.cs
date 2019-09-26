@@ -5,9 +5,13 @@ using UnityEngine;
 public class ImageStash : MonoBehaviour
 {
     public static ImageStash IS;
-    private Sprite[] UgaList;
+    [SerializeField]
     private Sprite[] TimothyList;
+    [SerializeField]
     private Sprite[] HaroldList;
+    [SerializeField]
+    private Sprite[] UgaList;
+    [SerializeField]
     private Sprite[] YuriList;
     Hashtable heroHashtable = new Hashtable();
 

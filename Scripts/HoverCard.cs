@@ -17,11 +17,6 @@ public class HoverCard : UICard
         
     }
 
-    public HoverCard(Card card) : base(card)
-    {
-
-    }
-
     public void ConstructHoverCard(GameObject cardInBoard)
     {
         GetComponent<Image>().sprite = cardInBoard.GetComponent<BoardCard>().GetCardPlayed().GetImage();

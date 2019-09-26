@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-public abstract class Button : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerDownHandler
+public abstract class Button : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler
 {
     bool mouseOver = false;
     float red = 0f;
@@ -37,12 +37,40 @@ public abstract class Button : MonoBehaviour, IPointerExitHandler, IPointerEnter
     public void ChangeTone(float color, float red)
     {
         this.red = red;
-        GetComponent<Image>().color = new Color(color, color - red, color - red);
+        ChangeTone(color);
+    }
+
+    public void ChangeChildTone(int indexx, float color)
+    {
+        for (int i = 0; i <= indexx; i++)
+        {
+            if (gameObject.transform.GetChild(i) != null)
+            {
+                if (gameObject.transform.GetChild(i).GetComponent<Text>() != null)
+                {
+                    gameObject.transform.GetChild(i).GetComponent<Text>().color = new Color(color, color - red, color - red);
+                }
+                else if (gameObject.transform.GetChild(i).GetComponent<Image>() != null)
+                {
+                    gameObject.transform.GetChild(i).GetComponent<Image>().color = new Color(color, color - red, color - red);
+                }
+            }
+        }
+    }
+
+    public void ChangeChildTone(int indexx, float color, float red)
+    {
+        this.red = red;
+        ChangeChildTone(indexx, color);
     }
 
     public abstract void PointerDown();
 
     public abstract void RightPointerDown();
+
+    public abstract void PointerUp();
+
+    public abstract void RightPointerUp();
 
     public abstract void PointerEnter();
 
@@ -51,12 +79,23 @@ public abstract class Button : MonoBehaviour, IPointerExitHandler, IPointerEnter
     // Pointer stuff
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (mouseOver && eventData.button == PointerEventData.InputButton.Left)
+        if (mouseOver)
         {
             if (eventData.button == PointerEventData.InputButton.Left)
                 PointerDown();
             else if (eventData.button == PointerEventData.InputButton.Right)
                 RightPointerDown();
+        }
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (mouseOver)
+        {
+            if (eventData.button == PointerEventData.InputButton.Left)
+                PointerUp();
+            else if (eventData.button == PointerEventData.InputButton.Right)
+                RightPointerUp();
         }
     }
 

@@ -34,6 +34,14 @@ public class Profile : Button
         player.InvokeSummary();
     }
 
+    public override void PointerUp()
+    {
+    }
+
+    public override void RightPointerUp()
+    {
+    }
+
     public override void PointerEnter()
     {
 

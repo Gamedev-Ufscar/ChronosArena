@@ -13,7 +13,6 @@ public class Interface : MonoBehaviour
     private int interfaceSignal = 200;
     [SerializeField]
     private GameObject optionPrefab;
-    [SerializeField]
     private List<Vector2> cardLocations;
 
     private Card invoker;

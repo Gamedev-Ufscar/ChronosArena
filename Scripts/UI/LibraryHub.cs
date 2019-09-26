@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class LibraryHub : MonoBehaviour
 {
-    public FadingScript back;
-    public List<FadingScript> sheetList = new List<FadingScript>();
+    [SerializeField]
+    private FadingScript back;
+    [SerializeField]
+    private List<FadingScript> sheetList = new List<FadingScript>();
 
-    [HideInInspector]
-    public int currentSheet = 200;
-    [HideInInspector]
-    public int formerSheet = 200;
-    [HideInInspector]
-    public bool update = false;
+    private int currentSheet = 200;
+    private int formerSheet = 200;
 
     // Start is called before the first frame update
     void Start()
@@ -23,25 +21,35 @@ public class LibraryHub : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (update) { 
-            if (currentSheet == 200) {
-                back.gameObject.SetActive(true);
-                back.setMinguant(false);
-                back.waitTime = 0.25f;
-                sheetList[formerSheet].setMinguant(true);
-            } else {
-                if (formerSheet != currentSheet && formerSheet != 200)
-                {
-                    sheetList[formerSheet].setMinguant(true);
-                }
-                sheetList[currentSheet].gameObject.SetActive(true);
-                sheetList[currentSheet].setMinguant(false);
-                sheetList[currentSheet].waitTime = 0.25f;
-                back.setMinguant(true);
-                formerSheet = currentSheet;
-                Debug.Log(currentSheet);
+
+    }
+
+    public void SetCurrentSheet(int currentSheet)
+    {
+        this.currentSheet = currentSheet;
+    }
+
+    public void UpdateStatus()
+    {
+        if (currentSheet == 200)
+        {
+            back.gameObject.SetActive(true);
+            back.SetMinguant(false);
+            back.SetWaitTime(0.25f);
+            sheetList[formerSheet].SetMinguant(true);
+        }
+        else
+        {
+            if (formerSheet != currentSheet && formerSheet != 200)
+            {
+                sheetList[formerSheet].SetMinguant(true);
             }
-            update = false;
+            sheetList[currentSheet].gameObject.SetActive(true);
+            sheetList[currentSheet].SetMinguant(false);
+            sheetList[currentSheet].SetWaitTime(0.25f);
+            back.SetMinguant(true);
+            formerSheet = currentSheet;
+            Debug.Log(currentSheet);
         }
     }
 }

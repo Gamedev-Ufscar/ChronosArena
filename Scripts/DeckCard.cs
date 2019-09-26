@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public abstract class DeckCard : UICard
 {
-    private Card card;
     private Deck deck;
     private bool beingHeld = false;
     private bool isReaction = false;
@@ -27,13 +26,6 @@ public abstract class DeckCard : UICard
     {
     }
 
-    // Constructor
-    public DeckCard(Card card, Deck deck) : base(card)
-    {
-        this.deck = deck;
-        this.card = card;
-    }
-
     // Setter/Changer
     public new void ChangePosition(Vector2 newPosition)
     {
@@ -43,9 +35,24 @@ public abstract class DeckCard : UICard
         }
     }
 
+    public void SetBeingHeld(bool beingHeld)
+    {
+        this.beingHeld = beingHeld;
+    }
+
+    public void SetOutOfHand(bool outOfHand)
+    {
+        this.outOfHand = outOfHand;
+    }
+
     public void SetIsReaction(bool isReaction)
     {
         this.isReaction = isReaction;
+    }
+
+    public void SetDeck(Deck deck)
+    {
+        this.deck = deck;
     }
 
     public void SetID(int cardID)
@@ -72,5 +79,20 @@ public abstract class DeckCard : UICard
     public UltimateCard GetUltiCardScript()
     {
         return ultiCard.GetComponent<UltimateCard>();
+    }
+
+    public Deck GetDeck()
+    {
+        return deck;
+    }
+
+    public bool GetBeingHeld()
+    {
+        return beingHeld;
+    }
+
+    public bool GetOutOfHand()
+    {
+        return outOfHand;
     }
 }

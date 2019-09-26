@@ -9,11 +9,12 @@ public class FadingScript : MonoBehaviour
     bool minguant = false;
     Image image;
     Text text;
-    public List<Text> textList = new List<Text>();
-    public List<Image> imageList = new List<Image>();
+    [SerializeField]
+    private List<Text> textList = new List<Text>();
+    [SerializeField]
+    private List<Image> imageList = new List<Image>();
 
-    [HideInInspector]
-    public float waitTime = 0f;
+    private float waitTime = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -61,8 +62,14 @@ public class FadingScript : MonoBehaviour
         }
     }
 
-    public void setMinguant(bool setter)
+    // Setter
+    public void SetMinguant(bool setter)
     {
         minguant = setter;
+    }
+
+    public void SetWaitTime(float waitTime)
+    {
+        this.waitTime = waitTime;
     }
 }

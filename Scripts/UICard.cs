@@ -25,13 +25,14 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     void Update()
     {
         // Control Position
-        ReturnCard();
+        MoveCard();
     }
 
     // Constructor
-    public UICard(Card card)
+    public void SetupCard(Card card)
     {
-        this.card = card;
+        SetCard(card);
+        gameObject.GetComponent<Image>().sprite = card.GetImage();
         transform.GetChild(0).GetComponent<Text>().text = card.GetName();
         transform.GetChild(1).GetComponent<Text>().text = card.typeString(card.GetCardType());
         transform.GetChild(2).GetComponent<Text>().text = card.GetText().Replace("\\n", "\n");
@@ -41,7 +42,7 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     }
 
     // Position Manipulators
-    public void ReturnCard()
+    public void MoveCard()
     {
         transform.localPosition = Vector2.Lerp(transform.localPosition, targetPosition, 0.1f);
     }
@@ -122,6 +123,11 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         pointerOver = true;
+        Debug.Log("Pointer Enter!");
+        ChangeScale(Constants.cardBigSize);
+        SetAsLastSibling();
+        ChangeColor(1f);
+        ChangePosition(targetPosition + new Vector3(0f, Constants.cardRiseHeight, 0f));
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -130,6 +136,7 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         ChangeScale(1);
         SetAsFirstSibling();
         ChangeColor(0.6f);
+        ChangePosition(targetPosition + new Vector3(0f, -Constants.cardRiseHeight, 0f));
     }
 
 

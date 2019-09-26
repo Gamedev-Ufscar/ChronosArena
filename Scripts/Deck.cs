@@ -13,9 +13,14 @@ public class Deck : MonoBehaviour
     [SerializeField]
     private Vector2[] reactionLocations = new Vector2[4];
 
-    private DeckCard[] cardsInDeck = new DeckCard[Constants.maxCardAmount];
+    private DeckCard[] cardsInDeck;
     //private int[] cardIndexes = new int[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     private bool holdingCard = false;
+
+    // Current Card
+    private int? sendingID = null;
+    private Vector2 sendingPosition;
+    private float time = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +31,6 @@ public class Deck : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     public Deck(Player player)
@@ -56,7 +60,7 @@ public class Deck : MonoBehaviour
     public void Shuffle()
     {
         int helper, rando = 0;
-        int[] cardIndexes = new int[14];
+        int[] cardIndexes;
 
         for (int i = 0; i < cardsInDeck.Length; i++) {
             rando = Random.Range(0, cardsInDeck.Length);
@@ -75,7 +79,9 @@ public class Deck : MonoBehaviour
 
         UpdateCardPositions();
 
-        for (int i = 0; i < cardsInDeck.Length; i++)
+        cardIndexes = new int[Constants.maxCardAmount];
+
+        for (int i = 0; i < Constants.maxCardAmount; i++)
         {
             cardIndexes[i] = cardsInDeck[i].GetIndex();
         }
@@ -123,9 +129,16 @@ public class Deck : MonoBehaviour
         this.holdingCard = holdingCard;
     }
 
+    public void SetCardPosition(int id, Vector2 position)
+    {
+        player.SetCardPosition(id, position);
+    }
+
     // Summoning
     public void CreateDeck(HeroEnum hero, int cardCount, int ultiCount, int passiveCount)
     {
+        cardsInDeck = new DeckCard[Constants.maxCardAmount];
+
         for (int i = 0; i < cardCount; i++)
         {
             CreateCard(hero, i);
@@ -148,7 +161,9 @@ public class Deck : MonoBehaviour
 
         // Add Plato Card
         Card platoCard = CardMaker.CM.MakeCard(hero, i);
-        card.GetComponent<DeckCard>().SetCard(platoCard);
+        card.GetComponent<DeckCard>().SetupCard(platoCard);
+        card.GetComponent<DeckCard>().SetDeck(this);
+        
 
         return card;
     }
@@ -157,6 +172,7 @@ public class Deck : MonoBehaviour
     {
         card.SetIndex(id);
         card.SetID(id);
+        card.SetDeck(this);
         cardsInDeck[id] = card;
     }
 
@@ -167,8 +183,21 @@ public class Deck : MonoBehaviour
     }
 
     // Sender
-    public void SendCardPosition(int id, Vector2 position, Vector2 localPosition)
+
+    // Receiver
+
+    public void ReceiveCardPosition(int hoverCard, Vector2 hoverPos)
     {
-        player.SendCardPosition(id, position, localPosition);
+        EnemyCard ec = (EnemyCard)GetDeckCard(hoverCard);
+        ec.EnemyChangePosition(hoverPos);
+    }
+
+    public void ReceiveCardPositionStop(int hoverCard)
+    {
+        if (GetDeckCard(hoverCard) is EnemyCard)
+        {
+            EnemyCard ec = (EnemyCard)GetDeckCard(hoverCard);
+            ec.EnemyStopMovement();
+        }
     }
 }

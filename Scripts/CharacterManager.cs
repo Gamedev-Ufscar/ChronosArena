@@ -5,7 +5,7 @@ using UnityEngine;
 public class CharacterManager : MonoBehaviour
 {
     [SerializeField]
-    private Character[] characterList;
+    public Character[] characterList;
 
     // Start is called before the first frame update
     void Start()

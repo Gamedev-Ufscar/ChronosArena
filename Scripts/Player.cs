@@ -24,15 +24,19 @@ public class Player : MonoBehaviour
     private SideEffect[] sideList = new SideEffect[Constants.maxSideListSize];
     private BoardCard cardPlayed = null;
     private bool predicted = false;
-    private Profile profile;
 
     [SerializeField]
     private SlotsOnBoard boardSlot;
+    [SerializeField]
+    private Profile profile;
 
-    private int sentCardID;
+    private int? sentCardID;
     private Vector2 sentCardPosition;
-    private Vector2 sentCardLocalPosition;
-    private bool sent = false;
+    private int? formerCardID;
+    private Vector2 formerCardPosition;
+
+    private int? sentUltiID = null;
+    private bool sentUlti = false;
 
     private float time = 0f;
 
@@ -44,17 +48,37 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
+    // Sending card positions
     void Update()
     {
         if (time >= 0.2f)
         {
-            if (sent)
+            // Check if there's an update
+            if (sentCardID != formerCardID && sentCardPosition != formerCardPosition)
             {
-                SendCardPosition(sentCardID, sentCardPosition, sentCardLocalPosition);
-                sent = false;
-            } else
+                // Send 'card position'
+                if (sentCardID != null)
+                {
+                    SendCardPosition((int)sentCardID, sentCardPosition);
+                    formerCardID = sentCardID;
+                    formerCardPosition = sentCardPosition;
+                }
+                // Send 'no card selected'
+                else
+                {
+                    gameOverseer.SendCardPositionStop();
+                }
+            }
+
+
+            if (sentUlti && sentUltiID != null)
             {
-                gameOverseer.SendPositionStop();
+                SendUltiHover((int)sentUltiID);
+                sentUlti = false;
+            }
+            else
+            {
+                gameOverseer.SendUltiStop();
             }
 
             // Time stuff
@@ -214,6 +238,11 @@ public class Player : MonoBehaviour
         return deck;
     }
 
+    public UltiArea GetUltiArea()
+    {
+        return ultiArea;
+    }
+
     public HeroEnum GetHero()
     {
         return hero;
@@ -304,6 +333,11 @@ public class Player : MonoBehaviour
         return count+1;
     }
 
+    public bool GetHoldingCard()
+    {
+        return deck.GetHoldingCard();
+    }
+
     // Setters
     public void SetHP(int HP)
     {
@@ -348,12 +382,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void SetCardPosition(int id, Vector2 position, Vector2 localPosition)
+    public void SetCardPosition(int id, Vector2 position)
     {
         sentCardID = id;
         sentCardPosition = position;
-        sentCardLocalPosition = localPosition;
-        sent = true;
+    }
+
+    public void SetUltiToSend(int id)
+    {
+        sentUltiID = id;
+        sentUlti = true;
     }
 
     // Side Effects
@@ -412,9 +450,19 @@ public class Player : MonoBehaviour
         gameOverseer.SendShuffle(cardIndexes);
     }
 
-    public void SendCardPosition(int id, Vector2 position, Vector2 localPosition)
+    public void SendCardPosition(int id, Vector2 position)
     {
-        gameOverseer.SendCardPosition(id, this, position, localPosition);
+        gameOverseer.SendCardPosition(id, position);
+    }
+
+    public void SendCardPositionStop()
+    {
+        gameOverseer.SendCardPositionStop();
+    }
+
+    public void SendUltiHover(int id)
+    {
+        gameOverseer.SendUltiPosition(id, this);
     }
 
     public void SendUltiPurchase(int cardID, bool bought)
@@ -430,6 +478,29 @@ public class Player : MonoBehaviour
 
     public void ReceiveSummon()
     {
-        SummonCard(GetDeckCard(sentCardID));
+        SummonCard(GetDeckCard((int)sentCardID));
+    }
+
+    public void ReceiveCardPosition(int hoverCard, Vector2 hoverPos)
+    {
+        sentCardID = hoverCard;
+        deck.ReceiveCardPosition(hoverCard, hoverPos);
+    }
+
+    public void ReceiveCardPositionStop()
+    {
+        deck.ReceiveCardPositionStop((int)sentCardID);
+    }
+
+    public void ReceiveUltiHover(int cardID)
+    {
+        sentUltiID = cardID;
+        ultiArea.BeingHighlighted(cardID);
+    }
+
+    public void ReceiveUltiHoverStop()
+    {
+        if (sentUltiID != null)
+            ultiArea.StopHighlighted((int)sentUltiID);
     }
 }

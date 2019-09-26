@@ -14,8 +14,8 @@ public class GameOverseer : MonoBehaviour
     private Player enemyPlayer;
     [SerializeField]
     private MainUIManager UIManager;
-    [SerializeField]
-    private NetworkTrain networkTrain;
+    //[SerializeField]
+    //private NetworkTrain networkTrain;
     [SerializeField]
     private Interface interfface;
 
@@ -30,10 +30,17 @@ public class GameOverseer : MonoBehaviour
     private GameState state = GameState.Purchase;
 
     private void Awake()
+    {  
+    }
+
+    private void Start()
     {
-        GameObject netObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
-        networkTrain = netObject.AddComponent<NetworkTrain>();
-        networkTrain = new NetworkTrain(this);
+        Debug.Log("A new Train");
+        if (NetworkTrain.networkTrain == null)
+        {
+            GameObject netObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
+            netObject.GetComponent<NetworkTrain>().GiveGameOverseer(this);
+        }
     }
 
     // Hover Card
@@ -244,35 +251,45 @@ public class GameOverseer : MonoBehaviour
     // Network Sender
     public void SummonCard(int cardID)
     {
-        networkTrain.SummonCard(cardID);
+        NetworkTrain.networkTrain.SummonCard(cardID);
     }
 
     public void SendShuffle(int[] cardIndexes)
     {
-        networkTrain.SendShuffle(cardIndexes);
+        NetworkTrain.networkTrain.SendShuffle(cardIndexes);
     }
 
     public void SendInterfaceSignal(int interfaceSignal)
     {
-        networkTrain.SendInterfaceSignal(interfaceSignal);
+        NetworkTrain.networkTrain.SendInterfaceSignal(interfaceSignal);
     }
 
-    public void SendCardPosition(int id, Player playerHovered, Vector2 position, Vector2 localPosition)
+    public void SendCardPosition(int id, Vector2 position)
+    {
+        NetworkTrain.networkTrain.SendCardPosition(id, position);
+    }
+
+    public void SendCardPositionStop()
+    {
+        NetworkTrain.networkTrain.SendCardPositionStop();
+    }
+
+    public void SendUltiPosition(int id, Player playerHovered)
     {
         bool hoveringMyself;
         hoveringMyself = (playerHovered == myPlayer) ? true : false;
-        networkTrain.SendCardPosition(id, hoveringMyself, position, localPosition);
+        NetworkTrain.networkTrain.SendUltiHover(id, hoveringMyself);
     }
 
-    public void SendPositionStop()
+    public void SendUltiStop()
     {
-        networkTrain.SendPositionStop();
+        NetworkTrain.networkTrain.SendUltiStop();
     }
 
     public void SendUltiPurchase(int cardID, bool bought, int charge)
     {
         if (state == GameState.Purchase && SceneManager.GetActiveScene().buildIndex == 3)
-            networkTrain.SendUltiPurchase(cardID, bought, charge);
+            NetworkTrain.networkTrain.SendUltiPurchase(cardID, bought, charge);
     }
 
     // Network Receiver
@@ -283,6 +300,29 @@ public class GameOverseer : MonoBehaviour
 
     public void ReceiveSummon() {
         enemyPlayer.ReceiveSummon();
+    }
+
+    public void ReceiveCardPosition(int hoverCard, Vector2 hoverPos)
+    {
+        enemyPlayer.ReceiveCardPosition(hoverCard, hoverPos);
+    }
+
+    public void ReceiveCardPositionStop()
+    {
+        enemyPlayer.ReceiveCardPositionStop();
+    }
+
+    public void ReceiveUltiHover(int hoverCard, bool hoveringMyself)
+    {
+        if (hoveringMyself)
+            enemyPlayer.GetUltiArea().BeingHighlighted(hoverCard);
+        else
+            myPlayer.GetUltiArea().BeingHighlighted(hoverCard);
+    }
+
+    public void ReceiveUltiHoverStop()
+    {
+        enemyPlayer.ReceiveUltiHoverStop();
     }
 
 }

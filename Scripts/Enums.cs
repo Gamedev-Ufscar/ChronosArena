@@ -9,6 +9,8 @@ static class Constants
     public const int maxUltiAreaSize = 3;
     public const int maxSideListSize = 12;
     public const int SpeedOfLight = 300000;
+    public const float cardRiseHeight = 100f;
+    public const float cardBigSize = 3f;
 }
 
 public enum HeroEnum

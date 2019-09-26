@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class SlidingParent : MonoBehaviour
 {
-    public Vector2 origin;
-    public Vector2 destination;
+    [SerializeField]
+    private Vector2 origin;
+    [SerializeField]
+    private Vector2 destination;
     bool sliding = false;
     float time = 0f;
-    [HideInInspector]
-    public float waitTime = 0f;
+    private float waitTime = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -49,5 +50,10 @@ public class SlidingParent : MonoBehaviour
     public void Recede()
     {
         sliding = false;
+    }
+
+    public void SetWaitTime(float waitTime)
+    {
+        this.waitTime = waitTime;
     }
 }

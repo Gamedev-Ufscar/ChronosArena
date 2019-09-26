@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Character : MonoBehaviour
-{
+public class Character {
     [SerializeField]
     private HeroEnum hero = HeroEnum.None;
     [SerializeField]
     private Sprite profile;
+    [SerializeField]
+    private int sideListSize = 0;
     [SerializeField]
     private int cardCount = 0;
     [SerializeField]
@@ -24,38 +25,68 @@ public class Character : MonoBehaviour
         switch (hero)
         {
             case HeroEnum.Timothy:
-                return "TIMOTHY";
+                return "Timothy";
 
             case HeroEnum.Harold:
-                return "DR. HAROLD";
+                return "Dr. Harold";
 
             case HeroEnum.Uga:
-                return "UGA";
+                return "Uga";
 
             case HeroEnum.Yuri:
-                return "YURI";
+                return "Yuri";
 
             case HeroEnum.Zarnada:
-                return "ZARNADA";
+                return "Zarnada";
 
             case HeroEnum.Tupa:
-                return "TUPÃ";
+                return "Tupã";
 
             case HeroEnum.Gerador:
-                return "MECHA-GERADOR";
+                return "Mecha-Gerador";
 
             case HeroEnum.Eugene:
-                return "EUGENE";
+                return "Eugene";
 
             default:
-                return "ROBOTO";
+                return "Roboto";
         }
     }
 
     // Getters
+    public HeroEnum GetHero()
+    {
+        return hero;
+    }
+
     public Sprite GetProfile()
     {
         return profile;
+    }
+
+    public int GetSideListSize()
+    {
+        return sideListSize;
+    }
+
+    public int GetCardCount()
+    {
+        return cardCount;
+    }
+
+    public int GetUltiCount()
+    {
+        return ultiCount;
+    }
+
+    public int GetPassiveCount()
+    {
+        return passiveCount;
+    }
+
+    public List<CardTypes> GetAttackDisableList()
+    {
+        return attackDisableList;
     }
 
     public int GetCount(CountEnum count)

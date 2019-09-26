@@ -25,15 +25,31 @@ public class EnemyCard : DeckCard
     void Update()
     {
         // Control Position
-        if (beingHeld && !isReaction) {
-
-        } else {
-            ReturnCard();
+        if (!beingHeld || isReaction) {
+            MoveCard();
         }
     }
 
-    // Constructor
-    public EnemyCard(Card card, Deck deck) : base(card, deck)
+    public void EnemyChangePosition(Vector2 newPosition)
     {
+        SetBeingHeld(true);
+        ChangePosition(newPosition);
+    }
+
+    public void EnemyStopMovement()
+    {
+        SetBeingHeld(false);
+    }
+
+    // Hover card
+    public new void OnPointerEnter(PointerEventData eventData)
+    {
+        ChangeColor(1f);
+    }
+
+    // Stop Hover Card
+    public new void OnPointerExit(PointerEventData eventData)
+    {
+        ChangeColor(0.6f);
     }
 }

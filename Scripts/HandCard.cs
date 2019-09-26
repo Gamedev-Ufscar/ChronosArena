@@ -4,16 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler
+public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, IPointerEnterHandler
 {
-    private Card card;
-    private Deck deck;
-    private bool beingHeld = false;
     private Vector2 center = new Vector2(0f, 0f);
-    private bool isReaction = false;
-    private bool outOfHand = false;
-
-    private GameObject ultiCard;
 
     // Start is called before the first frame update
     void Start()
@@ -25,25 +18,12 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler
     void Update()
     {
         // Control Position
-        if (beingHeld && !isReaction) {
+        if (GetBeingHeld() && !GetIsReaction()) {
             HoldCard();
 
         } else {
-            ReturnCard();
+            MoveCard();
         }
-    }
-
-    // Constructor
-    public HandCard(Card card, Deck deck) : base(card, deck)
-    {
-        this.card = card;
-        this.deck = deck;
-    }
-
-    // Getter
-    public bool GetOutOfHand()
-    {
-        return outOfHand;
     }
 
     // Position Manipulators
@@ -55,39 +35,51 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler
         center = Vector3.Lerp(center, new Vector3(0f, 0f, 0f), 0.1f);
     }
 
-    public void ChangePosition(int id, Vector2 newPosition, Vector2 localNewPosition)
+    public new void ChangePosition(Vector2 newPosition)
     {
         base.ChangePosition(newPosition);
-        deck.SendCardPosition(id, newPosition, localNewPosition);
+        GetDeck().SetCardPosition(GetID(), newPosition);
     }
 
+    public void ChangePosition(int id, Vector2 newPosition)
+    {
+        base.ChangePosition(newPosition);
+        GetDeck().SetCardPosition(id, newPosition);
+    }
+
+
+    // Hover card
     public new void OnPointerEnter(PointerEventData eventData)
     {
-        if (!deck.GetHoldingCard())
+        if (!GetDeck().GetHoldingCard())
         {
-            ChangeScale(2);
-            SetAsLastSibling();
-            ChangeColor(1f);
-            transform.localPosition = transform.localPosition + new Vector3(0f, 5f, 0f);
+            base.OnPointerEnter(eventData);
         }
     }
 
+    // Stop Hover Card
+    public new void OnPointerExit(PointerEventData eventData)
+    {
+        base.OnPointerExit(eventData);
+    }
+
+    // Hold card
     public void OnPointerDown(PointerEventData eventData)
     {
-        // Control variables and override
-        deck.SetHoldingCard(true);
-        beingHeld = true;
+        GetDeck().SetHoldingCard(true);
+        SetBeingHeld(true);
         center = transform.position - Input.mousePosition;
     }
 
+    // Stop holding card, maybe summon card?
     public void OnPointerUp(PointerEventData eventData)
     {
         // Unleashed card
-        deck.UnleashedCard(this);
+        GetDeck().UnleashedCard(this);
 
         // Control variables and override
-        deck.SetHoldingCard(false);
-        beingHeld = false;
+        GetDeck().SetHoldingCard(false);
+        SetBeingHeld(false);
     }
 
     public void OnTriggerEnter(Collider other)
@@ -95,7 +87,7 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler
         //Debug.Log("Trigger Exit");
         if (other.tag == "Hand")
         {
-            outOfHand = false;
+            SetOutOfHand(false);
         }
     }
 
@@ -104,7 +96,7 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler
         //Debug.Log("Trigger Exit");
         if (other.tag == "Hand")
         {
-            outOfHand = true;
+            SetOutOfHand(true);
         }
     }
 }
