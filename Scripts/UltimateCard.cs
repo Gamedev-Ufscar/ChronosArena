@@ -22,7 +22,8 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     // Update is called once per frame
     void Update()
     {
-        
+        // Control position
+        MoveCard();
     }
     
 
@@ -64,20 +65,19 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     public new void OnPointerEnter(PointerEventData eventData)
     {
         base.OnPointerEnter(eventData);
+        ultiArea.SetSibling(true);
+
         if (!bought) ChangeColor(0.8f);
 
-        if (!ultiArea.GetHoldingCard())
-        {
-            ultiArea.BeingHighlighted(cardID);
-        }
     }
 
     public new void OnPointerExit(PointerEventData eventData)
     {
         base.OnPointerExit(eventData);
+        ultiArea.SetSibling(false);
+
         if (!bought) ChangeColor(0.6f);
 
-        ultiArea.StopHighlighted(cardID);
     }
 
     public void OnPointerClick(PointerEventData eventData)

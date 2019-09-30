@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class BugaScream : Card
 {
-    public BugaScream(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
-        base(hero, name, cardID, image, text, type, minmax)
-    { }
+    public BugaScream(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax, int cost) :
+        base(hero, name, cardID, image, text, type, minmax, false, cost)
+    {
+        
+    }
 
     public override void Effect(Player user, Player enemy, int priority)
     {
@@ -156,8 +158,8 @@ public class ChronosMachine : Card, Interfacer
     public int interfaceSignal { get; set; }
     public bool isChronos { get; set; }
 
-    public ChronosMachine(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax, bool isChronos) :
-        base(hero, name, cardID, image, text, type, minmax)
+    public ChronosMachine(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax, bool isChronos, int cost) :
+        base(hero, name, cardID, image, text, type, minmax, false, cost)
     {
         this.isChronos = isChronos;
     }

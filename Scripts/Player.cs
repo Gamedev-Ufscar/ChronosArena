@@ -30,9 +30,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Profile profile;
 
-    private int? sentCardID;
+    private int? sentCardID = null;
     private Vector2 sentCardPosition;
-    private int? formerCardID;
+    private int? formerCardID = null;
     private Vector2 formerCardPosition;
 
     private int? sentUltiID = null;
@@ -54,31 +54,34 @@ public class Player : MonoBehaviour
         if (time >= 0.2f)
         {
             // Check if there's an update
-            if (sentCardID != formerCardID && sentCardPosition != formerCardPosition)
+            if (sentCardID != formerCardID || sentCardPosition != formerCardPosition)
             {
                 // Send 'card position'
                 if (sentCardID != null)
                 {
                     SendCardPosition((int)sentCardID, sentCardPosition);
-                    formerCardID = sentCardID;
-                    formerCardPosition = sentCardPosition;
                 }
                 // Send 'no card selected'
                 else
                 {
-                    gameOverseer.SendCardPositionStop();
+                    SendCardPositionStop();
                 }
+
+                formerCardID = sentCardID;
+                formerCardPosition = sentCardPosition;
             }
 
-
+            // Send 'ulti hover'
             if (sentUlti && sentUltiID != null)
             {
                 SendUltiHover((int)sentUltiID);
                 sentUlti = false;
             }
+
+            // Send 'ulti stop'
             else
             {
-                gameOverseer.SendUltiStop();
+                SendUltiStop(this);
             }
 
             // Time stuff
@@ -100,9 +103,9 @@ public class Player : MonoBehaviour
         this.hero = hero;
         this.attackDisableList = attackDisableList;
         this.profile.SetImage(profile);
-        CreateSummary();
         deck.CreateDeck(hero, cardCount, ultiCount, passiveCount);
         ultiArea.CreateUltiArea(hero, cardCount, ultiCount);
+        CreateSummary();
     }
 
     public void CreateSummary()
@@ -130,31 +133,34 @@ public class Player : MonoBehaviour
     // Summon
     public void SummonCard(DeckCard deckCard)
     {
-        // Instantiate Board Card
-        Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 12f));
-        GameObject g = Instantiate(boardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));
-
-        // Set as Card Played
-        SetCardPlayed(g.GetComponent<BoardCard>());
-
-        // Modify and Initiate variables
-        if (deckCard.GetCard().GetCardType() == CardTypes.Ultimate)
+        if (gameOverseer.GetState() == GameState.Choice)
         {
-            cardPlayed.ConstructBoardCard(deckCard.GetCard(), this, deckCard.GetUltiCard());
+            // Instantiate Board Card
+            Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 12f));
+            GameObject g = Instantiate(boardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));
+
+            // Set as Card Played
+            SetCardPlayed(g.GetComponent<BoardCard>());
+
+            // Modify and Initiate variables
+            if (deckCard.GetCard().GetCardType() == CardTypes.Ultimate)
+            {
+                cardPlayed.ConstructBoardCard(deckCard.GetCard(), this, deckCard.GetUltiCard());
+            }
+            else
+            {
+                cardPlayed.ConstructBoardCard(deckCard.GetCard(), this, deckCard.gameObject);
+            }
+
+            deck.SetHoldingCard(false);
+
+            // Activate slot
+            if (predicted == false) { g.GetComponent<BoardCard>().Activate(boardSlot, false); }
+            else { g.GetComponent<BoardCard>().Activate(boardSlot, true); }
+
+            // Networking info
+            gameOverseer.SummonCard(deckCard.GetID());
         }
-        else
-        {
-            cardPlayed.ConstructBoardCard(deckCard.GetCard(), this, deckCard.gameObject);
-        }
-
-        deck.SetHoldingCard(false);
-
-        // Activate slot
-        if (predicted == false) { g.GetComponent<BoardCard>().Activate(boardSlot, false); }
-        else { g.GetComponent<BoardCard>().Activate(boardSlot, true); }
-
-        // Networking info
-        gameOverseer.SummonCard(deckCard.GetID());
     }
 
     // Restore Card
@@ -382,10 +388,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void SetCardPosition(int id, Vector2 position)
+    public void SetCardPosition(int? id, Vector2 position)
     {
         sentCardID = id;
-        sentCardPosition = position;
+        if (sentCardID != null)
+            sentCardPosition = position;
     }
 
     public void SetUltiToSend(int id)
@@ -450,9 +457,12 @@ public class Player : MonoBehaviour
         gameOverseer.SendShuffle(cardIndexes);
     }
 
-    public void SendCardPosition(int id, Vector2 position)
+    public void SendCardPosition(int? id, Vector2 position)
     {
-        gameOverseer.SendCardPosition(id, position);
+        if (id != null)
+            gameOverseer.SendCardPosition((int)id, position);
+        else
+            gameOverseer.SendCardPositionStop();
     }
 
     public void SendCardPositionStop()
@@ -470,6 +480,11 @@ public class Player : MonoBehaviour
         gameOverseer.SendUltiPurchase(cardID, bought, GetCharge());
     }
 
+    public void SendUltiStop(Player player)
+    {
+        gameOverseer.SendUltiStop(player);
+    }
+
     // Network Receiver
     public void ReceiveShuffle(int[] receivedCardIndexes)
     {
@@ -481,26 +496,15 @@ public class Player : MonoBehaviour
         SummonCard(GetDeckCard((int)sentCardID));
     }
 
-    public void ReceiveCardPosition(int hoverCard, Vector2 hoverPos)
+    public void ReceiveCardPosition(int? hoverCard, Vector2 hoverPos)
     {
-        sentCardID = hoverCard;
         deck.ReceiveCardPosition(hoverCard, hoverPos);
     }
 
-    public void ReceiveCardPositionStop()
+    public void ReceiveUltiHover(int? cardID)
     {
-        deck.ReceiveCardPositionStop((int)sentCardID);
-    }
-
-    public void ReceiveUltiHover(int cardID)
-    {
-        sentUltiID = cardID;
-        ultiArea.BeingHighlighted(cardID);
-    }
-
-    public void ReceiveUltiHoverStop()
-    {
-        if (sentUltiID != null)
-            ultiArea.StopHighlighted((int)sentUltiID);
+        UltimateCard uc = ultiArea.GetUltiCard(cardID);
+        if (uc != null)
+            uc.OnHover();
     }
 }

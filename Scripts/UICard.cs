@@ -32,13 +32,16 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     public void SetupCard(Card card)
     {
         SetCard(card);
-        gameObject.GetComponent<Image>().sprite = card.GetImage();
-        transform.GetChild(0).GetComponent<Text>().text = card.GetName();
-        transform.GetChild(1).GetComponent<Text>().text = card.typeString(card.GetCardType());
-        transform.GetChild(2).GetComponent<Text>().text = card.GetText().Replace("\\n", "\n");
-        transform.GetChild(3).GetComponent<Text>().text = card.Value(1);
-        transform.GetChild(4).GetComponent<Text>().text = card.Value(2);
-        transform.GetChild(5).GetComponent<Text>().text = card.heroString(card.GetHero());
+        if (!(this is EnemyCard))
+        {
+            gameObject.GetComponent<Image>().sprite = card.GetImage();
+            transform.GetChild(0).GetComponent<Text>().text = card.GetName();
+            transform.GetChild(1).GetComponent<Text>().text = card.typeString(card.GetCardType());
+            transform.GetChild(2).GetComponent<Text>().text = card.GetText().Replace("\\n", "\n");
+            transform.GetChild(3).GetComponent<Text>().text = card.Value(1);
+            transform.GetChild(4).GetComponent<Text>().text = card.Value(2);
+            transform.GetChild(5).GetComponent<Text>().text = card.heroString(card.GetHero());
+        }
     }
 
     // Position Manipulators
@@ -51,6 +54,11 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     public void ChangePosition(Vector2 newPosition)
     {
         targetPosition = newPosition;
+    }
+
+    public void SetPosition(Vector2 newPosition)
+    {
+        transform.position = newPosition;
     }
 
     public void ChangeScale(float scale)
@@ -99,6 +107,11 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         return card;
     }
 
+    public Vector2 GetTargetPosition()
+    {
+        return targetPosition;
+    }
+
     public int GetCategory()
     {
         return category;
@@ -120,7 +133,7 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     }
 
     // On Pointer
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnHover()
     {
         pointerOver = true;
         Debug.Log("Pointer Enter!");
@@ -130,13 +143,23 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         ChangePosition(targetPosition + new Vector3(0f, Constants.cardRiseHeight, 0f));
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void OutHover()
     {
         pointerOver = false;
         ChangeScale(1);
         SetAsFirstSibling();
         ChangeColor(0.6f);
         ChangePosition(targetPosition + new Vector3(0f, -Constants.cardRiseHeight, 0f));
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        OnHover();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        OutHover();
     }
 
 

@@ -58,11 +58,12 @@ public class SelectionOverseer : MonoBehaviour
     void Start()
     {
         Debug.Log("A new Train");
-        if (NetworkTrain.networkTrain == null)
+        if (NetworkTrain.networkTrain != null)
         {
-            GameObject netObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
-            netObject.GetComponent<NetworkTrain>().GiveSelectionOverseer(this);
-        }
+            Destroy(NetworkTrain.networkTrain.gameObject);
+        } 
+        GameObject netObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
+        netObject.GetComponent<NetworkTrain>().GiveSelectionOverseer(this);
     }
 
     // Update is called once per frame
@@ -188,10 +189,17 @@ public class SelectionOverseer : MonoBehaviour
 
     public void SetEnemyProfile(Sprite image, string text)
     {
-        if (enemyPortrait != null && enemyPortrait.GetComponent<Image>() != null)
-            enemyPortrait.GetComponent<Image>().sprite = image;
-        if (enemyTitle != null && enemyTitle.GetComponent<Image>() != null)
-            enemyTitle.GetComponent<Text>().text = text;
+        if (enemyPortrait == null)
+        {
+            enemyPortrait = GameObject.Find("Enemy Portrait");
+        }
+        enemyPortrait.GetComponent<Image>().sprite = image;
+
+        if (enemyTitle == null)
+        {
+            enemyTitle = GameObject.Find("Enemy Title");
+        }
+        enemyTitle.GetComponent<Text>().text = text;
     }
 
 

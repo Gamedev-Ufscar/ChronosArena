@@ -6,36 +6,29 @@ public class ImageStash : MonoBehaviour
 {
     public static ImageStash IS;
     [SerializeField]
-    private Sprite[] TimothyList;
+    private Sprite[] timothyList;
     [SerializeField]
-    private Sprite[] HaroldList;
+    private Sprite[] haroldList;
     [SerializeField]
-    private Sprite[] UgaList;
+    private Sprite[] ugaList;
     [SerializeField]
-    private Sprite[] YuriList;
-    Hashtable heroHashtable = new Hashtable();
+    private Sprite[] yuriList;
+    Hashtable heroHashtable;
 
     // Start is called before the first frame update
     void Start()
     {
-        // Hero HT
-        heroHashtable.Add(HeroEnum.Timothy, TimothyList);
-        heroHashtable.Add(HeroEnum.Harold, HaroldList);
-        heroHashtable.Add(HeroEnum.Uga, UgaList);
-        heroHashtable.Add(HeroEnum.Yuri, YuriList);
+        SetupHash();
     }
 
-    private void Awake() {
-        ImageStash.IS = this;
-    }
-
-    private void OnEnable() {
-        if (ImageStash.IS == null) {
-            ImageStash.IS = this;
+    void Awake () {
+        DontDestroyOnLoad(this);
+        if (IS == null) {
+            IS = this;
+            SetupHash();
         } else {
-            if (ImageStash.IS != this) {
-                Destroy(ImageStash.IS);
-                ImageStash.IS = this;
+            if (IS != this) {
+                Destroy(this);
             }
         }
     }
@@ -43,13 +36,51 @@ public class ImageStash : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+    }
+
+    public void SetupHash()
+    {
+        // Hero HT
+        heroHashtable = new Hashtable();
+        heroHashtable.Add(HeroEnum.Timothy, timothyList);
+        heroHashtable.Add(HeroEnum.Harold, haroldList);
+        heroHashtable.Add(HeroEnum.Uga, ugaList);
+        heroHashtable.Add(HeroEnum.Yuri, yuriList);
     }
 
     public Sprite GetImage(HeroEnum hero, int id)
     {
-        Sprite[] list = (Sprite[])heroHashtable[hero];
-        return list[id];
+        
+        //Sprite[] list;
+        Sprite spr = ((Sprite[])heroHashtable[hero])[id];
+        return spr;
+
+        /*switch (hero)
+        {
+            case HeroEnum.Timothy:
+                list = timothyList;
+                Debug.Log("Timothy");
+                break;
+
+            case HeroEnum.Harold:
+                list = haroldList;
+                Debug.Log("Harold");
+                break;
+
+            case HeroEnum.Uga:
+                list = ugaList;
+                Debug.Log("Uga");
+                break;
+
+            case HeroEnum.Yuri:
+                list = yuriList;
+                Debug.Log("Yuri");
+                break;
+
+            default:
+                list = timothyList;
+                break;
+        }*/
     }
 
     public Texture2D textureFromSprite(Sprite sprite)

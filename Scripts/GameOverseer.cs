@@ -35,18 +35,19 @@ public class GameOverseer : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("A new Train");
-        if (NetworkTrain.networkTrain == null)
+        Debug.Log("A new Bahn");
+        if (NetworkBahn.networkBahn != null)
         {
-            GameObject netObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test"), Vector3.zero, Quaternion.identity);
-            netObject.GetComponent<NetworkTrain>().GiveGameOverseer(this);
+            Destroy(NetworkBahn.networkBahn.gameObject);
         }
+        GameObject netObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test2"), Vector3.zero, Quaternion.identity);
+        netObject.GetComponent<NetworkBahn>().GiveGameOverseer(this);
     }
 
     // Hover Card
     private void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 3&& ((GetState() == GameState.Choice && GetEnemyPlayer().GetPredicted()) ||
+        if (SceneManager.GetActiveScene().buildIndex == 3 && ((GetState() == GameState.Choice && GetEnemyPlayer().GetPredicted()) ||
             GetState() == GameState.Reaction || GetState() == GameState.Effects) && !GetMyPlayer().GetDeck().GetHoldingCard())
         {
             HoverCarding();
@@ -251,45 +252,47 @@ public class GameOverseer : MonoBehaviour
     // Network Sender
     public void SummonCard(int cardID)
     {
-        NetworkTrain.networkTrain.SummonCard(cardID);
+        NetworkBahn.networkBahn.SummonCard(cardID);
     }
 
     public void SendShuffle(int[] cardIndexes)
     {
-        NetworkTrain.networkTrain.SendShuffle(cardIndexes);
+        NetworkBahn.networkBahn.SendShuffle(cardIndexes);
     }
 
     public void SendInterfaceSignal(int interfaceSignal)
     {
-        NetworkTrain.networkTrain.SendInterfaceSignal(interfaceSignal);
+        NetworkBahn.networkBahn.SendInterfaceSignal(interfaceSignal);
     }
 
     public void SendCardPosition(int id, Vector2 position)
     {
-        NetworkTrain.networkTrain.SendCardPosition(id, position);
+        NetworkBahn.networkBahn.SendCardPosition(id, position);
     }
 
     public void SendCardPositionStop()
     {
-        NetworkTrain.networkTrain.SendCardPositionStop();
+        NetworkBahn.networkBahn.SendCardPositionStop();
     }
 
     public void SendUltiPosition(int id, Player playerHovered)
     {
         bool hoveringMyself;
         hoveringMyself = (playerHovered == myPlayer) ? true : false;
-        NetworkTrain.networkTrain.SendUltiHover(id, hoveringMyself);
+        NetworkBahn.networkBahn.SendUltiHover(id, hoveringMyself);
     }
 
-    public void SendUltiStop()
+    public void SendUltiStop(Player playerHovered)
     {
-        NetworkTrain.networkTrain.SendUltiStop();
+        bool hoveringMyself;
+        hoveringMyself = (playerHovered == myPlayer) ? true : false;
+        NetworkBahn.networkBahn.SendUltiStop(hoveringMyself);
     }
 
     public void SendUltiPurchase(int cardID, bool bought, int charge)
     {
         if (state == GameState.Purchase && SceneManager.GetActiveScene().buildIndex == 3)
-            NetworkTrain.networkTrain.SendUltiPurchase(cardID, bought, charge);
+            NetworkBahn.networkBahn.SendUltiPurchase(cardID, bought, charge);
     }
 
     // Network Receiver
@@ -309,20 +312,15 @@ public class GameOverseer : MonoBehaviour
 
     public void ReceiveCardPositionStop()
     {
-        enemyPlayer.ReceiveCardPositionStop();
+        enemyPlayer.ReceiveCardPosition(null, new Vector2(0f, 0f));
     }
 
-    public void ReceiveUltiHover(int hoverCard, bool hoveringMyself)
+    public void ReceiveUltiHover(int? hoverCard, bool hoveringMyself)
     {
         if (hoveringMyself)
-            enemyPlayer.GetUltiArea().BeingHighlighted(hoverCard);
+            enemyPlayer.ReceiveUltiHover(hoverCard);
         else
-            myPlayer.GetUltiArea().BeingHighlighted(hoverCard);
-    }
-
-    public void ReceiveUltiHoverStop()
-    {
-        enemyPlayer.ReceiveUltiHoverStop();
+            myPlayer.ReceiveUltiHover(hoverCard);
     }
 
 }

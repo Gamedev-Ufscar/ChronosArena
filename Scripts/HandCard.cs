@@ -30,23 +30,29 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
     public void HoldCard()
     {
         // Control offset
-        ChangePosition((Vector2)(new Vector3(center.x, center.y) + Input.mousePosition));
-        //transform.position = new Vector3(center.x, center.y) + Input.mousePosition;
-        center = Vector3.Lerp(center, new Vector3(0f, 0f, 0f), 0.1f);
+        SetPosition(new Vector3(center.x, center.y) + Input.mousePosition);
+        SetCenter(Vector3.Lerp(center, new Vector3(0f, 0f, 0f), 0.1f));
+
+        GetDeck().SendCardPosition(GetID(), new Vector2(transform.localPosition.x, transform.localPosition.y-2));
+        Debug.Log("holding card");
     }
 
     public new void ChangePosition(Vector2 newPosition)
     {
         base.ChangePosition(newPosition);
-        GetDeck().SetCardPosition(GetID(), newPosition);
+        //GetDeck().SendCardPosition(GetID(), newPosition);
     }
 
     public void ChangePosition(int id, Vector2 newPosition)
     {
         base.ChangePosition(newPosition);
-        GetDeck().SetCardPosition(id, newPosition);
+        //GetDeck().SendCardPosition(id, newPosition);
     }
 
+    public void SetCenter(Vector2 center)
+    {
+        this.center = center;
+    }
 
     // Hover card
     public new void OnPointerEnter(PointerEventData eventData)
@@ -54,6 +60,7 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
         if (!GetDeck().GetHoldingCard())
         {
             base.OnPointerEnter(eventData);
+            GetDeck().SendCardPosition(this);
         }
     }
 
@@ -61,6 +68,9 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
     public new void OnPointerExit(PointerEventData eventData)
     {
         base.OnPointerExit(eventData);
+
+        Debug.Log("exit card");
+        GetDeck().SendCardPosition(null, new Vector2(0f, 0f));
     }
 
     // Hold card
@@ -68,7 +78,7 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
     {
         GetDeck().SetHoldingCard(true);
         SetBeingHeld(true);
-        center = transform.position - Input.mousePosition;
+        SetCenter(transform.position - Input.mousePosition);
     }
 
     // Stop holding card, maybe summon card?
@@ -76,6 +86,10 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
     {
         // Unleashed card
         GetDeck().UnleashedCard(this);
+
+        // Stop with centering
+        UpdateCardPosition();
+        ChangePosition((Vector3)GetTargetPosition() + new Vector3(0f, Constants.cardRiseHeight));
 
         // Control variables and override
         GetDeck().SetHoldingCard(false);

@@ -28,31 +28,54 @@ public class UltiArea : MonoBehaviour
         
     }
 
+    // Constructing and Creating
     public void CreateUltiArea(HeroEnum hero, int cardCount, int ultiCount)
     {
         cardsInArea = new UltimateCard[Constants.maxUltiAreaSize];
 
+        handCount = cardCount;
         for (int i = cardCount; i < cardCount + ultiCount; i++)
         {
-            handCount = cardCount;
-
-            // Instantiate
-            GameObject card = Instantiate(ultiPrefab, new Vector3(507f, -286.2f), Quaternion.identity);
-            card.transform.parent = transform;
-            AddToArea(card.GetComponent<UltimateCard>(), i);
-
-            // Add Plato Card
-            Card platoCard = CardMaker.CM.MakeCard(hero, i);
-            card.GetComponent<UltimateCard>().SetCard(platoCard);
+            CreateUlti(hero, i);
         }
+
+        UpdateUltiPositions();
+    }
+
+    public GameObject CreateUlti(HeroEnum hero, int i)
+    {
+        // Instantiate
+        GameObject card = Instantiate(ultiPrefab, new Vector3(507f, -286.2f), Quaternion.identity);
+        card.transform.parent = transform;
+        AddToArea(card.GetComponent<UltimateCard>(), i);
+
+        // Add Plato Card
+        Card platoCard = CardMaker.CM.MakeCard(hero, i);
+        card.GetComponent<UltimateCard>().SetupCard(platoCard);
+
+        return card;
     }
 
     public void AddToArea(UltimateCard card, int id)
     {
-        card.SetIndex(id + 100);
+        card.SetIndex(id - handCount);
         card.SetID(id);
         card.SetUltiArea(this);
         cardsInArea[id - handCount] = card;
+    }
+
+    // Manipulate Position
+    public void UpdateUltiPositions()
+    {
+        Debug.Log("UpdateUltiPositions");
+        for (int i = 0; i < Constants.maxUltiAreaSize; i++)
+        {
+            if (cardsInArea[i] != null && ultiLocations[i] != null)
+            {
+                cardsInArea[i].ChangePosition(ultiLocations[cardsInArea[i].GetIndex()]);
+                Debug.Log("Ultipdating: " + cardsInArea[i].GetCard().GetName());
+            }
+        }
     }
 
     public void RecedeUlti(int cardIndex)
@@ -95,27 +118,13 @@ public class UltiArea : MonoBehaviour
         return myCardIndex;
     }
 
-    public void BeingHighlighted(int cardID)
-    {
-        UltimateCard uc = cardsInArea[cardID];
-        uc.ChangeScale(2);
-        uc.SetAsLastSibling();
-        uc.ChangePosition(uc.transform.localPosition + new Vector3(0f, 5f, 0f));
-    }
-
-    public void StopHighlighted(int cardID)
-    {
-        Debug.Log("cardID: " + cardID + ", handCount: " + handCount);
-        UltimateCard uc = cardsInArea[cardID - handCount];
-        uc.ChangeScale(1);
-        uc.SetAsFirstSibling();
-        uc.ChangePosition(ultiLocations[cardID - handCount]);
-    }
-
     // Getter
-    public UltimateCard GetUltiCard(int i)
+    public UltimateCard GetUltiCard(int? i)
     {
-        return cardsInArea[i];
+        if (i != null)
+            return cardsInArea[(int)i];
+        else
+            return null;
     }
 
     public Card GetCard(int i)
@@ -131,6 +140,13 @@ public class UltiArea : MonoBehaviour
     public bool GetHoldingCard()
     {
         return player.GetHoldingCard();
+    }
+
+    // Setter
+    public void SetSibling(bool isLast)
+    {
+        if (isLast) { transform.SetAsLastSibling(); }
+        else { transform.SetAsFirstSibling(); }
     }
 
     // Sender

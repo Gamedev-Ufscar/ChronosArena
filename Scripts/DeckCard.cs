@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public abstract class DeckCard : UICard
+public abstract class DeckCard : UICard, IPointerExitHandler
 {
     private Deck deck;
     private bool beingHeld = false;
@@ -33,6 +33,11 @@ public abstract class DeckCard : UICard
         {
             base.ChangePosition(newPosition);
         }
+    }
+
+    public void UpdateCardPosition()
+    {
+        deck.UpdateCardPosition(this);
     }
 
     public void SetBeingHeld(bool beingHeld)
@@ -94,5 +99,12 @@ public abstract class DeckCard : UICard
     public bool GetOutOfHand()
     {
         return outOfHand;
+    }
+
+    public new void OnPointerExit(PointerEventData eventData)
+    {
+        base.OnPointerExit(eventData);
+
+        UpdateCardPosition();
     }
 }

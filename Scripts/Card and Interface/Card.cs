@@ -22,6 +22,8 @@ public abstract class Card
     {
         this.hero = hero;
         this.name = name;
+        this.id = cardID;
+        this.image = image;
         this.text = text;
         this.type = type;
         this.minmax = minmax;
@@ -31,6 +33,8 @@ public abstract class Card
     {
         this.hero = hero;
         this.name = name;
+        this.id = cardID;
+        this.image = image;
         this.text = text;
         this.type = type;
         this.minmax = minmax;

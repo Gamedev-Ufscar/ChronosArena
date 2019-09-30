@@ -4,16 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class EnemyCard : DeckCard
+public class EnemyCard : DeckCard, IPointerExitHandler, IPointerEnterHandler
 {
-    private Card card;
-    private Deck deck;
-    private bool beingHeld = false;
     private Vector2 center = new Vector2(0f, 0f);
-    private bool isReaction = false;
-    private bool outOfHand = false;
-
-    private GameObject ultiCard;
 
     // Start is called before the first frame update
     void Start()
@@ -25,20 +18,30 @@ public class EnemyCard : DeckCard
     void Update()
     {
         // Control Position
-        if (!beingHeld || isReaction) {
+        //if (!GetBeingHeld() || GetIsReaction()) {
             MoveCard();
-        }
+        //}
     }
 
-    public void EnemyChangePosition(Vector2 newPosition)
+    public new void SetupCard(Card card)
     {
+        SetCard(card);
+    }
+
+    public void EnemyHold(Vector2 newPosition)
+    {
+        //Debug.Log("being held true");
         SetBeingHeld(true);
+        OnHover();
         ChangePosition(newPosition);
     }
 
-    public void EnemyStopMovement()
+    public void EnemyRelease()
     {
+        //Debug.Log("being held false");
         SetBeingHeld(false);
+        OutHover();
+        UpdateCardPosition();
     }
 
     // Hover card
