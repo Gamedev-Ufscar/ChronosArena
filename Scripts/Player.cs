@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -16,7 +15,7 @@ public class Player : MonoBehaviour
     private GameOverseer gameOverseer;
 
     private int HP = 10;
-    private int Charge = 4;
+    private int charge = 4;
     private int protection = 0;
     private HeroEnum hero;
     private List<CardTypes> attackDisableList = new List<CardTypes>();
@@ -44,7 +43,9 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        HP = 10;
+        charge = 4;
+        sideList = new SideEffect[Constants.maxSideListSize];
     }
 
     // Update is called once per frame
@@ -117,53 +118,132 @@ public class Player : MonoBehaviour
     {
         for (int i = 0; i < Constants.maxUltiAreaSize; i++)
         {
-            if (ultiArea.GetUltiCard(i).GetBought())
+            if (ultiArea.GetUltiCard(i) != null && ultiArea.GetUltiCard(i).GetBought())
             {
-                deck.GetDeckCard(ultiArea.GetCard(i).GetID()).gameObject.SetActive(true);
+                // Acquire DeckCard
+                DeckCard correspondingDeckCard = deck.GetDeckCard(ultiArea.GetCard(i).GetID());
+                correspondingDeckCard.gameObject.SetActive(true);
+                correspondingDeckCard.SetUltiCard(ultiArea.GetUltiCard(i));
+
+                // Disable UltiCard
                 ultiArea.GetUltiCard(i).gameObject.SetActive(false);
                 ultiArea.RecedeUlti(i);
             }
 
-            // CHECK LATER
-            //GameOverseer.GO.enemyUltiBuy[staticCardIndex - 100] = false;
             AudioManager.AM.CardSound();
         }
     }
 
     // Summon
-    public void SummonCard(DeckCard deckCard)
+    public void SummonCard(DeckCard deckCard) { SummonCard(deckCard, false); }
+
+    public void SummonCard(DeckCard deckCard, bool received)
     {
         if (gameOverseer.GetState() == GameState.Choice)
         {
+            Debug.Log("Summoned Card");
+
             // Instantiate Board Card
             Vector3 v = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 12f));
             GameObject g = Instantiate(boardPrefab, new Vector3(v.x, v.y, v.z), Quaternion.LookRotation(Vector3.back, Vector3.down));
 
-            // Set as Card Played
-            SetCardPlayed(g.GetComponent<BoardCard>());
-
             // Modify and Initiate variables
             if (deckCard.GetCard().GetCardType() == CardTypes.Ultimate)
             {
-                cardPlayed.ConstructBoardCard(deckCard.GetCard(), this, deckCard.GetUltiCard());
+                g.GetComponent<BoardCard>().ConstructBoardCard(deckCard.GetCard(), this, deckCard, deckCard.GetUltiCard());
             }
             else
             {
-                cardPlayed.ConstructBoardCard(deckCard.GetCard(), this, deckCard.gameObject);
+                g.GetComponent<BoardCard>().ConstructBoardCard(deckCard.GetCard(), this, deckCard);
             }
 
+            // Set as Card Played
+            SetCardPlayed(g.GetComponent<BoardCard>());
+
             deck.SetHoldingCard(false);
+
+            // Disable HandCard
+            deckCard.gameObject.SetActive(false);
 
             // Activate slot
             if (predicted == false) { g.GetComponent<BoardCard>().Activate(boardSlot, false); }
             else { g.GetComponent<BoardCard>().Activate(boardSlot, true); }
 
             // Networking info
-            gameOverseer.SummonCard(deckCard.GetID());
+            if (received == false)
+            {
+                gameOverseer.SendSummonCard(deckCard.GetID());
+
+                // Set confirm to true
+                gameOverseer.SetMyConfirm(true);
+            }
+
+            
         }
     }
 
+    // Ulti Buy
+    public void UltiBuy(UltimateCard uc)
+    {
+        if (gameOverseer.GetState() == GameState.Purchase && this == gameOverseer.GetMyPlayer() && GetCharge() >= uc.GetCard().GetCost())
+        {
+            if (!uc.GetBought())
+            {
+                uc.SetBought(true);
+                RaiseCharge(-uc.GetCard().GetCost());
+            }
+            else
+            {
+                uc.SetBought(false);
+                RaiseCharge(uc.GetCard().GetCost());
+            }
+        }
+
+        gameOverseer.SendUltiPurchase(uc.GetID(), uc.GetBought(), GetCharge());
+    }
+
     // Restore Card
+    public void RestorePlayedCard()
+    {
+        bool returning = false;
+
+        // When will I return?
+        if (cardPlayed.GetCardPlayed().GetCardType() == CardTypes.Nullification)
+        {
+            NullInterface cc = (NullInterface)cardPlayed.GetCardPlayed();
+            if (cc.wronged == false)
+            {
+                returning = true;
+            }
+        } else if (cardPlayed.GetCardPlayed().GetCardType() != CardTypes.Skill)
+        {
+            returning = true;
+        }
+
+        // ---------------------------
+
+        // If not returning, recede deck
+        if (!returning)
+        {
+            GetDeck().RecedeDeck(cardPlayed.GetThisDeckCard().GetIndex());
+        }
+
+        // If returning ulti, restore ulti card
+        else if (cardPlayed.GetCardPlayed().GetCardType() == CardTypes.Ultimate)
+        {
+            cardPlayed.GetThisUltiCard().gameObject.SetActive(true);
+
+            // Place Ulti
+            cardPlayed.GetThisUltiCard().SetIndex(GetUltiArea().PlaceUltimate(cardPlayed.GetThisUltiCard().GetID()));
+        }
+
+        // If returning card, restore normal card
+        else
+        {
+            cardPlayed.GetThisDeckCard().gameObject.SetActive(true);
+        }
+    }
+
     public void RestoreCard(int cardId)
     {
         GetDeckCard(cardId).gameObject.SetActive(true);
@@ -172,7 +252,7 @@ public class Player : MonoBehaviour
 
     public void RestoreUlti(int cardId)
     {
-        GetDeckCard(cardId).GetUltiCard().SetActive(true);
+        GetDeckCard(cardId).GetUltiCard().gameObject.SetActive(true);
         GetDeckCard(cardId).GetUltiCardScript().SetIndex(ultiArea.PlaceUltimate(GetDeckCard(cardId).GetUltiCardScript().GetCard().GetID()));
     }
 
@@ -191,10 +271,10 @@ public class Player : MonoBehaviour
     public void DealDamage(int damage, bool isUnblockable)
     {
         if (isUnblockable) {
-            HP -= damage;
+            SetHP(HP - damage);
         } else {
             if (damage - protection > 0)
-                HP -= (damage - protection);
+                SetHP(HP - (damage - protection));
         }
     }
 
@@ -208,14 +288,40 @@ public class Player : MonoBehaviour
 
     public void RaiseCharge(int charge)
     {
-        Charge += charge;
-        if (Charge < 0) { Charge = 0; }
+        if (this.charge + charge < 0) { SetCharge(0); }
+        else { SetCharge(this.charge + charge); }
     }
 
     public void Heal(int heal)
     {
-        HP += heal;
-        if (HP > 10) { HP = 10; }
+        if (HP + heal > 10) { SetHP(10); }
+        else { SetHP(HP + heal); }
+    }
+
+    // Checkers
+    public bool CanBuyCards()
+    {
+        for (int i = 0; i < Constants.maxUltiAreaSize; i++)
+        {
+            if (GetUltiCard(i) != null && GetUltiCard(i).GetCard().GetCost() <= GetCharge())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool HasReactionCard()
+    {
+        for (int i = 0; i <= Constants.maxHandSize; i++)
+        {
+            if (GetCard(i) != null && GetCard(i).GetIsReaction() == true)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Getters
@@ -226,7 +332,7 @@ public class Player : MonoBehaviour
 
     public int GetCharge()
     {
-        return Charge;
+        return charge;
     }
 
     public List<CardTypes> GetAttackDisable()
@@ -269,6 +375,11 @@ public class Player : MonoBehaviour
         {
             return GetDeckCard(cardID).GetCard();
         }
+    }
+
+    public BoardCard GetBoardCard()
+    {
+        return cardPlayed;
     }
 
     public Card GetCardPlayed()
@@ -315,18 +426,6 @@ public class Player : MonoBehaviour
         return predicted;
     }
 
-    public bool HasReactionCard()
-    {
-        for (int i = 0; i <= 10; i++)
-        {
-            if (GetCard(i).GetIsReaction() == true)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public int GetActiveCardCount()
     {
         int count = 0;
@@ -348,11 +447,13 @@ public class Player : MonoBehaviour
     public void SetHP(int HP)
     {
         this.HP = HP;
+        gameOverseer.UpdateBar();
     }
 
-    public void SetCharge(int Charge)
+    public void SetCharge(int charge)
     {
-        this.Charge = Charge;
+        this.charge = charge;
+        gameOverseer.UpdateBar();
     }
 
     public void SetCard(Card card, int cardID)
@@ -366,7 +467,6 @@ public class Player : MonoBehaviour
     public void SetCardPlayed(BoardCard cardPlayed)
     {
         this.cardPlayed = cardPlayed;
-        gameOverseer.UpdatedCardPlayed(this, true);
     }
 
     public void SetPredicted(bool predicted)
@@ -404,14 +504,12 @@ public class Player : MonoBehaviour
     // Side Effects
     public void ActivateSideEffects(SEPhase phase, Player enemy)
     {
-        foreach (SideEffect SE in sideList)
+        for(int i = 0; i < Constants.maxSideListSize; i++)
         {
-            if (SE is SideEffectTimed) {
-                SideEffectTimed SET = (SideEffectTimed)SE;
-                if (SET.GetTimer() > 0) {
-                    if (SE.GetPhase() == phase) {
-                        SET.Effect(this, enemy);
-                    }
+            if (sideList[i] != null && sideList[i] is SideEffectTimed) {
+                SideEffectTimed SET = (SideEffectTimed)sideList[i];
+                if (SET.GetTimer() > 0 && sideList[i].GetPhase() == phase) {
+                    SET.Effect(this, enemy);
                 }
             }
         }
@@ -445,10 +543,10 @@ public class Player : MonoBehaviour
         gameOverseer.Interfacing(cardList, null);
     }
 
-    // Purchase
-    public void PurchaseCards()
+    // Darken Ulti cards
+    public void DarkenUltiCards(bool darkened)
     {
-
+        ultiArea.DarkenUltiCards(darkened);
     }
 
     // Sender
@@ -491,9 +589,9 @@ public class Player : MonoBehaviour
         deck.UpdateCardPositions(receivedCardIndexes);
     }
 
-    public void ReceiveSummon()
+    public void ReceiveSummon(int cardID)
     {
-        SummonCard(GetDeckCard((int)sentCardID));
+        SummonCard(GetDeckCard(cardID), true);
     }
 
     public void ReceiveCardPosition(int? hoverCard, Vector2 hoverPos)
@@ -506,5 +604,11 @@ public class Player : MonoBehaviour
         UltimateCard uc = ultiArea.GetUltiCard(cardID);
         if (uc != null)
             uc.OnHover();
+    }
+
+    public void ReceiveUltiPurchase(int cardID, bool bought, int charge)
+    {
+        GetUltiCard(cardID).SetBought(bought);
+        SetCharge(charge);
     }
 }

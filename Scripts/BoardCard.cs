@@ -7,16 +7,18 @@ public class BoardCard : MonoBehaviour
     private GameObject slot;
     private Player player;
 
-    private GameObject cardToRestore;
+    private DeckCard thisDeckCard;
+    private UltimateCard thisUltiCard;
     private int revealAnimState = 0;
-    private bool waiting = false;
+    private bool waiting = true;
 
     private Card cardPlayed;
 
-    public void ConstructBoardCard(Card cardPlayed, Player player, GameObject cardToRestore)
+    public void ConstructBoardCard(Card cardPlayed, Player player, DeckCard deckCard)
     {
         this.cardPlayed = cardPlayed;
         this.player = player;
+        thisDeckCard = deckCard;
 
         transform.GetChild(0).GetComponent<TextMesh>().text = cardPlayed.GetName();
         transform.GetChild(1).GetComponent<TextMesh>().text = cardPlayed.typeString(cardPlayed.GetCardType());
@@ -24,6 +26,12 @@ public class BoardCard : MonoBehaviour
         transform.GetChild(3).GetComponent<TextMesh>().text = cardPlayed.Value(1);
         transform.GetChild(4).GetComponent<TextMesh>().text = cardPlayed.Value(2);
         transform.GetChild(5).GetComponent<TextMesh>().text = cardPlayed.heroString(cardPlayed.GetHero());
+    }
+
+    public void ConstructBoardCard(Card cardPlayed, Player player, DeckCard deckCard, UltimateCard ultiCard)
+    {
+        thisUltiCard = ultiCard;
+        ConstructBoardCard(cardPlayed, player, deckCard);
     }
 
     // Start is called before the first frame update
@@ -35,13 +43,47 @@ public class BoardCard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (waiting == false)
+        {
+            waiting = true;
+            if (revealAnimState == 0)
+            {
+                if (thisDeckCard is HandCard)
+                    Activate(SlotsOnBoard.PlayerCardAbove, true);
+                else if (thisDeckCard is EnemyCard)
+                    Activate(SlotsOnBoard.EnemyCardAbove, true);
+            }
+            else if (revealAnimState == 1)
+            {
+                if (thisDeckCard is HandCard)
+                    Activate(SlotsOnBoard.PlayerCard, true);
+                else if (thisDeckCard is EnemyCard)
+                    Activate(SlotsOnBoard.EnemyCard, true);
+            }
+            else if (revealAnimState == 2)
+            {
+                if (thisDeckCard is HandCard)
+                    Activate(SlotsOnBoard.PlayerCard, false);
+                else if (thisDeckCard is EnemyCard)
+                    Activate(SlotsOnBoard.EnemyCard, false);
+            }
+        }
     }
 
     // Getter
     public Card GetCardPlayed()
     {
         return cardPlayed;
+    }
+
+    public DeckCard GetThisDeckCard()
+    {
+        return thisDeckCard;
+    }
+
+    public UltimateCard GetThisUltiCard()
+    {
+        return thisUltiCard;
     }
 
     // Setter

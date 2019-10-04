@@ -59,7 +59,7 @@ public class NetworkBahn : MonoBehaviour
     public void SendConfirm(bool myConfirm)
     {
         // Send Confirm
-        PV.RPC("RPC_SendClick", RpcTarget.OthersBuffered, myConfirm);
+        PV.RPC("RPC_SendConfirm", RpcTarget.OthersBuffered, myConfirm);
     }
 
     // SHUFFLE
@@ -95,14 +95,14 @@ public class NetworkBahn : MonoBehaviour
     public void SendUltiPurchase(int cardID, bool bought, int charge)
     {
         // Send Ulti Purchase
-        PV.RPC("RPC_ultiStuff", RpcTarget.OthersBuffered, cardID, bought, (byte)charge);
+        PV.RPC("RPC_ultiStuff", RpcTarget.OthersBuffered, (byte)cardID, bought, (byte)charge);
     }
 
     // SUMMON
     public void SummonCard(int cardID)
     {
         // Summon Card
-        PV.RPC("RPC_summonedCard", RpcTarget.OthersBuffered, cardID);
+        PV.RPC("RPC_summonedCard", RpcTarget.OthersBuffered, (byte)cardID);
         Debug.Log("Sent Card");
 
     }
@@ -119,7 +119,7 @@ public class NetworkBahn : MonoBehaviour
 
     // RPC functions
     [PunRPC]
-    public void RPC_SendClick(bool sentButton)
+    public void RPC_SendConfirm(bool sentButton)
     {
         gameOverseer.SetEnemyConfirm(sentButton);
     }
@@ -155,19 +155,19 @@ public class NetworkBahn : MonoBehaviour
     }
 
     [PunRPC]
-    public void RPC_ultiStuff(int cardID, bool bought, byte charge)
+    public void RPC_ultiStuff(byte cardID, bool bought, byte charge)
     {
         if (SceneManager.GetActiveScene().buildIndex == 3)
         {
-            gameOverseer.GetEnemyPlayer().GetUltiCard(cardID).SetBought(bought);
-            gameOverseer.GetEnemyPlayer().SetCharge((int)charge);
+            gameOverseer.ReceiveUltiPurchase(cardID, bought, charge);
+            Debug.Log("Received purchase");
         }
     }
 
     [PunRPC]
     public void RPC_summonedCard(byte cardID)
     {
-        gameOverseer.ReceiveSummon();
+        gameOverseer.ReceiveSummon(cardID);
     }
 
     [PunRPC]

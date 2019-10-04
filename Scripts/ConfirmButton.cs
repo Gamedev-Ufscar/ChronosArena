@@ -1,21 +1,17 @@
-﻿using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class ConfirmButton : Button
 {
     [SerializeField]
-    GameOverseer gameOverseer;
-    [SerializeField]
     SelectionOverseer selectionOverseer;
 
     //public PhotonView PV;
-    public Sprite[] buttonColors = new Sprite[3];
+    [SerializeField]
+    private Sprite[] buttonColors = new Sprite[2];
     private Image image;
+
+    float time = 0f;
 
     [HideInInspector]
     public bool pointerOver = false;
@@ -45,25 +41,19 @@ public class ConfirmButton : Button
     public override void PointerUp()
     {
         transform.localScale = new Vector2(1.2f, 1.2f);
-        if (SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            selectionOverseer.ConfirmButton();
+        selectionOverseer.ConfirmButton();
 
-            // Colors
-            if (selectionOverseer.GetMyConfirm())
-            {
-                image.sprite = buttonColors[1];
-            }
-            else
-            {
-                image.sprite = buttonColors[0];
-            }
-
-        }
-        else if (SceneManager.GetActiveScene().buildIndex == 3)
+        // Colors
+        if (selectionOverseer.GetMyConfirm())
         {
-            //GameOverseer.GO.myConfirm = !GameOverseer.GO.myConfirm;
+            image.sprite = buttonColors[1];
         }
+        else
+        {
+            image.sprite = buttonColors[0];
+        }
+
+        
     }
 
     public override void RightPointerUp()

@@ -8,15 +8,18 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
 {
     private Card card;
     private UltiArea ultiArea;
-    private bool playable = false;
+
     private bool bought = false;
+    private bool darkened = false;
 
     private int cardID;
+    private int tempIndex;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        bought = false;
+        darkened = false;
     }
 
     // Update is called once per frame
@@ -28,14 +31,17 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     
 
     // Setter
-    public void SetPlayable(bool playable)
+    public void SetDarkened(bool darkened)
     {
-        this.playable = playable;
+        this.darkened = darkened;
+        UpdateColor();
     }
 
     public void SetBought(bool bought)
     {
         this.bought = bought;
+
+        UpdateColor();
     }
 
     public void SetID(int cardID)
@@ -48,6 +54,29 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
         this.ultiArea = ultiArea;
     }
 
+    // Color
+    private void UpdateColor()
+    {
+        if (GetDarkened())
+        {
+            ChangeColor(0.3f);
+        } else
+        {
+            if (GetBought())
+            {
+                ChangeColor(1f);
+            } else
+            {
+                if (GetPointerOver())
+                {
+                    ChangeColor(0.8f);
+                } else
+                {
+                    ChangeColor(0.6f);
+                }
+            }
+        }
+    }
 
     // Getter 
 
@@ -56,43 +85,63 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
         return cardID;
     }
 
+    public int GetTempIndex()
+    {
+        return tempIndex;
+    }
+
     public bool GetBought()
     {
         return bought;
     }
 
-    // On Pointer
+    public bool GetDarkened()
+    {
+        return darkened;
+    }
+
+    // Setter
+
+    public void SetTempIndex(int tempIndex)
+    {
+        this.tempIndex = tempIndex;
+    }
+
+    // Hovering
+    public new void OnHover()
+    {
+        ultiArea.RevealArea();
+        base.OnHover();
+        ultiArea.SetSibling(true);
+        Debug.Log("Hover Ulti");
+        UpdateColor();
+
+    }
+
+    public new void OutHover()
+    {
+        base.OutHover();
+        ultiArea.SetSibling(false);
+        ultiArea.HideArea();
+        Debug.Log("Out Hover Ulti");
+        UpdateColor();
+
+    }
+
     public new void OnPointerEnter(PointerEventData eventData)
     {
-        base.OnPointerEnter(eventData);
-        ultiArea.SetSibling(true);
-
-        if (!bought) ChangeColor(0.8f);
-
+        OnHover();
     }
 
     public new void OnPointerExit(PointerEventData eventData)
     {
-        base.OnPointerExit(eventData);
-        ultiArea.SetSibling(false);
-
-        if (!bought) ChangeColor(0.6f);
-
+        OutHover();
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (playable && !bought)
-        {
-            bought = true;
-            ChangeColor(1f);
+        ultiArea.UltiBuy(this);
 
-        } else
-        {
-            bought = false;
-            ChangeColor(0.8f);
-
-        }
-        ultiArea.SendUltiPurchase(cardID, bought);
+        UpdateColor();
     }
 }

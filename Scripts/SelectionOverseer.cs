@@ -257,6 +257,7 @@ public class SelectionOverseer : MonoBehaviour
         } else
         {
             timeTillAdvance = null;
+            Debug.Log("Timer deactivated.");
         }
     }
 

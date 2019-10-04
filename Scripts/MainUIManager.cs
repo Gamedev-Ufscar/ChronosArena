@@ -8,10 +8,6 @@ public class MainUIManager : MonoBehaviour
     //public Slider myHealthbar;
     [SerializeField]
     private GameOverseer gameOverseer;
-    [SerializeField]
-    private Player myPlayer;
-    [SerializeField]
-    private Player enemyPlayer;
 
     [SerializeField]
     private Sprite[] healthSprites = new Sprite[7];
@@ -63,16 +59,35 @@ public class MainUIManager : MonoBehaviour
     int enemyHealthbarValue = 10;
     int enemyChargebarValue = 0;
 
+    int playerHP;
+    int playerCharge;
+    int enemyHP;
+    int enemyCharge;
+    bool update = false;
     float time = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
+        myHealthbarValue = 10;
+        myChargebarValue = 0;
+        enemyHealthbarValue = 10;
+        enemyChargebarValue = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+        time += Time.deltaTime;
+        if (time > 0.05f)
+        {
+            time = 0f;
+
+            BarAnimation(playerHP, ref myHealthbarValue, ref myHealthbarSprite, ref myHealthbar, healthSprites);
+            BarAnimation(enemyHP, ref enemyHealthbarValue, ref enemyHealthbarSprite, ref enemyHealthbar, healthSprites);
+            BarAnimation(playerCharge, ref myChargebarValue, ref myChargebarSprite, ref myChargebar, chargeSprites);
+            BarAnimation(enemyCharge, ref enemyChargebarValue, ref enemyChargebarSprite, ref enemyChargebar, chargeSprites);
+        }
     }
 
     // Hues
@@ -88,68 +103,80 @@ public class MainUIManager : MonoBehaviour
         enemyConfirmedHue.SetActive(active);
     }
 
-    public void DebugText()
+    public void DebugText(string state)
     {
         // Text and Debug
-        stateText.text = " State: " + (int)gameOverseer.GetState();
-        cardText.text = " Current Card: " + hoveredCard;
-        enemyCardText.text = "Enemy Card: " + enemyRevealedCard;
+        stateText.text = state;
+        //cardText.text = " Current Card: " + hoveredCard;
+        //enemyCardText.text = "Enemy Card: " + enemyRevealedCard;
     }
 
     // Bar stuff
-    public void UpdateHP()
+    public void UpdateBar(Player player, Player enemy)
     {
-        MHP.text = "" + myPlayer.GetHP();
-        MCHP.text = "" + myPlayer.GetCharge();
-        EHP.text = "" + enemyPlayer.GetHP();
-        ECHP.text = "" + enemyPlayer.GetCharge();
+        MHP.text = "" + player.GetHP();
+        MCHP.text = "" + player.GetCharge();
+        EHP.text = "" + enemy.GetHP();
+        ECHP.text = "" + enemy.GetCharge();
 
-        // Healthbar animation
-        barAnimation();
+        // Give player and enemy
+        playerHP = player.GetHP();
+        playerCharge = player.GetCharge();
+        enemyHP = enemy.GetHP();
+        enemyCharge = enemy.GetCharge();
+
+        // Update
+        update = true;
     }
 
-    void barAnimation()
+    void BarAnimation(int playerP, ref int barValue, ref int barSprite, ref Image[] bar, Sprite[] barSprites)
     {
-        time += Time.deltaTime;
-        if (time > 0.05f) {
-            time = 0f;
-
-            myHealthbarAnimation();
-            enemyHealthbarAnimation();
-            myChargebarAnimation();
-            enemyChargebarAnimation();
+        // If value is balanced, get out
+        if (playerP == barValue && barSprite == 6)
+        {
+            return;
         }
-    }
 
-    void myHealthbarAnimation()
-    {
-        if (myPlayer.GetHP() < myHealthbarValue) { // If health decreases
-            myHealthbarSprite--;
-            if (myHealthbarSprite < 0)
+
+        if (playerP < barValue)
+        { // If value decreases
+
+            // Decrease within a sprite
+            barSprite--;
+
+            // Move on to the next sprite
+            if (barSprite < 0)
             {
-                myHealthbarSprite = 6;
-                myHealthbarValue--;
+                barSprite = 6;
+                barValue--;
             }
 
-            if (myHealthbarValue > 0 && myHealthbarValue <= 10)
-                myHealthbar[myHealthbarValue - 1].sprite = healthSprites[myHealthbarSprite];
+            // Update Sprite
+            if (barValue > 0 && barValue <= 10)
+                bar[barValue - 1].sprite = barSprites[barSprite];
         }
-        else if (myPlayer.GetHP() >= myHealthbarValue) { // If health increases
-            myHealthbarSprite++;
-            if (myHealthbarSprite > 6)
+        else if (playerP >= barValue)
+        { // If value increases
+
+            // Increase within a sprite
+            barSprite++;
+
+            // Move on to the next sprite
+            if (barSprite > 6)
             {
-                myHealthbarSprite = 0;
-                myHealthbarValue++;
+                barSprite = 0;
+                barValue++;
             }
 
-            if (myHealthbarValue > 0 && myHealthbarValue <= 10)
-                myHealthbar[myHealthbarValue - 1].sprite = healthSprites[myHealthbarSprite];
+            // Update Sprite
+            if (barValue > 0 && barValue <= 10)
+                bar[barValue - 1].sprite = barSprites[barSprite];
         }
     }
 
-    void enemyHealthbarAnimation()
+    void enemyHealthbarAnimation(int enemyHP)
     {
-        if (enemyPlayer.GetHP() < enemyHealthbarValue)
+        if (enemyHP < enemyHealthbarValue)
         { // If health decreases
             enemyHealthbarSprite--;
             if (enemyHealthbarSprite < 0)
@@ -161,7 +188,7 @@ public class MainUIManager : MonoBehaviour
             if (enemyHealthbarValue > 0 && enemyHealthbarValue <= 10)
                 enemyHealthbar[enemyHealthbarValue - 1].sprite = healthSprites[enemyHealthbarSprite];
         }
-        else if (enemyPlayer.GetHP() >= enemyHealthbarValue)
+        else if (enemyHP >= enemyHealthbarValue)
         { // If health increases
             enemyHealthbarSprite++;
             if (enemyHealthbarSprite > 6)
@@ -175,36 +202,9 @@ public class MainUIManager : MonoBehaviour
         }
     }
 
-    void myChargebarAnimation()
+    void enemyChargebarAnimation(int enemyCharge)
     {
-        if (myPlayer.GetCharge() < myChargebarValue)
-        { // If charge decreases
-            myChargebarSprite--;
-            if (myChargebarSprite < 0)
-            {
-                myChargebarSprite = 6;
-                myChargebarValue--;
-            }
-
-            if (myChargebarValue > 0 && myChargebarValue <= 10)
-                myChargebar[myChargebarValue - 1].sprite = chargeSprites[myChargebarSprite];
-        }
-        else if (myPlayer.GetCharge() >= myChargebarValue)
-        { // If charge increases
-            myChargebarSprite++;
-            if (myChargebarSprite > 6)
-            {
-                myChargebarSprite = 0;
-                myChargebarValue++;
-            }
-            if (myChargebarValue > 0 && myChargebarValue <= 10)
-                myChargebar[myChargebarValue - 1].sprite = chargeSprites[myChargebarSprite];
-        }
-    }
-
-    void enemyChargebarAnimation()
-    {
-        if (enemyPlayer.GetCharge() < enemyChargebarValue)
+        if (enemyCharge < enemyChargebarValue)
         { // If charge decreases
             enemyChargebarSprite--;
             if (enemyChargebarSprite < 0)
@@ -216,7 +216,7 @@ public class MainUIManager : MonoBehaviour
             if (enemyChargebarValue > 0 && myChargebarValue <= 10)
                 enemyChargebar[enemyChargebarValue - 1].sprite = chargeSprites[enemyChargebarSprite];
         }
-        else if (enemyPlayer.GetCharge() >= enemyChargebarValue)
+        else if (enemyCharge >= enemyChargebarValue)
         { // If charge increases
             enemyChargebarSprite++;
             if (enemyChargebarSprite > 6)

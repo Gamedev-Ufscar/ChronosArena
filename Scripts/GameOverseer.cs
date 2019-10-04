@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class GameOverseer : MonoBehaviour
 {
@@ -14,8 +15,8 @@ public class GameOverseer : MonoBehaviour
     private Player enemyPlayer;
     [SerializeField]
     private MainUIManager UIManager;
-    //[SerializeField]
-    //private NetworkTrain networkTrain;
+    [SerializeField]
+    private MidButton midButton;
     [SerializeField]
     private Interface interfface;
 
@@ -42,6 +43,9 @@ public class GameOverseer : MonoBehaviour
         }
         GameObject netObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test2"), Vector3.zero, Quaternion.identity);
         netObject.GetComponent<NetworkBahn>().GiveGameOverseer(this);
+
+        state = GameState.Purchase;
+        UpdateBar();
     }
 
     // Hover Card
@@ -52,17 +56,11 @@ public class GameOverseer : MonoBehaviour
         {
             HoverCarding();
         }
+
+        //Debug.Log("My Conf: " + myConfirm + ", Enemy Conf: " + enemyConfirm);
     }
 
     // State Stuff
-    public void UpdatedCardPlayed(Player player, bool cardPlayed)
-    {
-        if (state == GameState.Choice)
-        {
-            if (player == myPlayer) { SetMyConfirm(cardPlayed); }
-            else if (player == enemyPlayer) { SetEnemyConfirm(cardPlayed); }
-        }
-    }
 
     public void StateMachine() { StateMachine(false); }
 
@@ -70,25 +68,26 @@ public class GameOverseer : MonoBehaviour
     {
         if ((myConfirm && enemyConfirm) || overrider)
         {
+            SetMyConfirm(false);
+
             switch (state)
             {
                 case GameState.Purchase:
+                    myPlayer.DarkenUltiCards(true);
+                    enemyPlayer.DarkenUltiCards(true);
+                    myPlayer.AcquireCards();
+                    enemyPlayer.AcquireCards();
                     ToChoiceState();
-                    myPlayer.PurchaseCards();
-                    enemyPlayer.PurchaseCards();
                     break;
 
                 case GameState.Choice:
-                    if (myPlayer.GetCardPlayed() is Interfacer || enemyPlayer.GetCardPlayed() is Interfacer)
-                    {
-                        ToInterfaceState();
-                    } else if (myPlayer.HasReactionCard() || enemyPlayer.HasReactionCard())
-                    {
-                        ToReactionState();
-                    } else
-                    {
-                        ToEffectsState();
-                    }
+                    myPlayer.GetBoardCard().SetWaiting(false);
+                    enemyPlayer.GetBoardCard().SetWaiting(false);
+                    ToInterfaceState();
+                    break;
+
+                case GameState.Interface:
+                    ToReactionState();
                     break;
 
                 case GameState.Reaction:
@@ -96,18 +95,22 @@ public class GameOverseer : MonoBehaviour
                     break;
 
                 case GameState.Effects:
+                    myPlayer.DarkenUltiCards(false);
+                    enemyPlayer.DarkenUltiCards(false);
+                    Destroy(myPlayer.GetBoardCard());
+                    Destroy(enemyPlayer.GetBoardCard());
+                    DestroyHoverCards();
                     ToPurchaseState();
                     break;
             }
 
-            myConfirm = false;
-            enemyConfirm = false;
         }
     }
 
     private void ToChoiceState()
     {
         state = GameState.Choice;
+        UIManager.DebugText("Choice");
         myPlayer.ActivateSideEffects(SEPhase.Choice, enemyPlayer);
         enemyPlayer.ActivateSideEffects(SEPhase.Choice, myPlayer);
 
@@ -116,10 +119,14 @@ public class GameOverseer : MonoBehaviour
     private void ToInterfaceState()
     {
         state = GameState.Interface;
+        UIManager.DebugText("Interface");
         if (myPlayer.GetCardPlayed() is Interfacer)
         {
             Interfacer inter = (Interfacer)myPlayer.GetCardPlayed();
             inter.Interfacing(myPlayer, enemyPlayer);
+        } else
+        {
+            SetMyConfirm(true);
         }
 
         if (enemyPlayer.GetCardPlayed() is Interfacer)
@@ -132,13 +139,21 @@ public class GameOverseer : MonoBehaviour
     private void ToReactionState()
     {
         state = GameState.Reaction;
+        UIManager.DebugText("Reaction");
         myPlayer.ActivateSideEffects(SEPhase.Reaction, enemyPlayer);
         enemyPlayer.ActivateSideEffects(SEPhase.Reaction, myPlayer);
+
+        // If I can't play reactions, just skip
+        if (!myPlayer.HasReactionCard())
+        {
+            SetMyConfirm(true);
+        }
     }
 
     private void ToEffectsState()
     {
         state = GameState.Effects;
+        UIManager.DebugText("Effects");
         // Activate Side Effects
         myPlayer.ActivateSideEffects(SEPhase.EffectsBefore, enemyPlayer);
         enemyPlayer.ActivateSideEffects(SEPhase.EffectsBefore, myPlayer);
@@ -149,12 +164,24 @@ public class GameOverseer : MonoBehaviour
         // Activate Side Effects
         myPlayer.ActivateSideEffects(SEPhase.EffectsAfter, enemyPlayer);
         enemyPlayer.ActivateSideEffects(SEPhase.EffectsAfter, myPlayer);
+
+        // Restore Played Card
+        myPlayer.RestorePlayedCard();
+        enemyPlayer.RestorePlayedCard();
+
     }
 
     private void ActivateCards()
     {
-        for (int e = Mathf.Min(myPlayer.GetCardPlayed().GetMinOrMax(true) / 100, enemyPlayer.GetCardPlayed().GetMinOrMax(true) / 100);
-            e <= Mathf.Max(myPlayer.GetCardPlayed().GetMinOrMax(false) % 100, enemyPlayer.GetCardPlayed().GetMinOrMax(false) % 100);
+        if (myPlayer != null) { Debug.Log("my player ok"); }
+        if (myPlayer.GetCardPlayed() != null) { Debug.Log("cardPlayed ok"); }
+        if (enemyPlayer != null) { Debug.Log("enemy player ok"); }
+        if (enemyPlayer.GetCardPlayed() != null) { Debug.Log("enemy cardPlayed ok"); }
+
+        for (int e = Mathf.Min(myPlayer.GetCardPlayed().GetMinOrMax(true) / 100, 
+            enemyPlayer.GetCardPlayed().GetMinOrMax(true) / 100);
+            e <= Mathf.Max(myPlayer.GetCardPlayed().GetMinOrMax(false) % 100, 
+            enemyPlayer.GetCardPlayed().GetMinOrMax(false) % 100);
             e++)
         {
             if (!myPlayer.GetCardPlayed().GetIsNullified())
@@ -167,7 +194,20 @@ public class GameOverseer : MonoBehaviour
     private void ToPurchaseState()
     {
         state = GameState.Purchase;
-        DestroyHoverCards();
+        UIManager.DebugText("Purchase");
+
+        // If I can't buy cards, just skip
+        if (!myPlayer.CanBuyCards())
+        {
+            SetMyConfirm(true);
+        }
+        
+    }
+
+    // Healthbar & Chargebar
+    public void UpdateBar()
+    {
+        UIManager.UpdateBar(GetMyPlayer(), GetEnemyPlayer());
     }
 
     // Interfacing
@@ -188,8 +228,6 @@ public class GameOverseer : MonoBehaviour
         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         Physics.Raycast(mouseRay, out hitInfo, 300, layerMask, QueryTriggerInteraction.Collide);
-
-        Debug.Log("I'm alive");
 
         if (hitInfo.collider != null)
         {
@@ -234,25 +272,42 @@ public class GameOverseer : MonoBehaviour
         return enemyPlayer;
     }
 
+    public bool GetMyConfirm()
+    {
+        return myConfirm;
+    }
+
     // Setter
     public void SetMyConfirm(bool myConfirm)
     {
         this.myConfirm = myConfirm;
         UIManager.SetPlayerHue(myConfirm);
+        SendConfirm(myConfirm);
+        midButton.SetImageColor(myConfirm);
         StateMachine();
     }
 
     public void SetEnemyConfirm(bool enemyConfirm)
     {
         this.enemyConfirm = enemyConfirm;
-        UIManager.SetEnemyHue(myConfirm);
+        UIManager.SetEnemyHue(enemyConfirm);
         StateMachine();
     }
 
+    public void InvertMyConfirm()
+    {
+        SetMyConfirm(!myConfirm);
+    }
+
     // Network Sender
-    public void SummonCard(int cardID)
+    public void SendSummonCard(int cardID)
     {
         NetworkBahn.networkBahn.SummonCard(cardID);
+    }
+
+    public void SendConfirm(bool confirm)
+    {
+        NetworkBahn.networkBahn.SendConfirm(confirm);
     }
 
     public void SendShuffle(int[] cardIndexes)
@@ -291,8 +346,7 @@ public class GameOverseer : MonoBehaviour
 
     public void SendUltiPurchase(int cardID, bool bought, int charge)
     {
-        if (state == GameState.Purchase && SceneManager.GetActiveScene().buildIndex == 3)
-            NetworkBahn.networkBahn.SendUltiPurchase(cardID, bought, charge);
+        NetworkBahn.networkBahn.SendUltiPurchase(cardID, bought, charge);
     }
 
     // Network Receiver
@@ -301,8 +355,8 @@ public class GameOverseer : MonoBehaviour
         enemyPlayer.ReceiveShuffle(receivedCardIndexes);
     }
 
-    public void ReceiveSummon() {
-        enemyPlayer.ReceiveSummon();
+    public void ReceiveSummon(int cardID) {
+        enemyPlayer.ReceiveSummon(cardID);
     }
 
     public void ReceiveCardPosition(int hoverCard, Vector2 hoverPos)
@@ -321,6 +375,11 @@ public class GameOverseer : MonoBehaviour
             enemyPlayer.ReceiveUltiHover(hoverCard);
         else
             myPlayer.ReceiveUltiHover(hoverCard);
+    }
+
+    public void ReceiveUltiPurchase(int cardID, bool bought, int charge)
+    {
+        GetEnemyPlayer().ReceiveUltiPurchase(cardID, bought, charge);
     }
 
 }

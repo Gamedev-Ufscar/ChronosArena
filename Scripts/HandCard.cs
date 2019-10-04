@@ -34,7 +34,6 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
         SetCenter(Vector3.Lerp(center, new Vector3(0f, 0f, 0f), 0.1f));
 
         GetDeck().SendCardPosition(GetID(), new Vector2(transform.localPosition.x, transform.localPosition.y-2));
-        Debug.Log("holding card");
     }
 
     public new void ChangePosition(Vector2 newPosition)

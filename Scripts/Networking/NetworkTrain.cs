@@ -63,7 +63,7 @@ public class NetworkTrain : MonoBehaviour
     public void SendConfirm(bool myConfirm)
     {
         // Send Confirm
-        PV.RPC("RPC_SendClick", RpcTarget.OthersBuffered, myConfirm);
+        PV.RPC("RPC_SendConfirm", RpcTarget.OthersBuffered, myConfirm);
     }
 
     // CHOOSE HERO
@@ -90,7 +90,7 @@ public class NetworkTrain : MonoBehaviour
 
     // RPC functions
     [PunRPC]
-    public void RPC_SendClick(bool sentButton)
+    public void RPC_SendConfirm(bool sentButton)
     {
         selectionOverseer.SetEnemyConfirm(sentButton);
     }

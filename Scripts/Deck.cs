@@ -106,7 +106,7 @@ public class Deck : MonoBehaviour
             if (cardsInDeck[i] != null && cardLocations[i] != null && !cardsInDeck[i].GetBeingHeld())
             {
                 cardsInDeck[i].ChangePosition(cardLocations[cardsInDeck[i].GetIndex()]);
-                Debug.Log("Updating: " + cardsInDeck[i].GetCard().GetName());
+                //Debug.Log("Updating: " + cardsInDeck[i].GetCard().GetName());
             }
         }
     }
@@ -209,13 +209,11 @@ public class Deck : MonoBehaviour
     public void SendCardPosition(int? id, Vector2 position)
     {
         player.SetCardPosition(id, position);
-        Debug.Log("SendCardPosition 2");
     }
 
     public void SendCardPosition(HandCard card)
     {
         player.SetCardPosition(card.GetID(), card.GetTargetPosition());
-        Debug.Log("SendCardPosition");
     }
 
 

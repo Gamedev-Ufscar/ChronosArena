@@ -18,7 +18,7 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     // Start is called before the first frame update
     void Start()
     {
-        
+        pointerOver = false;
     }
 
     // Update is called once per frame
@@ -136,10 +136,9 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     public void OnHover()
     {
         pointerOver = true;
-        Debug.Log("Pointer Enter!");
         ChangeScale(Constants.cardBigSize);
         SetAsLastSibling();
-        ChangeColor(1f);
+        ChangeColor(0.8f);
         ChangePosition(targetPosition + new Vector3(0f, Constants.cardRiseHeight, 0f));
     }
 

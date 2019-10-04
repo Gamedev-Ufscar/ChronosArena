@@ -13,7 +13,7 @@ public abstract class DeckCard : UICard, IPointerExitHandler
 
     private int cardID;
 
-    private GameObject ultiCard;
+    private UltimateCard ultiCard;
 
     // Start is called before the first frame update
     void Start()
@@ -65,6 +65,11 @@ public abstract class DeckCard : UICard, IPointerExitHandler
         this.cardID = cardID;
     }
 
+    public void SetUltiCard(UltimateCard ultiCard)
+    {
+        this.ultiCard = ultiCard;
+    }
+
     // Getter
     public int GetID()
     {
@@ -76,7 +81,7 @@ public abstract class DeckCard : UICard, IPointerExitHandler
         return isReaction;
     }
 
-    public GameObject GetUltiCard()
+    public UltimateCard GetUltiCard()
     {
         return ultiCard;
     }
