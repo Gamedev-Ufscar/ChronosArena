@@ -94,13 +94,15 @@ public class Deck : MonoBehaviour
         for (int i = 0; i < Constants.maxHandSize; i++)
         {
             if (cardsInDeck[i] != null && !cardsInDeck[i].GetBeingHeld())
+            {
                 cardsInDeck[i].ChangePosition(cardLocations[cardPositions[i]]);
+                cardsInDeck[i].SetIndex(cardPositions[i]);
+            }
         }
     }
 
     public void UpdateCardPositions()
     {
-        Debug.Log("UpdateCardPositions");
         for (int i = 0; i < Constants.maxHandSize; i++)
         {
             if (cardsInDeck[i] != null && cardLocations[i] != null && !cardsInDeck[i].GetBeingHeld())
@@ -113,7 +115,7 @@ public class Deck : MonoBehaviour
 
     public void UpdateCardPosition(DeckCard card)
     {
-        card.ChangePosition(cardLocations[cardsInDeck[card.GetIndex()].GetIndex()]);
+        card.ChangePosition(cardLocations[card.GetIndex()]);
     }
 
     public void Shuffle()
@@ -122,7 +124,7 @@ public class Deck : MonoBehaviour
         int[] cardIndexes;
 
         for (int i = 0; i < Constants.maxHandSize; i++) {
-            rando = Random.Range(i, Constants.maxHandSize);
+            rando = Random.Range(0, Constants.maxHandSize);
             if (cardsInDeck[i] != null && cardsInDeck[i].gameObject.activeInHierarchy) {
                 if (cardsInDeck[rando] != null && cardsInDeck[rando].gameObject.activeInHierarchy) {
                     // Swap randomly
@@ -147,11 +149,6 @@ public class Deck : MonoBehaviour
         }
         player.SendShuffle(cardIndexes);
 
-        for (int i = 0; i < cardsInDeck.Length; i++) {
-            if (cardsInDeck[i] != null) { }
-                // CHECK LATER
-                //gameOverseer.sentDeckList[i] = cardsInDeck[i].GetComponent<UICard>().getCard().id;
-        }
     }
 
     public void RecedeDeck(int cardIndex)
@@ -165,6 +162,8 @@ public class Deck : MonoBehaviour
                 }
             }
         }
+
+        UpdateCardPositions();
     }
 
     // Getters

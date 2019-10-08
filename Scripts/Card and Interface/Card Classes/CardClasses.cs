@@ -173,9 +173,9 @@ public class Nullification : Card, NullInterface
         wronged = true;
         for (int i = 0; i < nullificationList.Length; i++)
         {
-            if (target.GetCard(i).GetCardType() == nullificationList[i])
+            if (target.GetCardPlayed().GetCardType() == nullificationList[i])
             {
-                target.GetCard(i).SetIsNullified(true);
+                target.GetCardPlayed().SetIsNullified(true);
                 wronged = false;
             }
         }

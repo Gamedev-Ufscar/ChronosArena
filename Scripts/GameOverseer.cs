@@ -1,11 +1,7 @@
 ﻿using Photon.Pun;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System;
 
 public class GameOverseer : MonoBehaviour
 {
@@ -23,7 +19,9 @@ public class GameOverseer : MonoBehaviour
     private bool myConfirm = false;
     private bool enemyConfirm = false;
 
-    public LayerMask layerMask;
+    [SerializeField]
+    private LayerMask layerMask;
+
     public GameObject viewCard;
     private GameObject boardCardReader;
     private List<GameObject> destroyList = new List<GameObject>();
@@ -51,8 +49,10 @@ public class GameOverseer : MonoBehaviour
     // Hover Card
     private void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 3 && ((GetState() == GameState.Choice && GetEnemyPlayer().GetPredicted()) ||
-            GetState() == GameState.Reaction || GetState() == GameState.Effects) && !GetMyPlayer().GetDeck().GetHoldingCard())
+        // When to hoverCard: (Choice + Predicted Card, Interface, Reaction, Effects) + Not Holding Stuff
+        if (((GetState() == GameState.Choice && GetEnemyPlayer().GetPredicted()) || GetState() == GameState.Interface ||
+            GetState() == GameState.Reaction || GetState() == GameState.Effects) && !GetMyPlayer().GetDeck().GetHoldingCard() &&
+            !interfface.gameObject.activeInHierarchy)
         {
             HoverCarding();
         }
@@ -69,6 +69,7 @@ public class GameOverseer : MonoBehaviour
         if ((myConfirm && enemyConfirm) || overrider)
         {
             SetMyConfirm(false);
+            SetEnemyConfirm(false);
 
             switch (state)
             {
@@ -81,8 +82,8 @@ public class GameOverseer : MonoBehaviour
                     break;
 
                 case GameState.Choice:
-                    myPlayer.GetBoardCard().SetWaiting(false);
-                    enemyPlayer.GetBoardCard().SetWaiting(false);
+                    myPlayer.GetBoardCard().RevealAnimation(0);
+                    enemyPlayer.GetBoardCard().RevealAnimation(0);
                     ToInterfaceState();
                     break;
 
@@ -95,11 +96,17 @@ public class GameOverseer : MonoBehaviour
                     break;
 
                 case GameState.Effects:
+                    // Restore Played Card
+                    myPlayer.RestorePlayedCard();
+                    enemyPlayer.RestorePlayedCard();
+                    // Darken Ulti Cards
                     myPlayer.DarkenUltiCards(false);
                     enemyPlayer.DarkenUltiCards(false);
-                    Destroy(myPlayer.GetBoardCard());
-                    Destroy(enemyPlayer.GetBoardCard());
+                    // Destroy Board Cards
+                    Destroy(myPlayer.GetBoardCard().gameObject);
+                    Destroy(enemyPlayer.GetBoardCard().gameObject);
                     DestroyHoverCards();
+
                     ToPurchaseState();
                     break;
             }
@@ -114,12 +121,23 @@ public class GameOverseer : MonoBehaviour
         myPlayer.ActivateSideEffects(SEPhase.Choice, enemyPlayer);
         enemyPlayer.ActivateSideEffects(SEPhase.Choice, myPlayer);
 
+        // Color
+        for (int i = 0; i < Constants.maxCardAmount; i++)
+        {
+            if (myPlayer.GetCard(i) != null && myPlayer.GetDeckCard(i) != null &&
+                myPlayer.GetCard(i).GetTurnsTill() <= 0)
+            {
+                myPlayer.GetDeckCard(i).SetDarkened(false);
+            }
+        }
     }
 
     private void ToInterfaceState()
     {
         state = GameState.Interface;
         UIManager.DebugText("Interface");
+
+        // Activate interface if card has one, otherwise skip
         if (myPlayer.GetCardPlayed() is Interfacer)
         {
             Interfacer inter = (Interfacer)myPlayer.GetCardPlayed();
@@ -128,11 +146,14 @@ public class GameOverseer : MonoBehaviour
         {
             SetMyConfirm(true);
         }
-
-        if (enemyPlayer.GetCardPlayed() is Interfacer)
+        
+        // Color
+        for (int i = 0; i < Constants.maxCardAmount; i++)
         {
-            Interfacer inter = (Interfacer)enemyPlayer.GetCardPlayed();
-            inter.Interfacing(enemyPlayer, myPlayer);
+            if (myPlayer.GetCard(i) != null && myPlayer.GetDeckCard(i) != null)
+            {
+                myPlayer.GetDeckCard(i).SetDarkened(true);
+            }
         }
     }
 
@@ -140,6 +161,7 @@ public class GameOverseer : MonoBehaviour
     {
         state = GameState.Reaction;
         UIManager.DebugText("Reaction");
+
         myPlayer.ActivateSideEffects(SEPhase.Reaction, enemyPlayer);
         enemyPlayer.ActivateSideEffects(SEPhase.Reaction, myPlayer);
 
@@ -147,6 +169,17 @@ public class GameOverseer : MonoBehaviour
         if (!myPlayer.HasReactionCard())
         {
             SetMyConfirm(true);
+        } else
+        {
+            // Color
+            for (int i = 0; i < Constants.maxCardAmount; i++)
+            {
+                if (myPlayer.GetCard(i) != null && myPlayer.GetDeckCard(i) != null &&
+                    myPlayer.GetCard(i).GetIsReaction())
+                {
+                    myPlayer.GetDeckCard(i).SetDarkened(false);
+                }
+            }
         }
     }
 
@@ -159,16 +192,65 @@ public class GameOverseer : MonoBehaviour
         enemyPlayer.ActivateSideEffects(SEPhase.EffectsBefore, myPlayer);
 
         // Activate Effects
+        EveryTurn();
         ActivateCards();
 
         // Activate Side Effects
         myPlayer.ActivateSideEffects(SEPhase.EffectsAfter, enemyPlayer);
         enemyPlayer.ActivateSideEffects(SEPhase.EffectsAfter, myPlayer);
 
-        // Restore Played Card
-        myPlayer.RestorePlayedCard();
-        enemyPlayer.RestorePlayedCard();
+        // Color
+        for (int i = 0; i < Constants.maxCardAmount; i++)
+        {
+            if (myPlayer.GetCard(i) != null && myPlayer.GetDeckCard(i) != null)
+            {
+                myPlayer.GetDeckCard(i).SetDarkened(true);
+            }
+        }
 
+    }
+
+    // Every turn stuff
+    private void EveryTurn()
+    {
+        // Reduce Unplayability
+        reduceUnplayability(myPlayer);
+        reduceUnplayability(enemyPlayer);
+
+        // Reset Card Limit (zB Attack, Charge)
+        resetLimit(myPlayer);
+        resetLimit(enemyPlayer);
+    }
+
+    public void reduceUnplayability(Player player)
+    {
+        for (int i = 0; i < Constants.maxCardAmount; i++)
+        {
+            if (player.GetCard(i) != null)
+            {
+                if (player.GetCard(i).GetTurnsTill() > 0)
+                {
+                    player.GetCard(i).ReduceTurnsTill();
+                }
+            }
+        }
+    }
+
+    public void resetLimit(Player player)
+    {
+        for (int i = 0; i < Constants.maxCardAmount; i++)
+        {
+            if (player.GetCard(i) as Limit != null)
+            {
+                if (player.GetCard(i).GetID() != player.GetCardPlayed().GetID())
+                {
+                    Limit cc = player.GetCard(i) as Limit;
+                    cc.limit = 0;
+                    player.SetCard(cc as Card, i);
+                    //Debug.Log("Card Limit reset: " + cardList[i].name);
+                }
+            }
+        }
     }
 
     private void ActivateCards()
@@ -211,16 +293,16 @@ public class GameOverseer : MonoBehaviour
     }
 
     // Interfacing
-    public void Interfacing(Card[] cardList, Card invoker)
+    public void Interfacing(Card[] cardList, Card invoker, int cardAmount)
     {
         interfface.gameObject.SetActive(true);
-        interfface.Setup(cardList, invoker);
+        interfface.Setup(cardList, invoker, cardAmount);
     }
 
-    public void Interfacing(Card baseCard, string[] textList, Card invoker)
+    public void Interfacing(Card baseCard, string[] textList, Card invoker, int cardAmount)
     {
         interfface.gameObject.SetActive(true);
-        interfface.Setup(baseCard, textList, invoker);
+        interfface.Setup(baseCard, textList, invoker, cardAmount);
     }
 
     public void HoverCarding()
@@ -231,7 +313,7 @@ public class GameOverseer : MonoBehaviour
 
         if (hitInfo.collider != null)
         {
-            if (hitInfo.collider.transform.parent != null)
+            if (hitInfo.collider.transform.parent != null && destroyList.Count <= 0)
             {
                 Debug.Log("HoverCard");
                 GameObject cardInBoard = hitInfo.collider.transform.parent.gameObject;
@@ -244,6 +326,7 @@ public class GameOverseer : MonoBehaviour
         else if (boardCardReader != null)
         {
             DestroyHoverCards();
+            destroyList.Clear();
         }
     }
 

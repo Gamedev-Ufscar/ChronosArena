@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, IPointerEnterHandler
 {
@@ -60,6 +57,11 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
         {
             base.OnPointerEnter(eventData);
             GetDeck().SendCardPosition(this);
+
+            if (GetCard().GetTurnsTill() > 0 || GetDarkened())
+            {
+                ChangeColor(0.3f);
+            }
         }
     }
 
@@ -70,6 +72,11 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
 
         Debug.Log("exit card");
         GetDeck().SendCardPosition(null, new Vector2(0f, 0f));
+
+        if (GetCard().GetTurnsTill() > 0 || GetDarkened())
+        {
+            ChangeColor(0.3f);
+        }
     }
 
     // Hold card
@@ -79,6 +86,8 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
         SetBeingHeld(true);
         SetCenter(transform.position - Input.mousePosition);
     }
+
+    // CHECK ASAP: Only become First Sibling when gets back to its proper place
 
     // Stop holding card, maybe summon card?
     public void OnPointerUp(PointerEventData eventData)

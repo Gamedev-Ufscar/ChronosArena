@@ -72,60 +72,59 @@ public class UltiArea : MonoBehaviour
     // Manipulate Position
     public void UpdateUltiPositions()
     {
-        Debug.Log("UpdateUltiPositions");
         for (int i = 0; i < Constants.maxUltiAreaSize; i++)
         {
             if (cardsInArea[i] != null && ultiLocations[i] != null)
             {
                 cardsInArea[i].ChangePosition(ultiLocations[cardsInArea[i].GetIndex()]);
-                //Debug.Log("Ultipdating: " + cardsInArea[i].GetCard().GetName());
             }
         }
     }
 
-    public void RecedeUlti(int cardIndex)
+    public void RecedeUlti(int tempCardIndex)
     {
         for (int i = 0; i < cardsInArea.Length; i++)
         {
             if (cardsInArea[i] != null && cardsInArea[i].GetIsActive()) {
-                if (cardsInArea[i].GetIndex() > cardIndex) {
-                    cardsInArea[i].RecedeIndex();
+                if (cardsInArea[i].GetTempIndex() > tempCardIndex) {
+                    cardsInArea[i].RecedeTempIndex();
                 }
             }
         }
+
+        UpdateUltiPositions();
     }
 
     public int PlaceUltimate(int ultimateID)
     {
         // Find a position for the ultimate
-        int myCardIndex = 200;
+        int? myTempIndex = null;
 
-        for (int i = 0; i < cardsInArea.Length; i++)
+        for (int i = 0; i < Constants.maxUltiAreaSize; i++)
         {
             if (cardsInArea[i] != null) { 
                 // If this is my card or is offline...
                 if (!cardsInArea[i].GetIsActive() || cardsInArea[i].GetComponent<UltimateCard>().GetCard().GetID() == ultimateID) {
                     // Choose this place if haven't yet
-                    if (myCardIndex == 200) { myCardIndex = 100+i; }
+                    if (myTempIndex == null) { myTempIndex = cardsInArea[i].GetTempIndex(); }
                     //break;
 
 
                 // If this is supposed to be further right than me...
-                } else if (cardsInArea[i].GetIndex() > ultimateID) {
+                } else if (cardsInArea[i].GetID() > ultimateID) {
                     // Choose this place if haven't yet, push current to right
-                    if (myCardIndex == 200) { myCardIndex = cardsInArea[i].GetIndex(); }
-                    cardsInArea[i].PushIndex();
+                    if (myTempIndex == null) { myTempIndex = cardsInArea[i].GetTempIndex(); }
+                    cardsInArea[i].PushTempIndex();
                 }
             }
         }
-        if (myCardIndex == 200) { myCardIndex = 100 + cardsInArea.Length - 1; }
+        if (myTempIndex == null) { myTempIndex = Constants.maxUltiAreaSize - 1; }
 
-        return myCardIndex;
+        return (int)myTempIndex;
     }
 
     public void RevealArea()
     {
-
         for (int i = 0; i < Constants.maxUltiAreaSize; i++)
         {
             if (cardsInArea[i] != null)

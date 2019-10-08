@@ -15,8 +15,8 @@ public class Dexterity : Card, Interfacer
     }
 
     int[] discardedCardList = new int[Constants.maxHandSize]; // Lists the deckList indexes of discarded cards
+    int discardedCount = 0;
 
-    bool bugCatcher = true;
 
     public Dexterity(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax, int cost) :
         base(hero, name, cardID, image, text, type, minmax, false, cost)
@@ -35,13 +35,12 @@ public class Dexterity : Card, Interfacer
                 cardList[discardedCount] = user.GetCard(i);
                 discardedCardList[discardedCount] = i;
                 discardedCount++;
-                bugCatcher = false;
             }
         }
 
         // Interface script setup
-        if (!bugCatcher) {
-            user.Interfacing(cardList, this);
+        if (discardedCount > 0) {
+            user.Interfacing(cardList, this, discardedCount);
         }
     }
 
@@ -50,7 +49,7 @@ public class Dexterity : Card, Interfacer
         switch (priority)
         {
             case 18:
-                if (!bugCatcher) { 
+                if (discardedCount > 0) { 
                     user.RestoreCard(discardedCardList[interfaceSignal]);
                     Debug.Log("Discarded: " + discardedCardList[interfaceSignal]);
                     // CHECK LATER

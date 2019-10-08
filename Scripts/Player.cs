@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     private List<CardTypes> attackDisableList = new List<CardTypes>();
     private List<CardTypes> chargeDisableList = new List<CardTypes>() { CardTypes.Charge };
     private SideEffect[] sideList = new SideEffect[Constants.maxSideListSize];
+    private int totalCardCount = 0;
     private BoardCard cardPlayed = null;
     private bool predicted = false;
 
@@ -99,14 +100,22 @@ public class Player : MonoBehaviour
     }
 
     // Creator
-    public void CreatePlayer(HeroEnum hero, int cardCount, int ultiCount, int passiveCount, List<CardTypes> attackDisableList, Sprite profile)
+    public void CreatePlayer(HeroEnum hero, int cardCount, int ultiCount, int passiveCount, int sideCount, List<CardTypes> attackDisableList, Sprite profile)
     {
         this.hero = hero;
         this.attackDisableList = attackDisableList;
         this.profile.SetImage(profile);
+        this.totalCardCount = cardCount + ultiCount + passiveCount;
         deck.CreateDeck(hero, cardCount, ultiCount, passiveCount);
         ultiArea.CreateUltiArea(hero, cardCount, ultiCount);
+        CreateSideEffects(hero, cardCount+ultiCount+passiveCount, sideCount);
         CreateSummary();
+    }
+
+    public void CreateSideEffects(HeroEnum hero, int startWithID, int count)
+    {
+        for (int i = 0; i < count; i++)
+            sideList[i] = CardMaker.CM.MakeSideEffect(hero, startWithID+i);
     }
 
     public void CreateSummary()
@@ -126,6 +135,7 @@ public class Player : MonoBehaviour
                 correspondingDeckCard.SetUltiCard(ultiArea.GetUltiCard(i));
 
                 // Disable UltiCard
+                ultiArea.GetUltiCard(i).SetBought(false);
                 ultiArea.GetUltiCard(i).gameObject.SetActive(false);
                 ultiArea.RecedeUlti(i);
             }
@@ -166,8 +176,8 @@ public class Player : MonoBehaviour
             deckCard.gameObject.SetActive(false);
 
             // Activate slot
-            if (predicted == false) { g.GetComponent<BoardCard>().Activate(boardSlot, false); }
-            else { g.GetComponent<BoardCard>().Activate(boardSlot, true); }
+            if (predicted == false) { g.GetComponent<BoardCard>().RevealAnimation(-1); }
+            else { g.GetComponent<BoardCard>().RevealAnimation(-2); }
 
             // Networking info
             if (received == false)
@@ -197,6 +207,8 @@ public class Player : MonoBehaviour
                 uc.SetBought(false);
                 RaiseCharge(uc.GetCard().GetCost());
             }
+
+            uc.UpdateColor();
         }
 
         gameOverseer.SendUltiPurchase(uc.GetID(), uc.GetBought(), GetCharge());
@@ -228,19 +240,23 @@ public class Player : MonoBehaviour
             GetDeck().RecedeDeck(cardPlayed.GetThisDeckCard().GetIndex());
         }
 
-        // If returning ulti, restore ulti card
+        // If returning ulti, restore ulti card and recede Deck
         else if (cardPlayed.GetCardPlayed().GetCardType() == CardTypes.Ultimate)
         {
-            cardPlayed.GetThisUltiCard().gameObject.SetActive(true);
+            GetDeck().RecedeDeck(cardPlayed.GetThisDeckCard().GetIndex());
 
-            // Place Ulti
-            cardPlayed.GetThisUltiCard().SetIndex(GetUltiArea().PlaceUltimate(cardPlayed.GetThisUltiCard().GetID()));
+            UltimateCard ultiCard = cardPlayed.GetThisUltiCard();
+
+            ultiCard.gameObject.SetActive(true);
+            ultiCard.SetTempIndex(GetUltiArea().PlaceUltimate(ultiCard.GetID()));
         }
 
         // If returning card, restore normal card
         else
         {
             cardPlayed.GetThisDeckCard().gameObject.SetActive(true);
+            cardPlayed.GetThisDeckCard().OutHover();
+            cardPlayed.GetThisDeckCard().UpdateCardPosition();
         }
     }
 
@@ -266,6 +282,9 @@ public class Player : MonoBehaviour
         GetDeckCard(cardId).gameObject.SetActive(false);
         deck.RecedeDeck(cardId);
     }
+
+    // Darken Cards
+
 
     // Change Variables
     public void DealDamage(int damage, bool isUnblockable)
@@ -438,6 +457,11 @@ public class Player : MonoBehaviour
         return count+1;
     }
 
+    public int GetTotalCardCount()
+    {
+        return totalCardCount;
+    }
+
     public bool GetHoldingCard()
     {
         return deck.GetHoldingCard();
@@ -516,14 +540,14 @@ public class Player : MonoBehaviour
     }
 
     // Interfacing
-    public void Interfacing(Card[] cardList, Card invoker)
+    public void Interfacing(Card[] cardList, Card invoker, int cardAmount)
     {
-        gameOverseer.Interfacing(cardList, invoker);
+        gameOverseer.Interfacing(cardList, invoker, cardAmount);
     }
 
-    public void Interfacing(Card baseCard, string[] textList, Card invoker)
+    public void Interfacing(Card baseCard, string[] textList, Card invoker, int cardAmount)
     {
-        gameOverseer.Interfacing(baseCard, textList, invoker);
+        gameOverseer.Interfacing(baseCard, textList, invoker, cardAmount);
     }
 
     // Shuffle
@@ -540,7 +564,7 @@ public class Player : MonoBehaviour
         {
             cardList[i] = GetDeckCard(i).GetCard();
         }
-        gameOverseer.Interfacing(cardList, null);
+        gameOverseer.Interfacing(cardList, null, totalCardCount);
     }
 
     // Darken Ulti cards

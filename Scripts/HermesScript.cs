@@ -5,21 +5,23 @@ using UnityEngine.SceneManagement;
 
 public class HermesScript : MonoBehaviour
 {
-    public HeroEnum hero = HeroEnum.None;
-    public int sideListSize = 0;
-    public int handSize;
-    public int ultiCount;
-    public int passiveCount;
-    public List<CardTypes> attackDisableList = new List<CardTypes>();
-    public Sprite profile;
+    private HeroEnum hero = HeroEnum.None;
+    private int sideListSize = 0;
+    private int handSize;
+    private int ultiCount;
+    private int passiveCount;
+    private int sideCount;
+    private List<CardTypes> attackDisableList = new List<CardTypes>();
+    private Sprite profile;
 
-    public HeroEnum enemyHero = HeroEnum.None;
-    public int enemySideListSize = 0;
-    public int enemyHandSize;
-    public int enemyUltiCount;
-    public int enemyPassiveCount;
-    public List<CardTypes> enemyAttackDisableList = new List<CardTypes>();
-    public Sprite enemyProfile;
+    private HeroEnum enemyHero = HeroEnum.None;
+    private int enemySideListSize = 0;
+    private int enemyHandSize;
+    private int enemyUltiCount;
+    private int enemyPassiveCount;
+    private int enemySideCount;
+    private List<CardTypes> enemyAttackDisableList = new List<CardTypes>();
+    private Sprite enemyProfile;
 
     // Start is called before the first frame update
     void Start()
@@ -40,8 +42,8 @@ public class HermesScript : MonoBehaviour
             {
                 GameOverseer gameOverseer = GameObject.Find("Game Overseer").GetComponent<GameOverseer>();
 
-                gameOverseer.GetMyPlayer().CreatePlayer(hero, handSize, ultiCount, passiveCount, attackDisableList, profile);
-                gameOverseer.GetEnemyPlayer().CreatePlayer(enemyHero, enemyHandSize, enemyUltiCount, enemyPassiveCount, enemyAttackDisableList, enemyProfile);
+                gameOverseer.GetMyPlayer().CreatePlayer(hero, handSize, ultiCount, passiveCount, sideCount, attackDisableList, profile);
+                gameOverseer.GetEnemyPlayer().CreatePlayer(enemyHero, enemyHandSize, enemyUltiCount, enemyPassiveCount, enemySideCount, enemyAttackDisableList, enemyProfile);
                 gameObject.SetActive(false);
 
 
@@ -67,24 +69,26 @@ public class HermesScript : MonoBehaviour
         }
     }
 
-    public void LoadHermes(HeroEnum hero, int sideListSize, int handSize, int ultiCount, int passiveCount, List<CardTypes> attackDisableList, Sprite profile)
+    public void LoadHermes(HeroEnum hero, int sideListSize, int handSize, int ultiCount, int passiveCount, int sideCount, List<CardTypes> attackDisableList, Sprite profile)
     {
         this.hero = hero;
         this.sideListSize = sideListSize;
         this.handSize = handSize;
         this.ultiCount = ultiCount;
         this.passiveCount = passiveCount;
+        this.sideCount = sideCount;
         this.attackDisableList = attackDisableList;
         this.profile = profile;
     }
 
-    public void LoadEnemyHermes(HeroEnum hero, int sideListSize, int handSize, int ultiCount, int passiveCount, List<CardTypes> attackDisableList, Sprite profile)
+    public void LoadEnemyHermes(HeroEnum hero, int sideListSize, int handSize, int ultiCount, int passiveCount, int sideCount, List<CardTypes> attackDisableList, Sprite profile)
     {
         this.enemyHero = hero;
         this.enemySideListSize = sideListSize;
         this.enemyHandSize = handSize;
         this.enemyUltiCount = ultiCount;
         this.enemyPassiveCount = passiveCount;
+        this.enemySideCount = sideCount;
         this.enemyAttackDisableList = attackDisableList;
         this.enemyProfile = profile;
     }

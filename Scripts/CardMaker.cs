@@ -120,4 +120,12 @@ public class CardMaker : MonoBehaviour
         //Debug.Log(card.GetName());
         return card;
     }
+
+    public SideEffect MakeSideEffect(HeroEnum hero, int id)
+    {
+        Hashtable hashToAccess = (Hashtable)heroHashtable[hero];
+        SideEffect sideEffect = (SideEffect)((Hashtable)heroHashtable[hero])[id];
+        //Debug.Log(card.GetName());
+        return sideEffect;
+    }
 }

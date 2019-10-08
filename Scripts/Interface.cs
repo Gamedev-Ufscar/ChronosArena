@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +8,6 @@ public class Interface : MonoBehaviour
     private GameOverseer gameOverseer;
 
     private GameObject backButton;
-    private int cardAmount = 0;
     private int interfaceSignal = 200;
     [SerializeField]
     private GameObject optionPrefab;
@@ -32,18 +30,22 @@ public class Interface : MonoBehaviour
         
     }
 
-    public void Setup(Card baseCard, string[] textList, Card invoker)
+    public void Setup(Card baseCard, string[] textList, Card invoker, int cardAmount)
     {
         foreach (GameObject option in destructionList)
         {
             Destroy(option);
         }
 
+        List<Vector2> cardLocations = setupCardLocations(cardAmount);
+
+        // CHECK ASAP - Card Options
+
         for (int i = 0; i < cardAmount; i++)
         {
             GameObject optionCreated = Instantiate(optionPrefab, gameObject.transform);
             optionCreated.transform.parent = gameObject.transform;
-            optionCreated.GetComponent<InterfaceCard>().SetIndex(i);
+            optionCreated.GetComponent<InterfaceCard>().ChangePosition(cardLocations[i]);
             optionCreated.GetComponent<Image>().sprite = baseCard.GetImage();
 
             // Received cards
@@ -60,18 +62,20 @@ public class Interface : MonoBehaviour
         }
     }
 
-    public void Setup(Card[] cardList, Card invoker)
+    public void Setup(Card[] cardList, Card invoker, int cardAmount)
     {
         foreach (GameObject option in destructionList)
         {
             Destroy(option);
         }
 
+        List<Vector2> cardLocations = setupCardLocations(cardAmount);
+
         for (int i = 0; i < cardAmount; i++)
         {
             GameObject optionCreated = Instantiate(optionPrefab, gameObject.transform);
             optionCreated.transform.parent = gameObject.transform;
-            optionCreated.GetComponent<InterfaceCard>().SetIndex(i);
+            optionCreated.GetComponent<InterfaceCard>().ChangePosition(cardLocations[i]);
             optionCreated.GetComponent<Image>().sprite = cardList[i].GetImage();
 
             // Received cards

@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class PlaceCard : MonoBehaviour
 {
-    public float speed = 13f;
+    [SerializeField]
+    private float speed = 13f;
 
-    public Transform point;
+    [SerializeField]
+    private Transform point;
+
+    [SerializeField]
+    private bool gravity;
+
     private GameObject go;
     private bool fu = false;
+    private int? ns = 0;
     private Quaternion targetRot;
     private Queue<GameObject> queue;
     private Queue<bool> boolQueue;
@@ -19,11 +26,12 @@ public class PlaceCard : MonoBehaviour
     }
 
     // Place Card
-    public void PlaceOnSlot(GameObject g, bool faceUp)
+    public void PlaceOnSlot(GameObject g, bool faceUp, int? nextState)
     {
         if (go == null) {
             go = g; // go = card
             fu = faceUp;
+            ns = nextState;
             go.GetComponent<Rigidbody>().useGravity = false;
             if (faceUp) { targetRot = Quaternion.LookRotation(Vector3.back, Vector3.down); }
             else { targetRot = Quaternion.LookRotation(Vector3.back, Vector3.up); }
@@ -36,6 +44,12 @@ public class PlaceCard : MonoBehaviour
             queue.Enqueue(g);
             boolQueue.Enqueue(g);
         }
+    }
+
+    public void Stop()
+    {
+        go = null;
+        fu = false;
     }
 
     void Update()
@@ -56,14 +70,14 @@ public class PlaceCard : MonoBehaviour
         if ((Vector3.Distance(point.position, go.transform.position) <= 0.05f && fu == false) ||
             Mathf.Approximately(Vector3.Distance(point.position, go.transform.position), 0f))
         {
-            if (fu == false) {
-                go.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-                go.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                go.GetComponent<Rigidbody>().useGravity = true;
-            } else {
-                go.GetComponent<BoardCard>().RaiseAnimState();
-                go.GetComponent<BoardCard>().SetWaiting(false);
-            }
+
+            go.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            go.GetComponent<Rigidbody>().velocity = Vector3.zero;
+
+            go.GetComponent<Rigidbody>().useGravity = gravity;
+
+            if (ns != null)
+                go.GetComponent<BoardCard>().RevealAnimation((int)ns);
 
             //go.name = go.name + "1";
 
@@ -74,6 +88,7 @@ public class PlaceCard : MonoBehaviour
             else
                 Destroy(go);*/
 
+            // Queue Handling
             if (queue.Count == 0) { 
                 go = null;
                 fu = false;

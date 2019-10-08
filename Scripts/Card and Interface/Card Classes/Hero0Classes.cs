@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BugaScream : Card
 {
@@ -87,7 +85,7 @@ public class WatchAdjustments : Card, ChargeInterface, Limit, Interfacer
         textList[0] = "+1c .";
         textList[1] = "+2c , -2g   .";
 
-        user.Interfacing(this, textList, this);
+        user.Interfacing(this, textList, this, 2);
     }
 
     public override void Effect(Player user, Player enemy, int priority)
@@ -178,7 +176,7 @@ public class ChronosMachine : Card, Interfacer
             textList[0] = "VOLTA O g      DO USUÁRIO.";
             textList[1] = "VOLTA O g      DO INIMIGO.";
 
-            user.Interfacing(this, textList, this);
+            user.Interfacing(this, textList, this, 2);
         } else
         {
             interfaceSignal = 0;
@@ -228,7 +226,7 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
     public int interfaceSignal { get; set; }
 
     int[] discardedCardList = new int[10]; // Lists the deckList indexes of discarded cards
-    bool bugCatcher = true;
+    int discardedCount = 0;
 
     public int nullType = 0;
 
@@ -300,14 +298,13 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
                             cardList[discardedCount] = user.GetCard(i);
                             discardedCardList[discardedCount] = i;
                             discardedCount++;
-                            bugCatcher = false;
                         }
                     }
                 }
 
                 // Interface script setup
-                if (!bugCatcher) {
-                    user.Interfacing(cardList, this);
+                if (discardedCount > 0) {
+                    user.Interfacing(cardList, this, discardedCount);
                 }
             }
         }
@@ -331,10 +328,9 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
             case 19:
                 // Setup discarded list for enemy
                 if (nullType == 2) { 
-                    if (!bugCatcher) {
+                    if (discardedCount > 0) {
                         user.RestoreCard(discardedCardList[interfaceSignal]);
                         Debug.Log("Discarded: " + discardedCardList[interfaceSignal]);
-                        bugCatcher = true;
                     }
                 }
                 break;
@@ -349,7 +345,7 @@ public class Catastrophe : Card, Interfacer
     public int interfaceSignal { get; set; }
 
     int[] ultimateList = new int[3]; // Lists the deckList indexes of ultimate cards
-    bool bugCatcher = true;
+    int ultimateCount = 0;
 
     public Catastrophe(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
         base(hero, name, cardID, image, text, type, minmax)
@@ -375,15 +371,14 @@ public class Catastrophe : Card, Interfacer
                     cardList[ultimateCount] = enemy.GetCard(i);
                     ultimateList[ultimateCount] = i;
                     ultimateCount++;
-                    bugCatcher = false;
                 }
             }
         }
 
         // Interface script setup
-        if (bugCatcher == false && ultimateCount > 1)
+        if (ultimateCount > 1)
         {
-            user.Interfacing(cardList, this);
+            user.Interfacing(cardList, this, ultimateCount);
         } else {
             interfaceSignal = 0;
             // CHECK LATER
@@ -399,10 +394,9 @@ public class Catastrophe : Card, Interfacer
                 enemy.RaiseCharge(-2);
                 break;
             case 18:
-                if (!bugCatcher)
+                if (ultimateCount > 0)
                 {
                     enemy.DiscardCard(ultimateList[interfaceSignal]);
-                    bugCatcher = true;
                 }
                 this.RaiseCost(1);
                 break;
@@ -417,7 +411,8 @@ public class PerverseEngineering : Card, Interfacer
     public int interfaceSignal { get; set; }
 
     int[] ultimateList = new int[7]; // Lists the deckList indexes of relevant cards
-    bool bugCatcher = true;
+
+    int specialCount = 0;
 
     public PerverseEngineering(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
         base(hero, name, cardID, image, text, type, minmax)
@@ -431,7 +426,6 @@ public class PerverseEngineering : Card, Interfacer
     public void Interfacing(Player user, Player enemy)
     {
         cardList = new Card[Constants.maxCardAmount];
-        int ultimateCount = 0;
 
         // Run through ENEMY Deck List, check if there's a skill or nullification card
         for (int i = 0; i < Constants.maxCardAmount; i++)
@@ -441,18 +435,17 @@ public class PerverseEngineering : Card, Interfacer
                 if (enemy.GetCard(i) != this && enemy.GetDeckCard(i).gameObject.activeInHierarchy == true &&
                     (enemy.GetCard(i).GetCardType() == CardTypes.Nullification || enemy.GetCard(i).GetCardType() == CardTypes.Skill))
                 {
-                    cardList[ultimateCount] = enemy.GetCard(i);
-                    ultimateList[ultimateCount] = i;
-                    ultimateCount++;
-                    bugCatcher = false;
+                    cardList[specialCount] = enemy.GetCard(i);
+                    ultimateList[specialCount] = i;
+                    specialCount++;
                 }
             }
         }
 
         // Interface script setup
-        if (bugCatcher == false && ultimateCount > 1)
+        if (specialCount > 1)
         {
-            user.Interfacing(cardList, this);
+            user.Interfacing(cardList, this, specialCount);
         } else {
             interfaceSignal = 0;
             // CHECK LATER
@@ -465,10 +458,9 @@ public class PerverseEngineering : Card, Interfacer
         switch (priority)
         {
             case 18:
-                if (!bugCatcher)
+                if (specialCount > 1)
                 {
                     enemy.DiscardCard(ultimateList[interfaceSignal]);
-                    bugCatcher = true;
                 }
                 break;
         }

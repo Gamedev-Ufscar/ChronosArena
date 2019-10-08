@@ -166,6 +166,11 @@ public abstract class Card
         this.turnsTillPlayable = turnsTillPlayable;
     }
 
+    public void ReduceTurnsTill()
+    {
+        this.turnsTillPlayable--;
+    }
+
     public abstract void Effect(Player user, Player enemy, int priority);
 
     // This setup is for choices - use the same card, only change text

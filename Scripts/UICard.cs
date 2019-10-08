@@ -10,6 +10,7 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     private Vector3 targetPosition;
     private float scale;
     private float color;
+    private bool darkened = false;
     private int category;
     private Card card;
 
@@ -69,6 +70,18 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     public void ChangeColor(float color)
     {
         gameObject.GetComponent<Image>().color = new Color(color, color, color);
+        if (transform.childCount >= 6)
+            TransformColor((byte)((int)color*53.4f));
+    }
+
+    void TransformColor(byte color)
+    {
+        transform.GetChild(0).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        transform.GetChild(1).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        transform.GetChild(2).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        transform.GetChild(3).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        transform.GetChild(4).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        transform.GetChild(5).GetComponent<Text>().color = new Color32(color, color, color, 255);
     }
 
     public void SetAsLastSibling()
@@ -99,6 +112,20 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     public void PushIndex()
     {
         cardIndex++;
+    }
+
+    public void SetDarkened(bool darkened)
+    {
+        SetDarkened(darkened, 0.6f);
+    }
+
+    public void SetDarkened(bool darkened, float color)
+    {
+        this.darkened = darkened;
+        if (darkened)
+            ChangeColor(0.3f);
+        else
+            ChangeColor(color);
     }
 
     // Getters
@@ -132,13 +159,21 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         return cardIndex;
     }
 
+    public bool GetDarkened()
+    {
+        return darkened;
+    }
+
     // On Pointer
     public void OnHover()
     {
         pointerOver = true;
         ChangeScale(Constants.cardBigSize);
         SetAsLastSibling();
-        ChangeColor(0.8f);
+        if (!GetDarkened())
+        {
+            ChangeColor(0.8f);
+        }
         ChangePosition(targetPosition + new Vector3(0f, Constants.cardRiseHeight, 0f));
     }
 
@@ -147,7 +182,10 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         pointerOver = false;
         ChangeScale(1);
         SetAsFirstSibling();
-        ChangeColor(0.6f);
+        if (!GetDarkened())
+        {
+            ChangeColor(0.6f);
+        }
         ChangePosition(targetPosition + new Vector3(0f, -Constants.cardRiseHeight, 0f));
     }
 
@@ -160,8 +198,5 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     {
         OutHover();
     }
-
-
-
 
 }

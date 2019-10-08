@@ -10,7 +10,6 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     private UltiArea ultiArea;
 
     private bool bought = false;
-    private bool darkened = false;
 
     private int cardID;
     private int tempIndex;
@@ -19,7 +18,7 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     void Start()
     {
         bought = false;
-        darkened = false;
+        SetDarkened(false);
     }
 
     // Update is called once per frame
@@ -31,12 +30,6 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     
 
     // Setter
-    public void SetDarkened(bool darkened)
-    {
-        this.darkened = darkened;
-        UpdateColor();
-    }
-
     public void SetBought(bool bought)
     {
         this.bought = bought;
@@ -54,8 +47,29 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
         this.ultiArea = ultiArea;
     }
 
+    public void SetTempIndex(int tempIndex)
+    {
+        this.tempIndex = tempIndex;
+    }
+
+    public void RecedeTempIndex()
+    {
+        tempIndex--;
+    }
+
+    public void PushTempIndex()
+    {
+        tempIndex++;
+    }
+
+    public new void SetDarkened(bool darkened)
+    {
+        base.SetDarkened(darkened);
+        UpdateColor();
+    }
+
     // Color
-    private void UpdateColor()
+    public void UpdateColor()
     {
         if (GetDarkened())
         {
@@ -94,18 +108,7 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     {
         return bought;
     }
-
-    public bool GetDarkened()
-    {
-        return darkened;
-    }
-
-    // Setter
-
-    public void SetTempIndex(int tempIndex)
-    {
-        this.tempIndex = tempIndex;
-    }
+    
 
     // Hovering
     public new void OnHover()
@@ -141,7 +144,6 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     public void OnPointerClick(PointerEventData eventData)
     {
         ultiArea.UltiBuy(this);
-
-        UpdateColor();
+        Debug.Log(ultiArea.gameObject.name);
     }
 }

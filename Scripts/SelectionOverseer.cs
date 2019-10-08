@@ -257,7 +257,6 @@ public class SelectionOverseer : MonoBehaviour
         } else
         {
             timeTillAdvance = null;
-            Debug.Log("Timer deactivated.");
         }
     }
 
@@ -265,12 +264,12 @@ public class SelectionOverseer : MonoBehaviour
     {
         // Load Player
         Character chr = characterManager.GetCharacter((int)myHeroIndex);
-        hermes.LoadHermes(chr.GetHero(), chr.GetSideListSize(), chr.GetCardCount(), chr.GetUltiCount(), chr.GetPassiveCount(), 
+        hermes.LoadHermes(chr.GetHero(), chr.GetSideListSize(), chr.GetCardCount(), chr.GetUltiCount(), chr.GetPassiveCount(), chr.GetSideListSize(),
             chr.GetAttackDisableList(), chr.GetProfile());
 
         // Load Enemy
         chr = characterManager.GetCharacter((int)enemyHeroIndex);
-        hermes.LoadEnemyHermes(chr.GetHero(), chr.GetSideListSize(), chr.GetCardCount(), chr.GetUltiCount(), chr.GetPassiveCount(),
+        hermes.LoadEnemyHermes(chr.GetHero(), chr.GetSideListSize(), chr.GetCardCount(), chr.GetUltiCount(), chr.GetPassiveCount(), chr.GetSideListSize(),
             chr.GetAttackDisableList(), chr.GetProfile());
 
         SetMyConfirm(false);

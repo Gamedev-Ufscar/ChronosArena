@@ -9,8 +9,6 @@ public class BoardCard : MonoBehaviour
 
     private DeckCard thisDeckCard;
     private UltimateCard thisUltiCard;
-    private int revealAnimState = 0;
-    private bool waiting = true;
 
     private Card cardPlayed;
 
@@ -19,6 +17,8 @@ public class BoardCard : MonoBehaviour
         this.cardPlayed = cardPlayed;
         this.player = player;
         thisDeckCard = deckCard;
+
+        transform.GetChild(6).GetComponent<Renderer>().material.mainTexture = ImageStash.IS.textureFromSprite(cardPlayed.GetImage());
 
         transform.GetChild(0).GetComponent<TextMesh>().text = cardPlayed.GetName();
         transform.GetChild(1).GetComponent<TextMesh>().text = cardPlayed.typeString(cardPlayed.GetCardType());
@@ -43,31 +43,41 @@ public class BoardCard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (waiting == false)
+        
+    }
+
+    public void RevealAnimation(int state) {
+        if (state == -1)
         {
-            waiting = true;
-            if (revealAnimState == 0)
-            {
-                if (thisDeckCard is HandCard)
-                    Activate(SlotsOnBoard.PlayerCardAbove, true);
-                else if (thisDeckCard is EnemyCard)
-                    Activate(SlotsOnBoard.EnemyCardAbove, true);
-            }
-            else if (revealAnimState == 1)
-            {
-                if (thisDeckCard is HandCard)
-                    Activate(SlotsOnBoard.PlayerCard, true);
-                else if (thisDeckCard is EnemyCard)
-                    Activate(SlotsOnBoard.EnemyCard, true);
-            }
-            else if (revealAnimState == 2)
-            {
-                if (thisDeckCard is HandCard)
-                    Activate(SlotsOnBoard.PlayerCard, false);
-                else if (thisDeckCard is EnemyCard)
-                    Activate(SlotsOnBoard.EnemyCard, false);
+            if (thisDeckCard is HandCard)
+                Activate(SlotsOnBoard.PlayerCard, false, null);
+            else if (thisDeckCard is EnemyCard)
+                Activate(SlotsOnBoard.EnemyCard, false, null);
+        }
+        else if (state == -2)
+        {
+            if (thisDeckCard is HandCard)
+                Activate(SlotsOnBoard.PlayerCard, true, null);
+            else if (thisDeckCard is EnemyCard)
+                Activate(SlotsOnBoard.EnemyCard, true, null);
+        }
+        else if (state == 0)
+        {
+            if (thisDeckCard is HandCard) {
+                Deactivate(SlotsOnBoard.PlayerCard);
+                Activate(SlotsOnBoard.PlayerCardAbove, true, 1);
+            } else if (thisDeckCard is EnemyCard) {
+                Deactivate(SlotsOnBoard.EnemyCard);
+                Activate(SlotsOnBoard.EnemyCardAbove, true, 1);
             }
         }
+        else if (state == 1)
+        {
+            if (thisDeckCard is HandCard)
+                Activate(SlotsOnBoard.PlayerCard, true, null);
+            else if (thisDeckCard is EnemyCard)
+                Activate(SlotsOnBoard.EnemyCard, true, null);
+            }
     }
 
     // Getter
@@ -87,42 +97,38 @@ public class BoardCard : MonoBehaviour
     }
 
     // Setter
-    public void SetAnimState(int animState)
+
+    public void Activate(SlotsOnBoard place, bool faceUp, int? nextState)
     {
-        this.revealAnimState = animState;
+        slot = FindSlot(place);
+        AudioManager.AM.CardSound();
+        slot.GetComponent<PlaceCard>().PlaceOnSlot(gameObject, faceUp, nextState);
     }
 
-    public void RaiseAnimState()
+    public void Deactivate(SlotsOnBoard place)
     {
-        revealAnimState++;
+        slot = FindSlot(place);
+        slot.GetComponent<PlaceCard>().Stop();
     }
 
-    public void SetWaiting(bool waiting)
-    {
-        this.waiting = waiting;
-    }
-
-    public void Activate(SlotsOnBoard place, bool faceUp)
+    GameObject FindSlot(SlotsOnBoard place)
     {
         switch (place)
         {
             case SlotsOnBoard.PlayerCard:
-                slot = GameObject.FindWithTag("Slot/PlayerCard");
-                break;
+                return GameObject.FindWithTag("Slot/PlayerCard");
 
             case SlotsOnBoard.EnemyCard:
-                slot = GameObject.FindWithTag("Slot/EnemyCard");
-                break;
+                return GameObject.FindWithTag("Slot/EnemyCard");
 
             case SlotsOnBoard.PlayerCardAbove:
-                slot = GameObject.FindWithTag("Slot/PlayerCardAbove");
-                break;
+                return GameObject.FindWithTag("Slot/PlayerCardAbove");
 
             case SlotsOnBoard.EnemyCardAbove:
-                slot = GameObject.FindWithTag("Slot/EnemyCardAbove");
-                break;
+                return GameObject.FindWithTag("Slot/EnemyCardAbove");
+
+            default:
+                return null;
         }
-        AudioManager.AM.CardSound();
-        slot.GetComponent<PlaceCard>().PlaceOnSlot(gameObject, faceUp);
     }
 }
