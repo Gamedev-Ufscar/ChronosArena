@@ -562,7 +562,8 @@ public class Player : MonoBehaviour
         Card[] cardList = new Card[Constants.maxCardAmount];
         for (int i = 0; i < Constants.maxCardAmount; i++)
         {
-            cardList[i] = GetDeckCard(i).GetCard();
+            if (GetDeckCard(i) != null)
+                cardList[i] = GetDeckCard(i).GetCard();
         }
         gameOverseer.Interfacing(cardList, null, totalCardCount);
     }

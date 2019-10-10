@@ -8,7 +8,6 @@ public class Interface : MonoBehaviour
     private GameOverseer gameOverseer;
 
     private GameObject backButton;
-    private int interfaceSignal = 200;
     [SerializeField]
     private GameObject optionPrefab;
     private List<Vector2> cardLocations;
@@ -30,86 +29,86 @@ public class Interface : MonoBehaviour
         
     }
 
+    // Setup -----
     public void Setup(Card baseCard, string[] textList, Card invoker, int cardAmount)
     {
-        foreach (GameObject option in destructionList)
-        {
-            Destroy(option);
-        }
-
-        List<Vector2> cardLocations = setupCardLocations(cardAmount);
-
-        // CHECK ASAP - Card Options
+        DestroyAllCards();
 
         for (int i = 0; i < cardAmount; i++)
         {
-            GameObject optionCreated = Instantiate(optionPrefab, gameObject.transform);
-            optionCreated.transform.parent = gameObject.transform;
-            optionCreated.GetComponent<InterfaceCard>().ChangePosition(cardLocations[i]);
-            optionCreated.GetComponent<Image>().sprite = baseCard.GetImage();
+            // Create card
+            GameObject optionCreated = CreateInterfaceCard(i, setupCardLocations(cardAmount));
 
-            // Received cards
+            // Setup text
+            optionCreated.GetComponent<Image>().sprite = baseCard.GetImage();
             optionCreated.transform.GetChild(0).GetComponent<Text>().text = baseCard.GetName();
             optionCreated.transform.GetChild(1).GetComponent<Text>().text = baseCard.typeString(baseCard.GetCardType());
             optionCreated.transform.GetChild(2).GetComponent<Text>().text = textList[i].Replace("\\n", "\n");
             optionCreated.transform.GetChild(3).GetComponent<Text>().text = baseCard.Value(1);
             optionCreated.transform.GetChild(4).GetComponent<Text>().text = baseCard.Value(2);
             optionCreated.transform.GetChild(5).GetComponent<Text>().text = baseCard.heroString(baseCard.GetHero());
+            optionCreated.GetComponent<InterfaceCard>().SetOption(i);
 
-            if (invoker == null) { optionCreated.GetComponent<InterfaceCard>().SetOption(false); }
-            else { optionCreated.GetComponent<InterfaceCard>().SetOption(true); }
+            SetupClickable(optionCreated, invoker);
             destructionList.Add(optionCreated);
         }
     }
 
     public void Setup(Card[] cardList, Card invoker, int cardAmount)
     {
-        foreach (GameObject option in destructionList)
-        {
-            Destroy(option);
-        }
-
-        List<Vector2> cardLocations = setupCardLocations(cardAmount);
+        DestroyAllCards();
 
         for (int i = 0; i < cardAmount; i++)
         {
-            GameObject optionCreated = Instantiate(optionPrefab, gameObject.transform);
-            optionCreated.transform.parent = gameObject.transform;
-            optionCreated.GetComponent<InterfaceCard>().ChangePosition(cardLocations[i]);
-            optionCreated.GetComponent<Image>().sprite = cardList[i].GetImage();
+            // Create card
+            GameObject optionCreated = CreateInterfaceCard(i, setupCardLocations(cardAmount));
 
-            // Received cards
+            // Setup text
+            optionCreated.GetComponent<Image>().sprite = cardList[i].GetImage();
             optionCreated.transform.GetChild(0).GetComponent<Text>().text = cardList[i].GetName();
             optionCreated.transform.GetChild(1).GetComponent<Text>().text = cardList[i].typeString(cardList[i].GetCardType());
             optionCreated.transform.GetChild(2).GetComponent<Text>().text = cardList[i].GetText().Replace("\\n", "\n");
             optionCreated.transform.GetChild(3).GetComponent<Text>().text = cardList[i].Value(1);
             optionCreated.transform.GetChild(4).GetComponent<Text>().text = cardList[i].Value(2);
             optionCreated.transform.GetChild(5).GetComponent<Text>().text = cardList[i].heroString(cardList[i].GetHero());
+            optionCreated.GetComponent<InterfaceCard>().SetOption(i);
 
-
-            if (invoker == null) { optionCreated.GetComponent<InterfaceCard>().SetOption(false); }
-            else { optionCreated.GetComponent<InterfaceCard>().SetOption(true); }
+            SetupClickable(optionCreated, invoker);
             destructionList.Add(optionCreated);
         }
     }
 
-    public void Close(bool optionMenu)
+    public GameObject CreateInterfaceCard(int i, List<Vector2> cardLocations)
     {
-        if (optionMenu)
-        {
-            Interfacer cc = (Interfacer)invoker;
-            cc.SetSignal(interfaceSignal);
-            gameOverseer.SendInterfaceSignal(interfaceSignal);
-            invoker = (Card)cc;
-        }
+        // Create card
+        GameObject optionCreated = Instantiate(optionPrefab, gameObject.transform);
+        optionCreated.transform.parent = gameObject.transform;
+        optionCreated.GetComponent<InterfaceCard>().SetInterface(this);
+        optionCreated.GetComponent<InterfaceCard>().ChangePosition(cardLocations[i]);
 
+        return optionCreated;
+    }
+
+    public void DestroyAllCards()
+    {
         foreach (GameObject option in destructionList)
         {
             Destroy(option);
         }
+    }
 
-        setup = false;
-        gameObject.SetActive(false);
+    public void SetupClickable(GameObject optionCreated, Card invoker)
+    {
+        // Set true if clickable
+        if (invoker == null)
+        {
+            optionCreated.GetComponent<InterfaceCard>().SetIsClickable(false);
+        }
+        else
+        {
+            optionCreated.GetComponent<InterfaceCard>().SetIsClickable(true);
+            this.invoker = invoker;
+        }
     }
 
     List<Vector2> setupCardLocations(int cardAmount)
@@ -156,5 +155,22 @@ public class Interface : MonoBehaviour
         return ccardLocations;
 
 
+    }
+
+    // Close ---------
+    public void Close(int interfaceSignal)
+    {
+        Interfacer cc = (Interfacer)invoker;
+        cc.SetSignal(interfaceSignal);
+        gameOverseer.SendInterfaceSignal(interfaceSignal);
+        invoker = (Card)cc;
+
+        foreach (GameObject option in destructionList)
+        {
+            Destroy(option);
+        }
+
+        setup = false;
+        gameObject.SetActive(false);
     }
 }

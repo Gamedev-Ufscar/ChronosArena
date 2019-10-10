@@ -4,26 +4,34 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InterfaceCard : UICard
+public class InterfaceCard : UICard, IPointerDownHandler
 {
-    private bool option;
+    private bool isClickable;
     private Interface interfface;
+    private int option;
 
     public void SetInterface(Interface interfface)
     {
         this.interfface = interfface;
     }
 
-    public void SetOption(bool option)
+    public void SetIsClickable(bool isClickable)
+    {
+        this.isClickable = isClickable;
+    }
+
+    public void SetOption(int option)
     {
         this.option = option;
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (option)
+        Debug.Log("Clicked");
+        if (isClickable)
         {
-            interfface.Close(true);
+            Debug.Log("Clickable");
+            interfface.Close(option);
         }
     }
 
