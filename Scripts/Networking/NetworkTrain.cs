@@ -42,12 +42,12 @@ public class NetworkTrain : MonoBehaviour
     // Update is called once per frame
     void Update()
     { 
-        if (SceneManager.GetActiveScene().buildIndex == 2 && selectionOverseer == null)
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Selection && selectionOverseer == null)
         {
             FindSelectionOverseer();
         }
         
-        if (SceneManager.GetActiveScene().buildIndex == 3) {
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Game) {
             Destroy(gameObject);
         }
     }

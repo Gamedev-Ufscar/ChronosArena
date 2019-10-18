@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InterfaceCard : UICard, IPointerDownHandler
+public class InterfaceCard : UICard, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private bool isClickable;
     private Interface interfface;
@@ -25,6 +25,18 @@ public class InterfaceCard : UICard, IPointerDownHandler
         this.option = option;
     }
 
+    public new void OnPointerEnter(PointerEventData eventData)
+    {
+        OnHover(7*Constants.cardBigSize/8, 1*Constants.cardRiseHeight/4);
+        ChangeColor(1f);
+    }
+
+    public new void OnPointerExit(PointerEventData eventData)
+    {
+        OutHover(1f, Constants.cardRiseHeight / 4);
+        ChangeColor(1f);
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         Debug.Log("Clicked");
@@ -33,13 +45,5 @@ public class InterfaceCard : UICard, IPointerDownHandler
             Debug.Log("Clickable");
             interfface.Close(option);
         }
-    }
-
-    public new void OnPointerEnter(PointerEventData eventData)
-    {
-        ChangeScale(2);
-        SetAsLastSibling();
-        ChangeColor(1f);
-        transform.localPosition = transform.localPosition + new Vector3(0f, 5f, 0f);
     }
 }

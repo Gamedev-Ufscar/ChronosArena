@@ -114,3 +114,33 @@ public enum WinCondition
     Loss,
     Draw
 }
+
+public enum ManualButtonType
+{
+    Link,
+    Left,
+    Right,
+    Back
+}
+
+public enum SceneList
+{
+    Menu,
+    Lobby,
+    Selection,
+    Game,
+    Tutorial
+}
+
+public enum ManualPage
+{
+    Indice,
+    Introducao,
+    Ataque,
+    Defesa,
+    Carga,
+    Skill,
+    Anulacao,
+    Ultimate,
+    Item
+}

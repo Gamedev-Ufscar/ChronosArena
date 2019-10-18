@@ -524,7 +524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 658186b8f42a40c48bf9465d1872f563, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PV: {fileID: 3326205339169454883, guid: 192259f703b3e6243b48c74dc59a307c, type: 3}
+  selectionOverseer: {fileID: 818879912}
   buttonColors:
   - {fileID: 21300000, guid: dc71af7ebb2462a468b441b956efead5, type: 3}
   - {fileID: 21300000, guid: 3187826c4f939714096e4c6c209bf2e6, type: 3}
@@ -650,6 +650,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 818879911}
+  - component: {fileID: 818879912}
+  - component: {fileID: 818879913}
   m_Layer: 0
   m_Name: Selection Overseer
   m_TagString: Untagged
@@ -671,6 +673,77 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &818879912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818879910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c9dc42c672442e4ba06660f09007af4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterManager: {fileID: 818879913}
+  characterButtons:
+  - {fileID: 1717519980}
+  - {fileID: 1887062562}
+  - {fileID: 1086041824}
+  - {fileID: 927829262}
+  confirmButton: {fileID: 413326344}
+  enemyConfirmButton: {fileID: 873913579}
+  hermes: {fileID: 983468379}
+  confirm: {fileID: 21300000, guid: dc71af7ebb2462a468b441b956efead5, type: 3}
+  confirmed: {fileID: 21300000, guid: 3187826c4f939714096e4c6c209bf2e6, type: 3}
+  buttons: []
+  myPortrait: {fileID: 759293168}
+  heroTitle: {fileID: 2051824070}
+  enemyPortrait: {fileID: 179920897}
+  enemyTitle: {fileID: 1420558028}
+  gameStartsIn: {fileID: 2020016640}
+  noHero: {fileID: 21300000, guid: e88fe64bd59b92d4da3976198d806931, type: 3}
+--- !u!114 &818879913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818879910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bb75eb25c4260429d8e19d133188d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterList:
+  - hero: 1
+    profile: {fileID: 21300000, guid: 17ae3813bd178784980e828a452535c6, type: 3}
+    sideListSize: 2
+    cardCount: 8
+    ultiCount: 2
+    passiveCount: 0
+    attackDisableList: 0100000004000000050000000600000007000000
+  - hero: 3
+    profile: {fileID: 21300000, guid: 00290c205d795054687fc721a8f753a0, type: 3}
+    sideListSize: 0
+    cardCount: 7
+    ultiCount: 1
+    passiveCount: 0
+    attackDisableList: 0100000004000000050000000600000007000000
+  - hero: 22
+    profile: {fileID: 21300000, guid: 43a723c3dce4fbe48bc29c8520acc764, type: 3}
+    sideListSize: 2
+    cardCount: 7
+    ultiCount: 1
+    passiveCount: 1
+    attackDisableList: 0100000004000000050000000600000007000000
+  - hero: 2
+    profile: {fileID: 21300000, guid: fc0ec1991a5f49a408eed69ebff19fa5, type: 3}
+    sideListSize: 6
+    cardCount: 9
+    ultiCount: 2
+    passiveCount: 0
+    attackDisableList: 0100000004000000050000000600000007000000
 --- !u!1 &873913574
 GameObject:
   m_ObjectHideFlags: 0
@@ -817,12 +890,12 @@ RectTransform:
   m_Children:
   - {fileID: 1121774550}
   m_Father: {fileID: 1475981871}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 39.4, y: -39}
-  m_SizeDelta: {x: 50, y: 50}
+  m_AnchoredPosition: {x: 50, y: -71}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &927829260
 MonoBehaviour:
@@ -837,7 +910,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.55, g: 0.55, b: 0.55, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -870,18 +943,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 927829258}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b59e95b33778ce4cade0d3e9cbcfe63, type: 3}
+  m_Script: {fileID: 11500000, guid: 05f89b5ae32faa84cacb95516c53e41f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heroName: Yuri
-  hero: 22
-  sideListSize: 1
-  handSize: 7
-  ultiCount: 1
-  passiveCount: 1
-  attackDisableList: 0100000004000000050000000600000007000000
-  profile: {fileID: 21300000, guid: 43a723c3dce4fbe48bc29c8520acc764, type: 3}
-  hermesScript: {fileID: 983468379}
+  selectionOverseer: {fileID: 818879912}
+  characterIndex: 2
 --- !u!1 &983468378
 GameObject:
   m_ObjectHideFlags: 0
@@ -911,20 +977,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad88e1b2285beae4abb02e03ae9af7e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hero: 0
-  sideListSize: 0
-  handSize: 0
-  ultiCount: 0
-  passiveCount: 0
-  attackDisableList: 
-  profile: {fileID: 0}
-  enemyHero: 0
-  enemySideListSize: 0
-  enemyHandSize: 0
-  enemyUltiCount: 0
-  enemyPassiveCount: 0
-  enemyAttackDisableList: 
-  enemyProfile: {fileID: 0}
 --- !u!4 &983468380
 Transform:
   m_ObjectHideFlags: 0
@@ -1037,12 +1089,12 @@ RectTransform:
   m_Children:
   - {fileID: 1218528818}
   m_Father: {fileID: 1475981871}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -31.7, y: -39}
-  m_SizeDelta: {x: 50, y: 50}
+  m_AnchoredPosition: {x: -51, y: -71}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1086041823
 MonoBehaviour:
@@ -1057,7 +1109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.55, g: 0.55, b: 0.55, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1082,18 +1134,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1086041821}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b59e95b33778ce4cade0d3e9cbcfe63, type: 3}
+  m_Script: {fileID: 11500000, guid: 05f89b5ae32faa84cacb95516c53e41f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heroName: Dr. Harold
-  hero: 2
-  sideListSize: 5
-  handSize: 9
-  ultiCount: 2
-  passiveCount: 0
-  attackDisableList: 01000000050000000600000007000000
-  profile: {fileID: 21300000, guid: fc0ec1991a5f49a408eed69ebff19fa5, type: 3}
-  hermesScript: {fileID: 983468379}
+  selectionOverseer: {fileID: 818879912}
+  characterIndex: 3
 --- !u!222 &1086041825
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1220,7 +1265,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1121774551
 MonoBehaviour:
@@ -1408,7 +1453,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1218528819
 MonoBehaviour:
@@ -1619,8 +1664,8 @@ RectTransform:
   m_Children:
   - {fileID: 1717519978}
   - {fileID: 1887062560}
-  - {fileID: 1086041822}
   - {fileID: 927829259}
+  - {fileID: 1086041822}
   - {fileID: 759293169}
   - {fileID: 2051824071}
   - {fileID: 413326341}
@@ -1657,6 +1702,7 @@ MonoBehaviour:
   enemyConfirmButton: {fileID: 873913579}
   confirm: {fileID: 21300000, guid: dc71af7ebb2462a468b441b956efead5, type: 3}
   confirmed: {fileID: 21300000, guid: 3187826c4f939714096e4c6c209bf2e6, type: 3}
+  hermesScript: {fileID: 983468379}
 --- !u!1 &1563587462
 GameObject:
   m_ObjectHideFlags: 0
@@ -1692,7 +1738,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1563587464
 MonoBehaviour:
@@ -1766,7 +1812,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1602281799
 MonoBehaviour:
@@ -1841,8 +1887,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -32.600006, y: 31}
-  m_SizeDelta: {x: 50, y: 50}
+  m_AnchoredPosition: {x: -51.899994, y: 31}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1717519979
 MonoBehaviour:
@@ -1857,7 +1903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.55, g: 0.55, b: 0.55, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1882,18 +1928,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1717519977}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b59e95b33778ce4cade0d3e9cbcfe63, type: 3}
+  m_Script: {fileID: 11500000, guid: 05f89b5ae32faa84cacb95516c53e41f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heroName: Timothy
-  hero: 1
-  sideListSize: 3
-  handSize: 8
-  ultiCount: 2
-  passiveCount: 0
-  attackDisableList: 0100000004000000050000000600000007000000
-  profile: {fileID: 21300000, guid: 17ae3813bd178784980e828a452535c6, type: 3}
-  hermesScript: {fileID: 983468379}
+  selectionOverseer: {fileID: 818879912}
+  characterIndex: 0
 --- !u!222 &1717519981
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2029,8 +2068,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 39.399994, y: 31}
-  m_SizeDelta: {x: 50, y: 50}
+  m_AnchoredPosition: {x: 50, y: 31}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1887062561
 MonoBehaviour:
@@ -2045,7 +2084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.55, g: 0.55, b: 0.55, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -2070,18 +2109,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1887062559}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b59e95b33778ce4cade0d3e9cbcfe63, type: 3}
+  m_Script: {fileID: 11500000, guid: 05f89b5ae32faa84cacb95516c53e41f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heroName: Uga
-  hero: 3
-  sideListSize: 0
-  handSize: 7
-  ultiCount: 1
-  passiveCount: 0
-  attackDisableList: 0100000004000000050000000600000007000000
-  profile: {fileID: 21300000, guid: 00290c205d795054687fc721a8f753a0, type: 3}
-  hermesScript: {fileID: 983468379}
+  selectionOverseer: {fileID: 818879912}
+  characterIndex: 1
 --- !u!222 &1887062563
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2100,7 +2132,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2020016639}
   - component: {fileID: 2020016642}
-  - component: {fileID: 2020016641}
   - component: {fileID: 2020016640}
   m_Layer: 5
   m_Name: Game Starts In
@@ -2162,18 +2193,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 
---- !u!114 &2020016641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2020016638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5aca71f9e7d63049bddc5d599cf1856, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!222 &2020016642
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameOverseer : MonoBehaviour
 {
@@ -35,14 +36,17 @@ public class GameOverseer : MonoBehaviour
     private void Start()
     {
         Debug.Log("A new Bahn");
-        if (NetworkBahn.networkBahn != null)
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Game)
         {
-            Destroy(NetworkBahn.networkBahn.gameObject);
+            if (NetworkBahn.networkBahn != null)
+            {
+                Destroy(NetworkBahn.networkBahn.gameObject);
+            }
+            GameObject netObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test2"), Vector3.zero, Quaternion.identity);
+            netObject.GetComponent<NetworkBahn>().GiveGameOverseer(this);
         }
-        GameObject netObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Test2"), Vector3.zero, Quaternion.identity);
-        netObject.GetComponent<NetworkBahn>().GiveGameOverseer(this);
 
-        state = GameState.Purchase;
+        state = GameState.Choice;
         UpdateBar();
     }
 
@@ -99,6 +103,14 @@ public class GameOverseer : MonoBehaviour
                     // Restore Played Card
                     myPlayer.RestorePlayedCard();
                     enemyPlayer.RestorePlayedCard();
+
+                    // Revoke nullification
+                    myPlayer.GetCardPlayed().SetIsNullified(false);
+                    enemyPlayer.GetCardPlayed().SetIsNullified(false);
+                    // Remove protection
+                    myPlayer.RemoveProtection();
+                    enemyPlayer.RemoveProtection();
+
                     // Darken Ulti Cards
                     myPlayer.DarkenUltiCards(false);
                     enemyPlayer.DarkenUltiCards(false);
@@ -114,10 +126,23 @@ public class GameOverseer : MonoBehaviour
         }
     }
 
+    private void ToPurchaseState()
+    {
+        state = GameState.Purchase;
+        UIManager.DebugText("Compra");
+
+        // If I can't buy cards, just skip
+        if (!myPlayer.CanBuyCards())
+        {
+            SetMyConfirm(true);
+        }
+
+    }
+
     private void ToChoiceState()
     {
         state = GameState.Choice;
-        UIManager.DebugText("Choice");
+        UIManager.DebugText("Escolha");
         myPlayer.ActivateSideEffects(SEPhase.Choice, enemyPlayer);
         enemyPlayer.ActivateSideEffects(SEPhase.Choice, myPlayer);
 
@@ -135,7 +160,7 @@ public class GameOverseer : MonoBehaviour
     private void ToInterfaceState()
     {
         state = GameState.Interface;
-        UIManager.DebugText("Interface");
+        UIManager.DebugText("Decisão");
 
         // Activate interface if card has one, otherwise skip
         if (myPlayer.GetCardPlayed() is Interfacer)
@@ -160,7 +185,7 @@ public class GameOverseer : MonoBehaviour
     private void ToReactionState()
     {
         state = GameState.Reaction;
-        UIManager.DebugText("Reaction");
+        UIManager.DebugText("Reação");
 
         myPlayer.ActivateSideEffects(SEPhase.Reaction, enemyPlayer);
         enemyPlayer.ActivateSideEffects(SEPhase.Reaction, myPlayer);
@@ -186,7 +211,7 @@ public class GameOverseer : MonoBehaviour
     private void ToEffectsState()
     {
         state = GameState.Effects;
-        UIManager.DebugText("Effects");
+        UIManager.DebugText("Efeitos");
         // Activate Side Effects
         myPlayer.ActivateSideEffects(SEPhase.EffectsBefore, enemyPlayer);
         enemyPlayer.ActivateSideEffects(SEPhase.EffectsBefore, myPlayer);
@@ -214,15 +239,15 @@ public class GameOverseer : MonoBehaviour
     private void EveryTurn()
     {
         // Reduce Unplayability
-        reduceUnplayability(myPlayer);
-        reduceUnplayability(enemyPlayer);
+        ReduceUnplayability(myPlayer);
+        ReduceUnplayability(enemyPlayer);
 
         // Reset Card Limit (zB Attack, Charge)
-        resetLimit(myPlayer);
-        resetLimit(enemyPlayer);
+        ResetLimit(myPlayer);
+        ResetLimit(enemyPlayer);
     }
 
-    public void reduceUnplayability(Player player)
+    public void ReduceUnplayability(Player player)
     {
         for (int i = 0; i < Constants.maxCardAmount; i++)
         {
@@ -236,7 +261,7 @@ public class GameOverseer : MonoBehaviour
         }
     }
 
-    public void resetLimit(Player player)
+    public void ResetLimit(Player player)
     {
         for (int i = 0; i < Constants.maxCardAmount; i++)
         {
@@ -273,19 +298,6 @@ public class GameOverseer : MonoBehaviour
         }
     }
 
-    private void ToPurchaseState()
-    {
-        state = GameState.Purchase;
-        UIManager.DebugText("Purchase");
-
-        // If I can't buy cards, just skip
-        if (!myPlayer.CanBuyCards())
-        {
-            SetMyConfirm(true);
-        }
-        
-    }
-
     // Healthbar & Chargebar
     public void UpdateBar()
     {
@@ -303,6 +315,14 @@ public class GameOverseer : MonoBehaviour
     {
         interfface.gameObject.SetActive(true);
         interfface.Setup(baseCard, textList, invoker, cardAmount);
+    }
+
+    public void Summary(Card[] cardList, Card invoker, int cardAmount, Player player)
+    {
+        interfface.gameObject.SetActive(true);
+        if (player == GetMyPlayer()) { interfface.GetPlayerBackButton().SetActive(true); }
+        else if (player == GetEnemyPlayer()) { interfface.GetEnemyBackButton().SetActive(true); }
+        interfface.Setup(cardList, invoker, cardAmount);
     }
 
     public void HoverCarding()
@@ -385,51 +405,64 @@ public class GameOverseer : MonoBehaviour
     // Network Sender
     public void SendSummonCard(int cardID)
     {
-        NetworkBahn.networkBahn.SummonCard(cardID);
+        if (NetworkBahn.networkBahn != null)
+            NetworkBahn.networkBahn.SummonCard(cardID);
     }
 
     public void SendConfirm(bool confirm)
     {
-        NetworkBahn.networkBahn.SendConfirm(confirm);
+        if (NetworkBahn.networkBahn != null)
+            NetworkBahn.networkBahn.SendConfirm(confirm);
     }
 
     public void SendShuffle(int[] cardIndexes)
     {
-        NetworkBahn.networkBahn.SendShuffle(cardIndexes);
+        if (NetworkBahn.networkBahn != null)
+            NetworkBahn.networkBahn.SendShuffle(cardIndexes);
     }
 
     public void SendInterfaceSignal(int interfaceSignal)
     {
-        NetworkBahn.networkBahn.SendInterfaceSignal(interfaceSignal);
+        if (NetworkBahn.networkBahn != null)
+            NetworkBahn.networkBahn.SendInterfaceSignal(interfaceSignal);
     }
 
     public void SendCardPosition(int id, Vector2 position)
     {
-        NetworkBahn.networkBahn.SendCardPosition(id, position);
+        if (NetworkBahn.networkBahn != null)
+            NetworkBahn.networkBahn.SendCardPosition(id, position);
     }
 
     public void SendCardPositionStop()
     {
-        NetworkBahn.networkBahn.SendCardPositionStop();
+        if (NetworkBahn.networkBahn != null)
+            NetworkBahn.networkBahn.SendCardPositionStop();
     }
 
     public void SendUltiPosition(int id, Player playerHovered)
     {
-        bool hoveringMyself;
-        hoveringMyself = (playerHovered == myPlayer) ? true : false;
-        NetworkBahn.networkBahn.SendUltiHover(id, hoveringMyself);
+        if (NetworkBahn.networkBahn != null)
+        {
+            bool hoveringMyself;
+            hoveringMyself = (playerHovered == myPlayer) ? true : false;
+            NetworkBahn.networkBahn.SendUltiHover(id, hoveringMyself);
+        }
     }
 
     public void SendUltiStop(Player playerHovered)
     {
-        bool hoveringMyself;
-        hoveringMyself = (playerHovered == myPlayer) ? true : false;
-        NetworkBahn.networkBahn.SendUltiStop(hoveringMyself);
+        if (NetworkBahn.networkBahn != null)
+        {
+            bool hoveringMyself;
+            hoveringMyself = (playerHovered == myPlayer) ? true : false;
+            NetworkBahn.networkBahn.SendUltiStop(hoveringMyself);
+        }
     }
 
     public void SendUltiPurchase(int cardID, bool bought, int charge)
     {
-        NetworkBahn.networkBahn.SendUltiPurchase(cardID, bought, charge);
+        if (NetworkBahn.networkBahn != null)
+            NetworkBahn.networkBahn.SendUltiPurchase(cardID, bought, charge);
     }
 
     // Network Receiver

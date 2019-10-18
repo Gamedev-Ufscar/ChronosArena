@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 {
     private bool pointerOver = false;
+    private bool interfaceActive = false;
     private Vector3 targetPosition;
     private float scale;
     private float color;
@@ -76,12 +77,9 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 
     void TransformColor(byte color)
     {
-        transform.GetChild(0).GetComponent<Text>().color = new Color32(color, color, color, 255);
-        transform.GetChild(1).GetComponent<Text>().color = new Color32(color, color, color, 255);
-        transform.GetChild(2).GetComponent<Text>().color = new Color32(color, color, color, 255);
-        transform.GetChild(3).GetComponent<Text>().color = new Color32(color, color, color, 255);
-        transform.GetChild(4).GetComponent<Text>().color = new Color32(color, color, color, 255);
-        transform.GetChild(5).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        for (int i = 0; i <= 5; i++) {
+            transform.GetChild(i).GetComponent<Text>().color = new Color32(color, color, color, 255);
+        }
     }
 
     public void SetAsLastSibling()
@@ -128,6 +126,11 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
             ChangeColor(color);
     }
 
+    public void SetInterfaceActive(bool interfaceActive)
+    {
+        this.interfaceActive = interfaceActive;
+    }
+
     // Getters
     public Card GetCard()
     {
@@ -164,39 +167,44 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         return darkened;
     }
 
+    public bool GetInterfaceActive()
+    {
+        return interfaceActive;
+    }
+
     // On Pointer
-    public void OnHover()
+    public void OnHover(float size, float rise)
     {
         pointerOver = true;
-        ChangeScale(Constants.cardBigSize);
+        ChangeScale(size);
         SetAsLastSibling();
         if (!GetDarkened())
         {
             ChangeColor(0.8f);
         }
-        ChangePosition(targetPosition + new Vector3(0f, Constants.cardRiseHeight, 0f));
+        ChangePosition(targetPosition + new Vector3(0f, rise, 0f));
     }
 
-    public void OutHover()
+    public void OutHover(float size, float rise)
     {
         pointerOver = false;
-        ChangeScale(1);
+        ChangeScale(size);
         SetAsFirstSibling();
         if (!GetDarkened())
         {
             ChangeColor(0.6f);
         }
-        ChangePosition(targetPosition + new Vector3(0f, -Constants.cardRiseHeight, 0f));
+        ChangePosition(targetPosition + new Vector3(0f, -rise, 0f));
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        OnHover();
+        OnHover(Constants.cardBigSize, Constants.cardRiseHeight);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        OutHover();
+        OutHover(1f, Constants.cardRiseHeight);
     }
 
 }

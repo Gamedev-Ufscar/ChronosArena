@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         HP = 10;
-        charge = 4;
+        charge = 0;
         sideList = new SideEffect[Constants.maxSideListSize];
     }
 
@@ -110,6 +110,8 @@ public class Player : MonoBehaviour
         ultiArea.CreateUltiArea(hero, cardCount, ultiCount);
         CreateSideEffects(hero, cardCount+ultiCount+passiveCount, sideCount);
         CreateSummary();
+
+        Debug.Log("p created");
     }
 
     public void CreateSideEffects(HeroEnum hero, int startWithID, int count)
@@ -123,6 +125,7 @@ public class Player : MonoBehaviour
 
     }
 
+    // Acquire
     public void AcquireCards()
     {
         for (int i = 0; i < Constants.maxUltiAreaSize; i++)
@@ -131,16 +134,14 @@ public class Player : MonoBehaviour
             {
                 // Acquire DeckCard
                 DeckCard correspondingDeckCard = deck.GetDeckCard(ultiArea.GetCard(i).GetID());
-                correspondingDeckCard.gameObject.SetActive(true);
                 correspondingDeckCard.SetUltiCard(ultiArea.GetUltiCard(i));
+                RestoreCard(ultiArea.GetCard(i).GetID());
 
                 // Disable UltiCard
                 ultiArea.GetUltiCard(i).SetBought(false);
                 ultiArea.GetUltiCard(i).gameObject.SetActive(false);
                 ultiArea.RecedeUlti(i);
             }
-
-            AudioManager.AM.CardSound();
         }
     }
 
@@ -255,21 +256,24 @@ public class Player : MonoBehaviour
         else
         {
             cardPlayed.GetThisDeckCard().gameObject.SetActive(true);
-            cardPlayed.GetThisDeckCard().OutHover();
+            cardPlayed.GetThisDeckCard().OutHover(1f, Constants.cardRiseHeight);
             cardPlayed.GetThisDeckCard().UpdateCardPosition();
+            AudioManager.AM.CardSound();
         }
     }
 
-    public void RestoreCard(int cardId)
+    public void RestoreCard(int cardID)
     {
-        GetDeckCard(cardId).gameObject.SetActive(true);
-        GetDeckCard(cardId).SetIndex(GetActiveCardCount());
+        GetDeckCard(cardID).SetIndex(GetActiveCardCount());
+        GetDeckCard(cardID).UpdateCardPosition();
+        GetDeckCard(cardID).gameObject.SetActive(true);
+        AudioManager.AM.CardSound();
     }
 
-    public void RestoreUlti(int cardId)
+    public void RestoreUlti(int cardID)
     {
-        GetDeckCard(cardId).GetUltiCard().gameObject.SetActive(true);
-        GetDeckCard(cardId).GetUltiCardScript().SetIndex(ultiArea.PlaceUltimate(GetDeckCard(cardId).GetUltiCardScript().GetCard().GetID()));
+        GetDeckCard(cardID).GetUltiCard().gameObject.SetActive(true);
+        GetDeckCard(cardID).GetUltiCardScript().SetIndex(ultiArea.PlaceUltimate(GetDeckCard(cardID).GetUltiCardScript().GetCard().GetID()));
     }
 
     // Discard Card
@@ -305,6 +309,11 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void RemoveProtection()
+    {
+        protection = 0;
+    }
+
     public void RaiseCharge(int charge)
     {
         if (this.charge + charge < 0) { SetCharge(0); }
@@ -322,7 +331,7 @@ public class Player : MonoBehaviour
     {
         for (int i = 0; i < Constants.maxUltiAreaSize; i++)
         {
-            if (GetUltiCard(i) != null && GetUltiCard(i).GetCard().GetCost() <= GetCharge())
+            if (GetUltiCard(i) != null && GetUltiCard(i).gameObject.activeInHierarchy && GetUltiCard(i).GetCard().GetCost() <= GetCharge())
             {
                 return true;
             }
@@ -425,15 +434,9 @@ public class Player : MonoBehaviour
 
     public int GetSideEffectValue(int index)
     {
-        if (sideList[index] is SideEffectTimed)
+        if (sideList[index] is SideEffect)
         {
-            SideEffectTimed set = (SideEffectTimed)sideList[index];
-            return set.GetTimer();
-
-        } else if (sideList[index] is SideEffectVariable) {
-
-            SideEffectVariable sev = (SideEffectVariable)sideList[index];
-            return sev.GetVariable();
+            return sideList[index].GetValue();
 
         } else {
             return 0;
@@ -450,11 +453,11 @@ public class Player : MonoBehaviour
         int count = 0;
         for (int i = 0; i < Constants.maxCardAmount; i++)
         {
-            if (GetDeckCard(i) != null && GetDeckCard(i).GetIndex() > count)
-                count = GetDeckCard(i).GetIndex();
+            if (GetDeckCard(i) != null && GetDeckCard(i).gameObject.activeInHierarchy)
+                count++;
         }
 
-        return count+1;
+        return count;
     }
 
     public int GetTotalCardCount()
@@ -500,16 +503,7 @@ public class Player : MonoBehaviour
 
     public void SetSideEffect(int index, int value)
     {
-        if (sideList[index] is SideEffectTimed) {
-            SideEffectTimed set = (SideEffectTimed)sideList[index];
-            set.SetTimer(value);
-            sideList[index] = (SideEffect)set;
-        } else if (sideList[index] is SideEffectVariable)
-        {
-            SideEffectVariable sev = (SideEffectVariable)sideList[index];
-            sev.SetVariable(value);
-            sideList[index] = (SideEffect)sev;
-        }
+        sideList[index].SetValue(value);
     }
 
     public void SetCardPosition(int? id, Vector2 position)
@@ -528,12 +522,15 @@ public class Player : MonoBehaviour
     // Side Effects
     public void ActivateSideEffects(SEPhase phase, Player enemy)
     {
-        for(int i = 0; i < Constants.maxSideListSize; i++)
+
+        for (int i = 0; i < Constants.maxSideListSize; i++)
         {
-            if (sideList[i] != null && sideList[i] is SideEffectTimed) {
-                SideEffectTimed SET = (SideEffectTimed)sideList[i];
-                if (SET.GetTimer() > 0 && sideList[i].GetPhase() == phase) {
+            if (sideList[i] != null && sideList[i] is Effecter) {
+                Effecter SET = (Effecter)sideList[i];
+                if (SET.phase == phase) {
+                    Debug.Log("Side Effected: " + i);
                     SET.Effect(this, enemy);
+                    sideList[i] = (SideEffect)SET;
                 }
             }
         }
@@ -565,7 +562,7 @@ public class Player : MonoBehaviour
             if (GetDeckCard(i) != null)
                 cardList[i] = GetDeckCard(i).GetCard();
         }
-        gameOverseer.Interfacing(cardList, null, totalCardCount);
+        gameOverseer.Summary(cardList, null, totalCardCount, this);
     }
 
     // Darken Ulti cards

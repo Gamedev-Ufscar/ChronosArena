@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public abstract class DeckCard : UICard, IPointerExitHandler
+public abstract class DeckCard : UICard, IPointerExitHandler, IPointerEnterHandler
 {
     private Deck deck;
     private bool beingHeld = false;
@@ -101,6 +101,14 @@ public abstract class DeckCard : UICard, IPointerExitHandler
     public bool GetOutOfHand()
     {
         return outOfHand;
+    }
+
+    public new void OnPointerEnter(PointerEventData eventData)
+    {
+        if (!GetInterfaceActive())
+        {
+            base.OnPointerEnter(eventData);
+        }
     }
 
     public new void OnPointerExit(PointerEventData eventData)

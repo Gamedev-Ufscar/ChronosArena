@@ -32,7 +32,7 @@ public class EnemyCard : DeckCard, IPointerExitHandler, IPointerEnterHandler
     {
         //Debug.Log("being held true");
         SetBeingHeld(true);
-        OnHover();
+        OnHover(Constants.cardBigSize, Constants.cardRiseHeight);
         ChangePosition(newPosition);
     }
 
@@ -40,7 +40,7 @@ public class EnemyCard : DeckCard, IPointerExitHandler, IPointerEnterHandler
     {
         //Debug.Log("being held false");
         SetBeingHeld(false);
-        OutHover();
+        OutHover(1f, Constants.cardRiseHeight);
         UpdateCardPosition();
     }
 

@@ -40,7 +40,7 @@ public class NetworkBahn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 3 && gameOverseer == null)
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Game && gameOverseer == null)
         {
             FindGameOverseer();
         }
@@ -155,7 +155,7 @@ public class NetworkBahn : MonoBehaviour
     [PunRPC]
     public void RPC_ultiStuff(byte cardID, bool bought, byte charge)
     {
-        if (SceneManager.GetActiveScene().buildIndex == 3)
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Game)
         {
             gameOverseer.ReceiveUltiPurchase(cardID, bought, charge);
             Debug.Log("Received purchase");

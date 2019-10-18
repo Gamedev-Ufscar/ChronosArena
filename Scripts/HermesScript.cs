@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -32,7 +31,7 @@ public class HermesScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 3)
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Game)
         {
             if (hero == HeroEnum.None)
             {
@@ -45,26 +44,6 @@ public class HermesScript : MonoBehaviour
                 gameOverseer.GetMyPlayer().CreatePlayer(hero, handSize, ultiCount, passiveCount, sideCount, attackDisableList, profile);
                 gameOverseer.GetEnemyPlayer().CreatePlayer(enemyHero, enemyHandSize, enemyUltiCount, enemyPassiveCount, enemySideCount, enemyAttackDisableList, enemyProfile);
                 gameObject.SetActive(false);
-
-
-                /*
-                HeroDecks.HD.myManager.hero = hero;
-                HeroDecks.HD.myManager.sideList = new int[sideListSize];
-                HeroDecks.HD.myManager.initialCardCount = handSize;
-                HeroDecks.HD.myManager.ultiCount = ultiCount;
-                HeroDecks.HD.myManager.passiveCount = passiveCount;
-                HeroDecks.HD.myManager.attackDisableList = attackDisableList;
-                GameObject.Find("Player Profile").GetComponent<ProfileScript>().profile = profile;
-
-                // Enemyy Manager
-                HeroDecks.HD.enemyManager.hero = enemyHero;
-                HeroDecks.HD.enemyManager.sideList = new int[enemySideListSize];
-                HeroDecks.HD.enemyManager.initialCardCount = enemyHandSize;
-                HeroDecks.HD.enemyManager.ultiCount = enemyUltiCount;
-                HeroDecks.HD.enemyManager.passiveCount = enemyPassiveCount;
-                HeroDecks.HD.enemyManager.attackDisableList = enemyAttackDisableList;
-                GameObject.Find("Enemy Profile").GetComponent<ProfileScript>().profile = enemyProfile;
-                */
             }
         }
     }

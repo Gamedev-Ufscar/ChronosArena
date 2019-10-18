@@ -33,10 +33,6 @@ public class MainUIManager : MonoBehaviour
     [SerializeField]
     private Text stateText;
     [SerializeField]
-    private Text cardText;
-    [SerializeField]
-    private Text enemyCardText;
-    [SerializeField]
     private Text MHP;
     [SerializeField]
     private Text MCHP;
@@ -107,8 +103,6 @@ public class MainUIManager : MonoBehaviour
     {
         // Text and Debug
         stateText.text = state;
-        //cardText.text = " Current Card: " + hoveredCard;
-        //enemyCardText.text = "Enemy Card: " + enemyRevealedCard;
     }
 
     // Bar stuff

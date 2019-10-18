@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 19268772264820500}
   - component: {fileID: 19268772264820489}
   - component: {fileID: 19268772264820490}
+  - component: {fileID: 4166898859040612204}
   - component: {fileID: 19268772264820491}
-  - component: {fileID: 7681401201920013370}
   - component: {fileID: 1413077594699286586}
   m_Layer: 8
   m_Name: Player Card Variant
@@ -89,6 +89,18 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &4166898859040612204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19268772264820501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87e25c5e02cc3f24ea8faed8c8adcfcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &19268772264820491
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -102,25 +114,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7681401201920013370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 19268772264820501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a4ed6c21e017624d9d490efd1d73310, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  thisCardInHand: {fileID: 0}
-  thisUltimateCard: {fileID: 0}
-  thisCard: 0
-  owner: {fileID: 0}
-  revealAnimState: 0
-  waiting: 0
-  cardSprite: {fileID: 0}
 --- !u!54 &1413077594699286586
 Rigidbody:
   m_ObjectHideFlags: 0

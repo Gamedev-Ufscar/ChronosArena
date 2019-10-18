@@ -39,11 +39,11 @@ public class AudioManager : MonoBehaviour {
 
     private void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 2) {
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Selection) {
             Stop("MainMenuTheme");
         }
 
-        if (SceneManager.GetActiveScene().buildIndex == 3 && !alreadyInBattle) {
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Game && !alreadyInBattle) {
             Stop("BattleTheme");
             Play("BattleTheme");
             alreadyInBattle = true;

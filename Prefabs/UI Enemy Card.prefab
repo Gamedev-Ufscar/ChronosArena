@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1882153636552297614}
   - component: {fileID: 1882153636552297609}
-  - component: {fileID: 1882153636552297608}
+  - component: {fileID: 3817070149956982085}
   - component: {fileID: 1882153636552297611}
   - component: {fileID: 1882153636552297610}
   - component: {fileID: 1882153636552297613}
@@ -50,7 +50,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1882153636552297649}
   m_CullTransparentMesh: 0
---- !u!114 &1882153636552297608
+--- !u!114 &3817070149956982085
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -59,18 +59,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1882153636552297649}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a45f5a81fcc62a34b9a106b107eea732, type: 3}
+  m_Script: {fileID: 11500000, guid: 7be49050245cd0940a0faf70d05b5fc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckManager: {fileID: 0}
-  cardIndex: 0
-  thisCard: 0
-  reactionCard: 0
-  adaptedEnemyHoverPos: {x: 0, y: 0, z: 0}
-  cardPrefab: {fileID: 19268772264820501, guid: e59a83af17f30d1439cfb8e255c16af1,
-    type: 3}
-  ultiCard: {fileID: 0}
-  cardSprite: {fileID: 21300000, guid: 97acc544c5556e64a8f9da5391b7f4d4, type: 3}
 --- !u!114 &1882153636552297611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,7 +75,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6, g: 0.6, b: 0.6, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

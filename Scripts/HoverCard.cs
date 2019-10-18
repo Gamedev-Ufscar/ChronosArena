@@ -8,7 +8,7 @@ public class HoverCard : UICard
     // Start is called before the first frame update
     void Start()
     {
-        
+        ChangeScale(Constants.cardBigSize);
     }
 
     // Update is called once per frame
@@ -20,11 +20,9 @@ public class HoverCard : UICard
     public void ConstructHoverCard(GameObject cardInBoard)
     {
         GetComponent<Image>().sprite = cardInBoard.GetComponent<BoardCard>().GetCardPlayed().GetImage();
-        transform.GetChild(0).GetComponent<Text>().text = cardInBoard.transform.GetChild(0).GetComponent<TextMesh>().text;
-        transform.GetChild(1).GetComponent<Text>().text = cardInBoard.transform.GetChild(1).GetComponent<TextMesh>().text;
-        transform.GetChild(2).GetComponent<Text>().text = cardInBoard.transform.GetChild(2).GetComponent<TextMesh>().text;
-        transform.GetChild(3).GetComponent<Text>().text = cardInBoard.transform.GetChild(3).GetComponent<TextMesh>().text;
-        transform.GetChild(4).GetComponent<Text>().text = cardInBoard.transform.GetChild(4).GetComponent<TextMesh>().text;
-        transform.GetChild(5).GetComponent<Text>().text = cardInBoard.transform.GetChild(5).GetComponent<TextMesh>().text;
+
+        for (int i = 0; i <= 5; i++) {
+            transform.GetChild(i).GetComponent<Text>().text = cardInBoard.transform.GetChild(i).GetComponent<TextMesh>().text;
+        }
     }
 }

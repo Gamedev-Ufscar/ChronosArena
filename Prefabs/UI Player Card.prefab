@@ -169,9 +169,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2963102717123148618}
   - component: {fileID: 2963102717123148616}
+  - component: {fileID: 8200977933088663633}
   - component: {fileID: 2963102717123148619}
-  - component: {fileID: 2963102717123148617}
-  - component: {fileID: 2963102717123148610}
   - component: {fileID: 2963102717123148623}
   - component: {fileID: 2963102717123148622}
   - component: {fileID: 2963102717123148620}
@@ -216,6 +215,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2963102717123148661}
   m_CullTransparentMesh: 0
+--- !u!114 &8200977933088663633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2963102717123148661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbe800741d3d96f4f9b5bc0aaf2d8c8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2963102717123148619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,7 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6, g: 0.6, b: 0.6, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -245,40 +256,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &2963102717123148617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2963102717123148661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d8c18fa431dbb34eac466b88808276b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  zoomCard: 0
-  deckManager: {fileID: 0}
-  cardIndex: 0
-  moveCard: 0
-  cardCategory: 0
-  cardPrefab: {fileID: 19268772264820501, guid: e59a83af17f30d1439cfb8e255c16af1,
-    type: 3}
-  cardSprite: {fileID: 21300000, guid: 97acc544c5556e64a8f9da5391b7f4d4, type: 3}
-  thisCard: 0
-  ultiCard: {fileID: 0}
---- !u!114 &2963102717123148610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2963102717123148661}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7e1152af32283c46af5011bfe2f3e26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &2963102717123148623
 Rigidbody:
   m_ObjectHideFlags: 0

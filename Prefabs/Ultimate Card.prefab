@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6, g: 0.6, b: 0.6, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -96,14 +96,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d9544f994ad397478938f6c1a4f1df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zoomCard: 0
-  deckManager: {fileID: 0}
-  cardPrefab: {fileID: 5583869552287936293}
-  cardSprite: {fileID: 0}
-  staticCardIndex: 100
-  cardIndex: 100
-  thisCard: 0
-  bought: 0
 --- !u!65 &5462130157396438853
 BoxCollider:
   m_ObjectHideFlags: 0

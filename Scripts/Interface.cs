@@ -7,7 +7,11 @@ public class Interface : MonoBehaviour
     [SerializeField]
     private GameOverseer gameOverseer;
 
-    private GameObject backButton;
+    [SerializeField]
+    private GameObject backButton1;
+    [SerializeField]
+    private GameObject backButton2;
+
     [SerializeField]
     private GameObject optionPrefab;
     private List<Vector2> cardLocations;
@@ -158,12 +162,15 @@ public class Interface : MonoBehaviour
     }
 
     // Close ---------
-    public void Close(int interfaceSignal)
+    public void Close(int? interfaceSignal)
     {
-        Interfacer cc = (Interfacer)invoker;
-        cc.SetSignal(interfaceSignal);
-        gameOverseer.SendInterfaceSignal(interfaceSignal);
-        invoker = (Card)cc;
+        if (interfaceSignal != null)
+        {
+            Interfacer cc = (Interfacer)invoker;
+            cc.SetSignal((int)interfaceSignal);
+            gameOverseer.SendInterfaceSignal((int)interfaceSignal);
+            invoker = (Card)cc;
+        }
 
         foreach (GameObject option in destructionList)
         {
@@ -171,6 +178,19 @@ public class Interface : MonoBehaviour
         }
 
         setup = false;
+        GetPlayerBackButton().SetActive(false);
+        GetEnemyBackButton().SetActive(false);
         gameObject.SetActive(false);
+    }
+
+    // Getter
+    public GameObject GetPlayerBackButton()
+    {
+        return backButton1;
+    }
+
+    public GameObject GetEnemyBackButton()
+    {
+        return backButton2;
     }
 }

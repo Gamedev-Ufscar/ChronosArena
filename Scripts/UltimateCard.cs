@@ -111,29 +111,28 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     
 
     // Hovering
-    public new void OnHover()
+    public void OnHover()
     {
         ultiArea.RevealArea();
-        base.OnHover();
+        base.OnHover(Constants.cardBigSize, Constants.cardRiseHeight);
         ultiArea.SetSibling(true);
-        Debug.Log("Hover Ulti");
         UpdateColor();
 
     }
 
-    public new void OutHover()
+    public void OutHover()
     {
-        base.OutHover();
+        base.OutHover(1f, Constants.cardRiseHeight);
         ultiArea.SetSibling(false);
         ultiArea.HideArea();
-        Debug.Log("Out Hover Ulti");
         UpdateColor();
 
     }
 
     public new void OnPointerEnter(PointerEventData eventData)
     {
-        OnHover();
+        if (!GetInterfaceActive())
+            OnHover();
     }
 
     public new void OnPointerExit(PointerEventData eventData)

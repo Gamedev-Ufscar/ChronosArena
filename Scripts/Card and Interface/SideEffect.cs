@@ -2,126 +2,121 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class SideEffect : MonoBehaviour
+public abstract class SideEffect
 {
     // Phases: 0 Choice, 1 Revelation, 2 EffectsBefore, 3 EffectsAfter
-    [SerializeField]
-    protected Player player;
-    private SEPhase phase; 
+    private int value;
 
-    public SideEffect(SEPhase phase)
+    public SideEffect(int value)
+    {
+        this.value = value;
+    }
+
+    public int GetValue()
+    {
+        return value;
+    }
+
+    public void ReduceValue()
+    {
+        value--;
+        Debug.Log("Reduced Value: " + value);
+    }
+
+    public void SetValue(int value)
+    {
+        this.value = value;
+    }
+}
+
+public interface Effecter
+{
+    SEPhase phase { get; set; }
+
+    void Effect(Player user, Player enemy);
+}
+
+public class Vodka : SideEffect, Effecter
+{
+    public SEPhase phase { get; set; }
+
+    public Vodka(int value, SEPhase phase) : base(value)
     {
         this.phase = phase;
     }
 
-    public SEPhase GetPhase()
+    public void Effect(Player user, Player enemy)
     {
-        return phase;
-    }
-}
-
-public abstract class SideEffectTimed : SideEffect
-{
-    public int timer;
-
-    public SideEffectTimed(int timer, SEPhase phase) : base(phase)
-    {
-        this.timer = timer;
-    }
-
-    public int GetTimer()
-    {
-        return timer;
-    }
-
-    public void TickTimer() {
-        this.timer--;
-    }
-
-    public void SetTimer(int timer) {
-        this.timer = timer;
-    }
-
-    public abstract void Effect(Player user, Player enemy);
-}
-
-public abstract class SideEffectVariable : SideEffect
-{
-    public int variable;
-
-    public SideEffectVariable(int variable, SEPhase phase) : base(phase)
-    {
-        this.variable = variable;
-    }
-
-    public void SetVariable(int variable)
-    {
-        this.variable = variable;
-    }
-
-    public int GetVariable()
-    {
-        return variable;
-    }
-
-}
-
-public class Vodka : SideEffectTimed
-{
-    public Vodka(int timer, SEPhase phase) : base(timer, phase)
-    {
-    }
-
-    public override void Effect(Player user, Player enemy)
-    {
-        if (player.GetHero() == HeroEnum.Yuri)
+        if (user.GetHero() == HeroEnum.Yuri)
         {
-            if (player.GetCardPlayed().GetIsNullified())
-                player.DealDamage(1, true);
+            if (user.GetCardPlayed().GetIsNullified())
+            {
+                user.DealDamage(1, true);
+                Debug.Log("Vodka");
+            }
         }
     }
 }
 
-public class WeakSpot : SideEffectTimed
+public class WeakSpot : SideEffect, Effecter
 {
-    public WeakSpot(int timer, SEPhase phase) : base(timer, phase)
+    public SEPhase phase { get; set; }
+    public Damage affectedCard { get; set; }
+
+    public WeakSpot(int value, SEPhase phase) : base(value)
     {
+        this.phase = phase;
     }
 
-    public override void Effect(Player user, Player enemy)
+    public void Effect(Player user, Player enemy)
     {
-        if (player.GetCardPlayed() is Damage) {
-            Damage damage = (Damage)player.GetCardPlayed();
+        if (GetValue() >= 2)
+        {
+            if (user.GetCardPlayed() is Damage)
+            {
+                Damage damage = (Damage)user.GetCardPlayed();
+                affectedCard = damage;
 
-            damage.SetIsUnblockable(true);
+                damage.SetIsUnblockable(true);
+            }
         }
+        else if (GetValue() == 1)
+        {
+            if (affectedCard != null)
+            {
+                affectedCard.SetIsUnblockable(false);
+            }
+        }
+        ReduceValue();
     }
 }
 
-public class DejaVuSE : SideEffectTimed
+public class DejaVuSE : SideEffect, Effecter
 {
+    public SEPhase phase { get; set; }
 
-    public DejaVuSE(int timer, SEPhase phase) : base(timer, phase)
+    public DejaVuSE(int value, SEPhase phase) : base(value)
     {
+        this.phase = phase;
     }
 
-    public override void Effect(Player user, Player enemy)
+    public void Effect(Player user, Player enemy)
     {
-        if (timer >= 2)
+        if (GetValue() >= 2)
         {
             user.SetPredicted(true);
-        } else 
+        } else if (GetValue() == 1)
         {
             user.SetPredicted(false);
         }
-        TickTimer();
+        ReduceValue();
     }
 }
 
-public class Chronos : SideEffectVariable
+public class Chronos : SideEffect
 {
 
-    public Chronos(int variable, SEPhase phase) : base(variable, phase)
+    public Chronos(int variable) : base(variable)
     {
     }
 
