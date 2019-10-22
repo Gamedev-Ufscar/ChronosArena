@@ -191,7 +191,7 @@ public class ChronosMachine : Card, Interfacer
             case 12:
                 if (isChronos) {
                     if (user.GetSideEffectValue(0) != 0) {
-                        user.SetSideEffect(0, (user.GetHP() * 100) + enemy.GetHP());
+                        user.SetSideEffect(1, (user.GetHP() * 100) + enemy.GetHP());
 
                         user.SetHP(user.GetSideEffectValue(0) / 100);
                         enemy.SetHP(user.GetSideEffectValue(0) % 100);

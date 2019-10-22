@@ -83,7 +83,7 @@ public class Deck : MonoBehaviour
 
     public void UnleashedCard(HandCard handCard)
     {
-        if (handCard.GetOutOfHand() && !handCard.GetIsReaction())
+        if (handCard.GetOutOfHand() && !handCard.GetIsReaction() && handCard.GetCard().GetTurnsTill() <= 0)
             player.SummonCard(handCard);
     }
 

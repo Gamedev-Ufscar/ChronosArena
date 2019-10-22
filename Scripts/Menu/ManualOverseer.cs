@@ -121,6 +121,10 @@ public class ManualOverseer : MonoBehaviour
         initialPage.SetMinguant(true);
         directPage.SetMinguant(true);
         alternatePage.SetMinguant(true);
+        foreach (FadingScript fs in linkList)
+        {
+            fs.SetMinguant(true);
+        }
 
         menuOverseer.BringMenuBack();
     }

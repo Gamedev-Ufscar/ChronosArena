@@ -150,7 +150,7 @@ public class Player : MonoBehaviour
 
     public void SummonCard(DeckCard deckCard, bool received)
     {
-        if (gameOverseer.GetState() == GameState.Choice)
+        if (gameOverseer.GetState() == GameState.Choice && GetCardPlayed() == null)
         {
             Debug.Log("Summoned Card");
 
@@ -614,6 +614,7 @@ public class Player : MonoBehaviour
     public void ReceiveSummon(int cardID)
     {
         SummonCard(GetDeckCard(cardID), true);
+        Debug.Log("Enemy Player3");
     }
 
     public void ReceiveCardPosition(int? hoverCard, Vector2 hoverPos)

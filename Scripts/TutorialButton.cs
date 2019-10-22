@@ -5,7 +5,6 @@ using UnityEngine;
 public class TutorialButton : Button
 {
     private TutorialOverseer tutorialOverseer = null;
-    private int? nextButton = null;
 
     // Start is called before the first frame update
     void Start()
@@ -19,19 +18,10 @@ public class TutorialButton : Button
         
     }
 
+    // Setters
     public void SetTutorialOverseer(TutorialOverseer overseer)
     {
         this.tutorialOverseer = overseer;
-    }
-
-    public void SetNextButton(int? nextButton)
-    {
-        this.nextButton = nextButton;
-    }
-
-    public int? GetNextButton()
-    {
-        return nextButton;
     }
 
     public override void PointerEnter()

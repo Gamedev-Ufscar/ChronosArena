@@ -16,6 +16,8 @@ public class GameOverseer : MonoBehaviour
     private MidButton midButton;
     [SerializeField]
     private Interface interfface;
+    [SerializeField]
+    private TutorialOverseer tutorialOverseer;
 
     private bool myConfirm = false;
     private bool enemyConfirm = false;
@@ -65,7 +67,6 @@ public class GameOverseer : MonoBehaviour
     }
 
     // State Stuff
-
     public void StateMachine() { StateMachine(false); }
 
     public void StateMachine(bool overrider)
@@ -135,6 +136,8 @@ public class GameOverseer : MonoBehaviour
         if (!myPlayer.CanBuyCards())
         {
             SetMyConfirm(true);
+            if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Tutorial)
+                SetEnemyConfirm(true);
         }
 
     }
@@ -170,6 +173,8 @@ public class GameOverseer : MonoBehaviour
         } else
         {
             SetMyConfirm(true);
+            if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Tutorial)
+                SetEnemyConfirm(true);
         }
         
         // Color
@@ -194,6 +199,8 @@ public class GameOverseer : MonoBehaviour
         if (!myPlayer.HasReactionCard())
         {
             SetMyConfirm(true);
+            if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Tutorial)
+                SetEnemyConfirm(true);
         } else
         {
             // Color
@@ -285,10 +292,10 @@ public class GameOverseer : MonoBehaviour
         if (enemyPlayer != null) { Debug.Log("enemy player ok"); }
         if (enemyPlayer.GetCardPlayed() != null) { Debug.Log("enemy cardPlayed ok"); }
 
-        for (int e = Mathf.Min(myPlayer.GetCardPlayed().GetMinOrMax(true) / 100, 
-            enemyPlayer.GetCardPlayed().GetMinOrMax(true) / 100);
-            e <= Mathf.Max(myPlayer.GetCardPlayed().GetMinOrMax(false) % 100, 
-            enemyPlayer.GetCardPlayed().GetMinOrMax(false) % 100);
+        for (int e = Mathf.Min(myPlayer.GetCardPlayed().GetMinOrMax(true), 
+            enemyPlayer.GetCardPlayed().GetMinOrMax(true));
+            e <= Mathf.Max(myPlayer.GetCardPlayed().GetMinOrMax(false), 
+            enemyPlayer.GetCardPlayed().GetMinOrMax(false));
             e++)
         {
             if (!myPlayer.GetCardPlayed().GetIsNullified())
@@ -303,6 +310,13 @@ public class GameOverseer : MonoBehaviour
     {
         UIManager.UpdateBar(GetMyPlayer(), GetEnemyPlayer());
     }
+
+    // Force Hand Card Hover
+    public void ForceHandCardHover(int id)
+    {
+        myPlayer.GetDeckCard(id).OnHover(Constants.cardBigSize, Constants.cardRiseHeight);
+    }
+
 
     // Interfacing
     public void Interfacing(Card[] cardList, Card invoker, int cardAmount)
@@ -402,17 +416,26 @@ public class GameOverseer : MonoBehaviour
         SetMyConfirm(!myConfirm);
     }
 
-    // Network Sender
+    // Network/Tutorial Sender
     public void SendSummonCard(int cardID)
     {
         if (NetworkBahn.networkBahn != null)
             NetworkBahn.networkBahn.SummonCard(cardID);
+
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Tutorial)
+        {
+            tutorialOverseer.ReceiveCardPlayed(cardID);
+            Debug.Log("Send Summon Card");
+        }
     }
 
     public void SendConfirm(bool confirm)
     {
         if (NetworkBahn.networkBahn != null)
             NetworkBahn.networkBahn.SendConfirm(confirm);
+
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Tutorial)
+            tutorialOverseer.ReceiveCardPlayed(1000);
     }
 
     public void SendShuffle(int[] cardIndexes)
@@ -473,6 +496,7 @@ public class GameOverseer : MonoBehaviour
 
     public void ReceiveSummon(int cardID) {
         enemyPlayer.ReceiveSummon(cardID);
+        Debug.Log("Receive Summon2");
     }
 
     public void ReceiveCardPosition(int hoverCard, Vector2 hoverPos)

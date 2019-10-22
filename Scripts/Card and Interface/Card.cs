@@ -128,10 +128,10 @@ public abstract class Card
     {
         if (wantMin)
         {
-            return minmax % 100;
+            return minmax / 100;
         } else
         {
-            return minmax / 100;
+            return minmax % 100;
         }
     }
 
