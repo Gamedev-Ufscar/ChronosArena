@@ -14,7 +14,7 @@ public class Dexterity : Card, Interfacer
         this.interfaceSignal = interfaceSignal;
     }
 
-    int[] discardedCardList = new int[Constants.maxHandSize]; // Lists the deckList indexes of discarded cards
+    int[] discardedCardList = new int[Constants.maxCardAmount]; // Lists the deckList indexes of discarded cards
     int discardedCount = 0;
 
 
@@ -24,11 +24,11 @@ public class Dexterity : Card, Interfacer
 
     // Run through deckList, if card not active, add it to Interface List
     public void Interfacing(Player user, Player enemy) {
-        cardList = new Card[Constants.maxHandSize];
+        cardList = new Card[Constants.maxCardAmount];
 
 
         // Run through Deck List, check if it's a disabled skill or null card - if yes, then add to discard card list
-        for (int i = 0; i < Constants.maxHandSize; i++) {
+        for (int i = 0; i < Constants.maxCardAmount; i++) {
             if (user.GetCard(i) != null && user.GetCard(i) != this && !user.GetDeckCard(i).isActiveAndEnabled &&
                 (user.GetCard(i).GetCardType() == CardTypes.Nullification || user.GetCard(i).GetCardType() == CardTypes.Skill)) { 
                 cardList[discardedCount] = user.GetCard(i);

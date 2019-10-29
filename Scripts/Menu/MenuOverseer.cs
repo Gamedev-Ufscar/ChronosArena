@@ -12,6 +12,10 @@ public class MenuOverseer : MonoBehaviour
     [SerializeField]
     private ManualOverseer manualOverseer;
     [SerializeField]
+    private FadingScript optionMenu;
+    [SerializeField]
+    private Credits credits;
+    [SerializeField]
     private SlidingParent mainMenu;
     [SerializeField]
     private SlidingParent libraryMenu;
@@ -44,7 +48,7 @@ public class MenuOverseer : MonoBehaviour
                 mainMenu.Recede();
                 libraryMenu.Slide();
                 libraryMenu.SetWaitTime(0.4f);
-                libraryMenu.GetComponent<LibraryHub>().enabled = true;
+                libraryMenu.GetComponent<LibraryOverseer>().enabled = true;
                 back.gameObject.SetActive(true);
                 back.SetMinguant(false);
                 back.SetWaitTime(0.5f);
@@ -61,13 +65,31 @@ public class MenuOverseer : MonoBehaviour
                 SceneManager.LoadScene((int)SceneList.Tutorial);
                 break;
 
+            case 5: // Options
+                mainMenu.Recede();
+                logo.SetMinguant(true);
+                optionMenu.gameObject.SetActive(true);
+                optionMenu.SetMinguant(false);
+                break;
+
+            case 6: // Credits
+                mainMenu.Recede();
+                logo.SetMinguant(true);
+                credits.StartCredits();
+                break;
+
             case 7: // Quit
                 Application.Quit();
                 break;
 
             case 8: // Back Menu
                 libraryMenu.Recede();
-                libraryMenu.GetComponent<LibraryHub>().enabled = false;
+                libraryMenu.GetComponent<LibraryOverseer>().enabled = false;
+                BringMenuBack();
+                break;
+
+            case 9: // Option Back Menu
+                optionMenu.SetMinguant(true);
                 BringMenuBack();
                 break;
 

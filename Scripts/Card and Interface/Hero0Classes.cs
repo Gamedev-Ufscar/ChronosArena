@@ -17,10 +17,11 @@ public class BugaScream : Card
                 break;
 
             case 17:
-                if (user.GetCard(0) != null) {
-                    Attack cc = user.GetCard(0) as Attack;
+                if (user.GetDeckCard(0) != null) {
+                    Attack cc = user.GetDeckCard(0).GetCard() as Attack;
                     cc.damage++;
                     user.SetCard(cc as Card, 0);
+                    user.GetDeckCard(0).SetupCard(cc);
                 }
                 RaiseCost(1);
 

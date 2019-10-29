@@ -6,6 +6,10 @@ public class Interface : MonoBehaviour
 {
     [SerializeField]
     private GameOverseer gameOverseer;
+    [SerializeField]
+    private SelectionOverseer selectionOverseer;
+    [SerializeField]
+    private LibraryOverseer libraryOverseer;
 
     [SerializeField]
     private GameObject backButton1;
@@ -164,6 +168,7 @@ public class Interface : MonoBehaviour
     // Close ---------
     public void Close(int? interfaceSignal)
     {
+        // Send Interface Signal
         if (interfaceSignal != null)
         {
             Interfacer cc = (Interfacer)invoker;
@@ -172,14 +177,30 @@ public class Interface : MonoBehaviour
             invoker = (Card)cc;
         }
 
+        // Close in Library
+        if (libraryOverseer != null)
+        {
+            libraryOverseer.CloseInfo();
+        }
+
+        // Close in Selection
+        if (selectionOverseer != null)
+        {
+            selectionOverseer.CloseInfo();
+        }
+
+        // Destroy all cards
         foreach (GameObject option in destructionList)
         {
             Destroy(option);
         }
 
+        // Disable everything
         setup = false;
-        GetPlayerBackButton().SetActive(false);
-        GetEnemyBackButton().SetActive(false);
+        if (GetPlayerBackButton() != null)
+            GetPlayerBackButton().SetActive(false);
+        if (GetEnemyBackButton() != null)
+            GetEnemyBackButton().SetActive(false);
         gameObject.SetActive(false);
     }
 

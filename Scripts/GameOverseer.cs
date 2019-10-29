@@ -18,9 +18,13 @@ public class GameOverseer : MonoBehaviour
     private Interface interfface;
     [SerializeField]
     private TutorialOverseer tutorialOverseer;
+    [SerializeField]
+    private VictoryAnimation victAnim;
 
     private bool myConfirm = false;
     private bool enemyConfirm = false;
+
+
 
     [SerializeField]
     private LayerMask layerMask;
@@ -139,6 +143,8 @@ public class GameOverseer : MonoBehaviour
             if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Tutorial)
                 SetEnemyConfirm(true);
         }
+
+        CheckVictory();
 
     }
 
@@ -303,6 +309,46 @@ public class GameOverseer : MonoBehaviour
             if (!enemyPlayer.GetCardPlayed().GetIsNullified())
                 enemyPlayer.GetCardPlayed().Effect(enemyPlayer, myPlayer, e);
         }
+    }
+
+    private void CheckVictory()
+    {
+        if (GetMyPlayer().GetCharge() >= 10 && GetMyPlayer().GetCharge() > GetEnemyPlayer().GetCharge())
+        {
+            victAnim.gameObject.SetActive(true);
+            victAnim.ActivateAnim("Vitória");
+            midButton.gameObject.SetActive(false);
+        } else if (GetEnemyPlayer().GetCharge() >= 10 && GetEnemyPlayer().GetCharge() > GetMyPlayer().GetCharge()) {
+            victAnim.gameObject.SetActive(true);
+            victAnim.ActivateAnim("Derrota");
+            midButton.gameObject.SetActive(false);
+        }
+        else if (GetMyPlayer().GetHP() <= 0 || GetEnemyPlayer().GetHP() <= 0)
+        {
+            if (GetMyPlayer().GetHP() > GetEnemyPlayer().GetHP())
+            {
+                victAnim.gameObject.SetActive(true);
+                victAnim.ActivateAnim("Vitória");
+                midButton.gameObject.SetActive(false);
+            } else if (GetMyPlayer().GetHP() < GetEnemyPlayer().GetHP())
+            {
+                victAnim.gameObject.SetActive(true);
+                victAnim.ActivateAnim("Derrota");
+                midButton.gameObject.SetActive(false);
+            } else
+            {
+                victAnim.gameObject.SetActive(true);
+                victAnim.ActivateAnim("Empate");
+                midButton.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void EndGame()
+    {
+        Destroy(AudioManager.AM.gameObject);
+        PhotonNetwork.Disconnect();
+        SceneManager.LoadScene((int)SceneList.Menu);
     }
 
     // Healthbar & Chargebar
@@ -486,6 +532,9 @@ public class GameOverseer : MonoBehaviour
     {
         if (NetworkBahn.networkBahn != null)
             NetworkBahn.networkBahn.SendUltiPurchase(cardID, bought, charge);
+
+        if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Tutorial)
+            tutorialOverseer.ReceiveCardPlayed(3000);
     }
 
     // Network Receiver

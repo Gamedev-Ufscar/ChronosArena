@@ -1,15 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class LibraryHub : MonoBehaviour
+public class LibraryOverseer : MonoBehaviour
 {
     [SerializeField]
     private FadingScript back;
     [SerializeField]
     private List<FadingScript> sheetList = new List<FadingScript>();
     [SerializeField]
-    private Interface interfface;
+    private InfoArea infoArea;
 
     private int currentSheet = 200;
     private int formerSheet = 200;
@@ -17,18 +16,13 @@ public class LibraryHub : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
 
-    }
-
-    public Interface GetInterface()
-    {
-        return interfface;
     }
 
     public void SetCurrentSheet(int currentSheet)
@@ -40,9 +34,12 @@ public class LibraryHub : MonoBehaviour
     {
         if (currentSheet == 200)
         {
-            back.gameObject.SetActive(true);
-            back.SetMinguant(false);
-            back.SetWaitTime(0.25f);
+            if (!infoArea.GetOpenInfo())
+            {
+                back.gameObject.SetActive(true);
+                back.SetMinguant(false);
+                back.SetWaitTime(0.25f);
+            }
             sheetList[formerSheet].SetMinguant(true);
         }
         else
@@ -63,5 +60,27 @@ public class LibraryHub : MonoBehaviour
     public void Recede()
     {
         GetComponent<SlidingParent>().Recede();
+    }
+
+    public void OpenInfo(HeroEnum hero)
+    {
+        infoArea.OpenInfo(hero);
+
+        // Recede Char Menu
+        Recede();
+        SetCurrentSheet(200);
+        UpdateStatus();
+
+    }
+
+    public void CloseInfo()
+    {
+        infoArea.CloseInfo();
+        GetComponent<SlidingParent>().Slide();
+        GetComponent<SlidingParent>().SetWaitTime(0.4f);
+        enabled = true;
+        back.gameObject.SetActive(true);
+        back.SetMinguant(false);
+        back.SetWaitTime(0.5f);
     }
 }

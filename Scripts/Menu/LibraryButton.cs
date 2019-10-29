@@ -5,9 +5,11 @@ using UnityEngine;
 public class LibraryButton : MenuButton
 {
     [SerializeField]
-    private LibraryHub libraryHub;
+    private LibraryOverseer libraryOverseer;
     [SerializeField]
     private int sheet = 0;
+    [SerializeField]
+    private HeroEnum hero;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +24,7 @@ public class LibraryButton : MenuButton
 
     public override void PointerDown()
     {
+        libraryOverseer.OpenInfo(hero);
     }
 
     public override void RightPointerDown() { }
@@ -29,15 +32,15 @@ public class LibraryButton : MenuButton
     public override void PointerEnter()
     {
         base.PointerEnter();
-        libraryHub.SetCurrentSheet(sheet);
-        libraryHub.UpdateStatus();
+        libraryOverseer.SetCurrentSheet(sheet);
+        libraryOverseer.UpdateStatus();
     }
 
     public override void PointerExit()
     {
         base.PointerExit();
-        libraryHub.SetCurrentSheet(200);
-        libraryHub.UpdateStatus();
+        libraryOverseer.SetCurrentSheet(200);
+        libraryOverseer.UpdateStatus();
     }
 
 }

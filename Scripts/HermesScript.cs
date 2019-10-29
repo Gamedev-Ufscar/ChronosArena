@@ -43,7 +43,7 @@ public class HermesScript : MonoBehaviour
 
                 gameOverseer.GetMyPlayer().CreatePlayer(hero, handSize, ultiCount, passiveCount, sideCount, attackDisableList, profile);
                 gameOverseer.GetEnemyPlayer().CreatePlayer(enemyHero, enemyHandSize, enemyUltiCount, enemyPassiveCount, enemySideCount, enemyAttackDisableList, enemyProfile);
-                gameObject.SetActive(false);
+                Destroy(gameObject);
             }
         }
     }

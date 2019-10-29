@@ -20,6 +20,8 @@ public class SelectionOverseer : MonoBehaviour
     [SerializeField]
     private Image enemyConfirmButton;
     [SerializeField]
+    private InfoArea infoArea;
+    [SerializeField]
     private HermesScript hermes;
 
     [SerializeField]
@@ -45,6 +47,9 @@ public class SelectionOverseer : MonoBehaviour
     private bool myConfirm = false;
     private bool enemyConfirm = false;
     private float? timeTillAdvance = null;
+
+    [SerializeField]
+    private Canvas box;
 
     [SerializeField]
     private Sprite noHero;
@@ -112,7 +117,7 @@ public class SelectionOverseer : MonoBehaviour
         if (myHeroIndex != null)
         {
             Character character = characterManager.GetCharacter((int)myHeroIndex);
-            SetProfile(character.GetProfile(), character.GetHeroString());
+            SetProfile(character.GetProfile(), CardMaker.CM.HeroName(character.GetHero()));
         } else
         {
             SetProfile(noHero, "");
@@ -153,7 +158,7 @@ public class SelectionOverseer : MonoBehaviour
 
         // Change Hero Profile
         Character character = characterManager.GetCharacter(charButton.GetCharIndex());
-        SetProfile(character.GetProfile(), character.GetHeroString());
+        SetProfile(character.GetProfile(), CardMaker.CM.HeroName(character.GetHero()));
 
         // Change Scale and Tone
         DeselectAllButtons(0.55f);
@@ -280,6 +285,22 @@ public class SelectionOverseer : MonoBehaviour
         SceneManager.LoadScene((int)SceneList.Game);
     }
 
+    // Info
+    public void OpenInfo()
+    {
+        if (myHeroIndex != null)
+        {
+            box.gameObject.SetActive(true);
+            infoArea.OpenInfo(characterManager.GetCharacter((int)myHeroIndex).GetHero());
+        }
+    }
+
+    public void CloseInfo()
+    {
+        box.gameObject.SetActive(false);
+        infoArea.CloseInfo();
+    }
+
     // Click and Hover
     public void HeroClicked(CharacterButton charButton)
     {
@@ -312,7 +333,7 @@ public class SelectionOverseer : MonoBehaviour
             // Only change portrait if hasn't chosen a hero yet
             if (myHeroIndex == null)
             {
-                SetProfile(character.GetProfile(), character.GetHeroString());
+                SetProfile(character.GetProfile(), CardMaker.CM.HeroName(character.GetHero()));
             }
 
             if (NotSelected(charButton.GetCharIndex()))
@@ -374,7 +395,7 @@ public class SelectionOverseer : MonoBehaviour
         else
         {
             Character character = characterManager.GetCharacter(enemyCharIndex);
-            SetEnemyProfile(character.GetProfile(), character.GetHeroString());
+            SetEnemyProfile(character.GetProfile(), CardMaker.CM.HeroName(character.GetHero()));
         }
 
         // Send to the char buttons
@@ -398,7 +419,7 @@ public class SelectionOverseer : MonoBehaviour
         if (enemyHeroIndex == null)
         {
             Character character = characterManager.GetCharacter(receivedCharIndex);
-            SetEnemyProfile(character.GetProfile(), character.GetHeroString());
+            SetEnemyProfile(character.GetProfile(), CardMaker.CM.HeroName(character.GetHero()));
         }
 
         // Send to the char buttons

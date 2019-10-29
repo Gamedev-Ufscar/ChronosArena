@@ -10,7 +10,7 @@ static class Constants
     public const int maxSideListSize = 12;
     public const int SpeedOfLight = 300000;
     public const float cardRiseHeight = 100f;
-    public const float cardBigSize = 2.75f;
+    public const float cardBigSize = 2.9f;
 }
 
 public enum HeroEnum
@@ -143,4 +143,36 @@ public enum ManualPage
     Anulacao,
     Ultimate,
     Item
+}
+
+public enum TutorialBox
+{
+    Introducao,
+    AtaquePrimeiro,
+    DanoELimite,
+    JogarAtaquePrimeiro,
+    ParabensAtaque,
+    BotaoCentro,
+    Limite,
+    LimiteExplicacao,
+    JogarAtaqueSegundo,
+    LimiteContexto,
+    EscolhaDuas,
+    Defesa,
+    Carga,
+    TenteOutra,
+    InimigoAtacou,
+    Skill,
+    SkillDownfall,
+    Anulacao,
+    JogueAnulacao,
+    ParabensAnulacao,
+    PercebaPassiva,
+    Passiva,
+    Resumo,
+    Shuffle,
+    Ultimate,
+    CargaNovamente,
+    CompraUltimate,
+    MuitoBem
 }

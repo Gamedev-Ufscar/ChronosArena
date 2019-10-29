@@ -54,33 +54,6 @@ public class ImageStash : MonoBehaviour
         //Sprite[] list;
         Sprite spr = ((Sprite[])heroHashtable[hero])[id];
         return spr;
-
-        /*switch (hero)
-        {
-            case HeroEnum.Timothy:
-                list = timothyList;
-                Debug.Log("Timothy");
-                break;
-
-            case HeroEnum.Harold:
-                list = haroldList;
-                Debug.Log("Harold");
-                break;
-
-            case HeroEnum.Uga:
-                list = ugaList;
-                Debug.Log("Uga");
-                break;
-
-            case HeroEnum.Yuri:
-                list = yuriList;
-                Debug.Log("Yuri");
-                break;
-
-            default:
-                list = timothyList;
-                break;
-        }*/
     }
 
     public Texture2D textureFromSprite(Sprite sprite)

@@ -34,6 +34,7 @@ public class CardMaker : MonoBehaviour
 
     public void Setup()
     {
+
         // Declaration
         heroHashtable = new Hashtable();
         Hashtable timothyHT = new Hashtable();
@@ -48,6 +49,7 @@ public class CardMaker : MonoBehaviour
         heroHashtable.Add(HeroEnum.Yuri, yuriHT);
 
         ImageStash IS = ImageStash.IS;
+        if (IS == null) return;
 
         // Timothy
         hero = HeroEnum.Timothy;
@@ -122,9 +124,12 @@ public class CardMaker : MonoBehaviour
     public Card MakeCard(HeroEnum hero, int id)
     {
         Hashtable hashToAccess = (Hashtable)heroHashtable[hero];
-        Card card = (Card)((Hashtable)heroHashtable[hero])[id];
-        //Debug.Log(card.GetName());
-        return card;
+        if (((Hashtable)heroHashtable[hero])[id] is Card)
+        {
+            Card card = (Card)((Hashtable)heroHashtable[hero])[id];
+            return card;
+        }
+        return null;
     }
 
     public SideEffect MakeSideEffect(HeroEnum hero, int id)
@@ -132,5 +137,17 @@ public class CardMaker : MonoBehaviour
         Hashtable hashToAccess = (Hashtable)heroHashtable[hero];
         SideEffect sideEffect = (SideEffect)((Hashtable)heroHashtable[hero])[id];
         return sideEffect;
+    }
+
+    public string HeroName(HeroEnum hero)
+    {
+        switch (hero)
+        {
+            case HeroEnum.Uga: return "Uga";
+            case HeroEnum.Timothy: return "Timothy";
+            case HeroEnum.Yuri: return "Yuri";
+            case HeroEnum.Harold: return "Dr. Harold";
+            default: return "";
+        }
     }
 }

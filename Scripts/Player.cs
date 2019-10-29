@@ -104,12 +104,12 @@ public class Player : MonoBehaviour
     {
         this.hero = hero;
         this.attackDisableList = attackDisableList;
+        this.chargeDisableList = new List<CardTypes>() { CardTypes.Charge };
         this.profile.SetImage(profile);
         this.totalCardCount = cardCount + ultiCount + passiveCount;
         deck.CreateDeck(hero, cardCount, ultiCount, passiveCount);
         ultiArea.CreateUltiArea(hero, cardCount, ultiCount);
         CreateSideEffects(hero, cardCount+ultiCount+passiveCount, sideCount);
-        CreateSummary();
 
         Debug.Log("p created");
     }
@@ -118,11 +118,6 @@ public class Player : MonoBehaviour
     {
         for (int i = 0; i < count; i++)
             sideList[i] = CardMaker.CM.MakeSideEffect(hero, startWithID+i);
-    }
-
-    public void CreateSummary()
-    {
-
     }
 
     // Acquire
