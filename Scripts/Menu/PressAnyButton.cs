@@ -17,8 +17,8 @@ public class PressAnyButton : MonoBehaviour
     {
         text = GetComponent<Text>();
 
-        if (NyarScript.NS.anyButtoned) { gameObject.SetActive(false); }
-        else { AudioListener.volume = 0.6f; }
+        if (NyarScript.NS.GetAnyButtoned()) { gameObject.SetActive(false); }
+        else if (NyarScript.NS.GetMasterVolume() == null) { AudioListener.volume = 0.6f; }
     }
 
     // Update is called once per frame
@@ -33,7 +33,7 @@ public class PressAnyButton : MonoBehaviour
             mainMenu.Slide();
             deactivate = true;
             minguant = true;
-            NyarScript.NS.anyButtoned = true;
+            NyarScript.NS.SetAnyButtoned(true);
         }
 
     }

@@ -84,6 +84,21 @@ public class AudioManager : MonoBehaviour {
 
     }
 
+    public void ChangeVolume(bool isMusic, float volume)
+    {
+        foreach (Sound s in sounds)
+        {
+            if (s.isMusic == isMusic)
+            {
+                s.source.volume = s.volume*volume;
+            }
+            
+        }
+
+        //mainMenu = (name == "MainMenuTheme" || (name == "ShotKill" && mainMenu == true)) ? true : false;
+
+    }
+
     public void CardSound()
     {
         int r = UnityEngine.Random.Range(0, 5);

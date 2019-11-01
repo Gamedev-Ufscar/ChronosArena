@@ -176,3 +176,10 @@ public enum TutorialBox
     CompraUltimate,
     MuitoBem
 }
+
+public enum Option
+{
+    Master,
+    Music,
+    Sound
+}

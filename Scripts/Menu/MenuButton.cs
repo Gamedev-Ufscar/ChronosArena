@@ -16,6 +16,10 @@ public class MenuButton : Button
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.Escape) && (type == 8 || type == 9))
+        {
+            PointerDown();
+        }
     }
 
     public override void PointerDown()

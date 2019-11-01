@@ -86,6 +86,8 @@ public class TutorialOverseer : MonoBehaviour
         if (Input.GetKey(KeyCode.Escape))
         {
             SceneManager.LoadScene((int)SceneList.Menu);
+            AudioManager.AM.StopAll();
+            AudioManager.AM.Play("MainMenuTheme");
         }
 
         if (timer != null)

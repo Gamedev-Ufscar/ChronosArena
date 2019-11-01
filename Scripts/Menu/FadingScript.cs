@@ -41,7 +41,7 @@ public class FadingScript : MonoBehaviour
                         text.color = new Color(text.color.r, text.color.g, text.color.b, image.color.a);
                     }
                     foreach (Image iimage in imageList) {
-                        iimage.color = new Color(image.color.r, image.color.g, image.color.b, image.color.a);
+                        iimage.color = new Color(iimage.color.r, iimage.color.g, iimage.color.b, image.color.a);
                     }
                 } else {
                     gameObject.SetActive(false);
@@ -57,7 +57,7 @@ public class FadingScript : MonoBehaviour
                     }
                     foreach (Image iimage in imageList) {
                         if (iimage != null)
-                            iimage.color = new Color(image.color.r, image.color.g, image.color.b, image.color.a);
+                            iimage.color = new Color(iimage.color.r, iimage.color.g, iimage.color.b, image.color.a);
                     }
                 }
             }

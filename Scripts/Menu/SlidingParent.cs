@@ -15,7 +15,7 @@ public class SlidingParent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (NyarScript.NS.anyButtoned && gameObject.name == "Main Menu") {
+        if (NyarScript.NS.GetAnyButtoned() && gameObject.name == "Main Menu") {
             transform.localPosition = destination;
             sliding = true;
         }
@@ -30,7 +30,7 @@ public class SlidingParent : MonoBehaviour
             else {
                 transform.localPosition = Vector2.Lerp(transform.localPosition, destination, Time.deltaTime * 2f);
                 time += Time.deltaTime;
-                if (time > 0.1f && AudioListener.volume < 1f)
+                if (time > 0.1f && AudioListener.volume < 1f && NyarScript.NS.GetMasterVolume() == null)
                 {
                     time = 0f;
                     AudioListener.volume += 0.1f;
