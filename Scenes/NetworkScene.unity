@@ -2968,6 +2968,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efab15bc68a841a41b31d57a04a6a558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  voicelines: []
 --- !u!1 &357019453
 GameObject:
   m_ObjectHideFlags: 0
@@ -6210,11 +6211,11 @@ MonoBehaviour:
     \"Ruther\" Del Lama\n\nCOM O TRABALHO DE\nBrackeys\ntrothmaster\nInfo Gamer\nPhoton
     Unity\nGitHub\n\nFONTES USADAS\nBahnschrift\nJura\nFTY Delirium NCV\n\nAGRADECIMENTOS
     ESPECIAIS\nGabriel Hammermeister\nCaique Torres\nAndr\xE9 Bariani\nGiovanni Mar\xE7os
-    Rossi\nGabriel Ueji Uema Martin\n\xC1gata Drigo\nGabriel Stankevix\nBruno Fritoli
-    Carrazza\nLu\xEDs Felipe Dobner Henriques\nWilliam Nalita\nTomiyuki Higuchi\nPedro
-    Henrique Luz Gon\xE7alves\nLuiz Ferreira do Couto M. Castro\nEduardo Funicello
-    Dualibi\nLucas de Melo e Machado\nM\xE1rio Henrique Quintanilha\nAndrei Gobbo\nMajor
-    Asshole\nSmalls the Kobold\nShadow / Neo\n\nAperte ESC para retornar"
+    Rossi\nGabriel Ueji Uema Martin\n\xC1gata Drigo\nBruno Fritoli Carrazza\nLu\xEDs
+    Felipe Dobner Henriques\nWilliam Nalita\nTomiyuki Higuchi\nPedro Henrique Luz
+    Gon\xE7alves\nLuiz Ferreira do Couto M. Castro\nEduardo Funicello Dualibi\nLucas
+    de Melo e Machado\nM\xE1rio Henrique Quintanilha\nAndrei Gobbo\nMajor Asshole\nSmalls
+    the Kobold\nShadow / Neo\n\nAperte ESC para retornar"
 --- !u!222 &873517873
 CanvasRenderer:
   m_ObjectHideFlags: 0

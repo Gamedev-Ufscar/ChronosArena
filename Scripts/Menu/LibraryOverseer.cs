@@ -26,11 +26,12 @@ public class LibraryOverseer : MonoBehaviour
 
     public void SetCurrentSheet(int currentSheet)
     {
-        
+        this.currentSheet = currentSheet;
     }
 
     public void UpdateStatus()
     {
+        Debug.Log(currentSheet);
         if (currentSheet == 200)
         {
             if (!infoArea.GetOpenInfo())
@@ -39,7 +40,9 @@ public class LibraryOverseer : MonoBehaviour
                 back.SetMinguant(false);
                 back.SetWaitTime(0.25f);
             }
-            sheetList[formerSheet].SetMinguant(true);
+
+            if (formerSheet != 200)
+                sheetList[formerSheet].SetMinguant(true);
         }
         else
         {
@@ -47,12 +50,12 @@ public class LibraryOverseer : MonoBehaviour
             {
                 sheetList[formerSheet].SetMinguant(true);
             }
+
             sheetList[currentSheet].gameObject.SetActive(true);
             sheetList[currentSheet].SetMinguant(false);
             sheetList[currentSheet].SetWaitTime(0.25f);
             back.SetMinguant(true);
             formerSheet = currentSheet;
-            Debug.Log(currentSheet);
         }
     }
 

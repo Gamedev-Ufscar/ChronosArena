@@ -4,14 +4,10 @@ using UnityEngine;
 
 public class VoicelineManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    private Voiceline[] voicelines;
 
-    // Update is called once per frame
-    void Update()
+    public void Checker()
     {
         
     }

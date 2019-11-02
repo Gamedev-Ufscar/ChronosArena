@@ -21,9 +21,21 @@ public class SliderOption : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     private void OnEnable()
     {
-        if (NyarScript.NS.GetMasterVolume() != null)
+        if (option == Option.Master && NyarScript.NS.GetMasterVolume() != null)
         {
             float newX = (float)(NyarScript.NS.GetMasterVolume() * (radius * 2)) - radius + center;
+            GetComponent<RectTransform>().position = new Vector3(newX, GetComponent<RectTransform>().position.y);
+        } else
+
+        if (option == Option.Music && NyarScript.NS.GetMusicVolume() != null)
+        {
+            float newX = (float)(NyarScript.NS.GetMusicVolume() * (radius * 2)) - radius + center;
+            GetComponent<RectTransform>().position = new Vector3(newX, GetComponent<RectTransform>().position.y);
+        } else
+
+        if (option == Option.Sound && NyarScript.NS.GetSoundVolume() != null)
+        {
+            float newX = (float)(NyarScript.NS.GetSoundVolume() * (radius * 2)) - radius + center;
             GetComponent<RectTransform>().position = new Vector3(newX, GetComponent<RectTransform>().position.y);
         }
     }
@@ -61,10 +73,12 @@ public class SliderOption : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
                 break;
 
             case Option.Music:
+                NyarScript.NS.SetMusicVolume(value);
                 AudioManager.AM.ChangeVolume(true, value);
                 break;
 
             case Option.Sound:
+                NyarScript.NS.SetSoundVolume(value);
                 AudioManager.AM.ChangeVolume(false, value);
                 break;
         }

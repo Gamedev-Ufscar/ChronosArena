@@ -8,6 +8,8 @@ public class NyarScript : MonoBehaviour
     [HideInInspector]
     private bool anyButtoned = false;
     private float? masterVolume = null;
+    private float? musicVolume = null;
+    private float? soundVolume = null;
 
     // Start is called before the first frame update
     void Awake()
@@ -32,6 +34,16 @@ public class NyarScript : MonoBehaviour
         return masterVolume;
     }
 
+    public float? GetMusicVolume()
+    {
+        return musicVolume;
+    }
+
+    public float? GetSoundVolume()
+    {
+        return soundVolume;
+    }
+
     public bool GetAnyButtoned()
     {
         return anyButtoned;
@@ -40,6 +52,16 @@ public class NyarScript : MonoBehaviour
     public void SetMasterVolume(float masterVolume)
     {
         this.masterVolume = masterVolume;
+    }
+
+    public void SetMusicVolume(float musicVolume)
+    {
+        this.musicVolume = musicVolume;
+    }
+
+    public void SetSoundVolume(float soundVolume)
+    {
+        this.soundVolume = soundVolume;
     }
 
     public void SetAnyButtoned(bool anyButtoned)
