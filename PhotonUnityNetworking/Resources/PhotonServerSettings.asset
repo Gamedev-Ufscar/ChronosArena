@@ -61,5 +61,6 @@ MonoBehaviour:
   - RPC_cardPosStop
   - RPC_ultiHoverStop
   - RPC_SendConfirm
+  - RPC_unleashedCard
   DisableAutoOpenWizard: 1
   ShowSettings: 1

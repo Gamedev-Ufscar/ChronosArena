@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -141,7 +142,16 @@ public class Player : MonoBehaviour
     }
 
     // Summon
-    public void SummonCard(DeckCard deckCard) { SummonCard(deckCard, false); }
+    public void UnleashCard(DeckCard deckCard, bool received)
+    {
+        if ((deckCard.GetOutOfHand() || received) && deckCard.GetCard().GetTurnsTill() <= 0)
+            if (!deckCard.GetCard().GetIsReaction() && gameOverseer.GetState() == GameState.Choice)
+                SummonCard(deckCard, received);
+            else if (gameOverseer.GetState() == GameState.Reaction)
+                SummonReaction(deckCard, received);
+    }
+
+    public void UnleashCard(DeckCard deckCard) { UnleashCard(deckCard, false); }
 
     public void SummonCard(DeckCard deckCard, bool received)
     {
@@ -173,27 +183,39 @@ public class Player : MonoBehaviour
 
             // Activate slot
             if (predicted == false) { g.GetComponent<BoardCard>().RevealAnimation(-1); }
-            else { g.GetComponent<BoardCard>().RevealAnimation(-2); }
+            else {
+                g.GetComponent<BoardCard>().RevealAnimation(-2);
+            }
 
             // Networking info
-            if (received == false)
+            if (!received)
             {
-                gameOverseer.SendSummonCard(deckCard.GetID());
+                gameOverseer.SendUnleashCard(deckCard.GetID());
 
                 // Set confirm to true
                 gameOverseer.SetMyConfirm(true);
             }
-
-            
         }
+    }
+
+    public void SummonReaction(DeckCard deckCard, bool received)
+    {
+        deckCard.OutHover(1f, Constants.cardRiseHeight);
+        deckCard.ChangePosition(deck.GetReactionLocation(0) + new Vector2(0f, Constants.cardRiseHeight));
+        deckCard.SetIsReaction(true);
+        gameOverseer.ReactionEffect(this, deckCard.GetCard());
+
+        // Networking info
+        if (!received)
+            gameOverseer.SendUnleashCard(deckCard.GetID());
     }
 
     // Ulti Buy
     public void UltiBuy(UltimateCard uc)
     {
-        if (gameOverseer.GetState() == GameState.Purchase && this == gameOverseer.GetMyPlayer() && GetCharge() >= uc.GetCard().GetCost())
+        if (gameOverseer.GetState() == GameState.Purchase && this == gameOverseer.GetMyPlayer())
         {
-            if (!uc.GetBought())
+            if (!uc.GetBought() && GetCharge() >= uc.GetCard().GetCost())
             {
                 uc.SetBought(true);
                 RaiseCharge(-uc.GetCard().GetCost());
@@ -205,43 +227,66 @@ public class Player : MonoBehaviour
             }
 
             uc.UpdateColor();
+            gameOverseer.SendUltiPurchase(uc.GetID(), uc.GetBought(), GetCharge());
         }
-
-        gameOverseer.SendUltiPurchase(uc.GetID(), uc.GetBought(), GetCharge());
     }
 
     // Restore Card
     public void RestorePlayedCard()
     {
-        bool returning = false;
-
-        // When will I return?
-        if (cardPlayed.GetCardPlayed().GetCardType() == CardTypes.Nullification)
-        {
-            NullInterface cc = (NullInterface)cardPlayed.GetCardPlayed();
-            if (cc.wronged == false)
-            {
-                returning = true;
-            }
-        } else if (cardPlayed.GetCardPlayed().GetCardType() != CardTypes.Skill)
-        {
-            returning = true;
+        int RestoringCard() {
+            cardPlayed.GetThisDeckCard().gameObject.SetActive(true);
+            cardPlayed.GetThisDeckCard().OutHover(1f, Constants.cardRiseHeight);
+            cardPlayed.GetThisDeckCard().UpdateCardPosition();
+            AudioManager.AM.CardSound();
+            return 0;
         }
 
-        // ---------------------------
+        CheckAndRestore(cardPlayed.GetThisDeckCard(), RestoringCard);
+    }
+
+    public void RestoreReactionCard()
+    {
+        for (int i = 0; i < Constants.maxCardAmount; i++)
+        {
+            if (deck.GetDeckCard(i) != null && deck.GetDeckCard(i).gameObject.activeInHierarchy && GetCard(i).GetIsReaction())
+            {
+                int RestoringCard()
+                {
+                    if (deck.GetDeckCard(i) != null)
+                    {
+                        deck.GetDeckCard(i).SetIsReaction(false);
+                        deck.GetDeckCard(i).UpdateCardPosition();
+                    }
+                    return 0;
+                }
+
+                CheckAndRestore(deck.GetDeckCard(i), RestoringCard);
+            }
+        }
+    }   
+
+    void CheckAndRestore(DeckCard deckCard, Func<int> RestoringCard)
+    {
+        bool returning = isReturning(deckCard.GetCard());
 
         // If not returning, recede deck
         if (!returning)
-        {
-            GetDeck().RecedeDeck(cardPlayed.GetThisDeckCard().GetIndex());
-        }
+            GetDeck().RecedeDeck(deckCard.GetIndex());
 
         // If returning ulti, restore ulti card and recede Deck
-        else if (cardPlayed.GetCardPlayed().GetCardType() == CardTypes.Ultimate)
+        else if (deckCard.GetCard().GetCardType() == CardTypes.Ultimate)
         {
-            GetDeck().RecedeDeck(cardPlayed.GetThisDeckCard().GetIndex());
+            // Recede and Discard
+            GetDeck().RecedeDeck(deckCard.GetIndex());
+            if (deckCard.GetIsReaction())
+            {
+                RestoringCard();
+                deckCard.gameObject.SetActive(false);
+            }
 
-            UltimateCard ultiCard = cardPlayed.GetThisUltiCard();
+            // Return Ulti
+            UltimateCard ultiCard = deckCard.GetUltiCard();
 
             ultiCard.gameObject.SetActive(true);
             ultiCard.SetTempIndex(GetUltiArea().PlaceUltimate(ultiCard.GetID()));
@@ -250,18 +295,15 @@ public class Player : MonoBehaviour
         // If returning card, restore normal card
         else
         {
-            cardPlayed.GetThisDeckCard().gameObject.SetActive(true);
-            cardPlayed.GetThisDeckCard().OutHover(1f, Constants.cardRiseHeight);
-            cardPlayed.GetThisDeckCard().UpdateCardPosition();
-            AudioManager.AM.CardSound();
+            RestoringCard();
         }
     }
 
     public void RestoreCard(int cardID)
     {
-        GetDeckCard(cardID).SetIndex(GetActiveCardCount());
-        GetDeckCard(cardID).UpdateCardPosition();
+        GetDeckCard(cardID).SetIndex(GetHighestIndex());
         GetDeckCard(cardID).gameObject.SetActive(true);
+        GetDeckCard(cardID).UpdateCardPosition();
         AudioManager.AM.CardSound();
     }
 
@@ -282,7 +324,23 @@ public class Player : MonoBehaviour
         deck.RecedeDeck(cardId);
     }
 
-    // Darken Cards
+    public bool isReturning(Card card)
+    {
+        if (card.GetCardType() == CardTypes.Nullification)
+        {
+            NullInterface cc = (NullInterface)cardPlayed.GetCardPlayed();
+            if (cc.wronged == false)
+            {
+                return true;
+            }
+        }
+        else if (card.GetCardType() != CardTypes.Skill)
+        {
+            return true;
+        }
+
+        return false;
+    }
 
 
     // Change Variables
@@ -298,10 +356,7 @@ public class Player : MonoBehaviour
 
     public void Protect(int protection)
     {
-        if (protection > this.protection)
-        {
-            this.protection = protection;
-        }
+        this.protection += protection;
     }
 
     public void RemoveProtection()
@@ -337,9 +392,9 @@ public class Player : MonoBehaviour
 
     public bool HasReactionCard()
     {
-        for (int i = 0; i <= Constants.maxHandSize; i++)
+        for (int i = Constants.maxCardAmount-1; i >= 0; i--)
         {
-            if (GetCard(i) != null && GetCard(i).GetIsReaction() == true)
+            if (GetCard(i) != null && deck.GetDeckCard(i).isActiveAndEnabled && GetCard(i).GetIsReaction())
             {
                 return true;
             }
@@ -443,16 +498,16 @@ public class Player : MonoBehaviour
         return predicted;
     }
 
-    public int GetActiveCardCount()
+    public int GetHighestIndex()
     {
-        int count = 0;
+        int index = 0;
         for (int i = 0; i < Constants.maxCardAmount; i++)
         {
-            if (GetDeckCard(i) != null && GetDeckCard(i).gameObject.activeInHierarchy)
-                count++;
+            if (GetDeckCard(i) != null && GetDeckCard(i).gameObject.activeInHierarchy && !GetDeckCard(i).GetIsReaction() && GetDeckCard(i).GetIndex() >= index)
+                index = GetDeckCard(i).GetIndex()+1;
         }
 
-        return count;
+        return index;
     }
 
     public int GetTotalCardCount()
@@ -517,7 +572,6 @@ public class Player : MonoBehaviour
     // Side Effects
     public void ActivateSideEffects(SEPhase phase, Player enemy)
     {
-
         for (int i = 0; i < Constants.maxSideListSize; i++)
         {
             if (sideList[i] != null && sideList[i] is Effecter) {
@@ -606,9 +660,9 @@ public class Player : MonoBehaviour
         deck.UpdateCardPositions(receivedCardIndexes);
     }
 
-    public void ReceiveSummon(int cardID)
+    public void ReceiveUnleash(int cardID)
     {
-        SummonCard(GetDeckCard(cardID), true);
+        UnleashCard(GetDeckCard(cardID), true);
         Debug.Log("Enemy Player3");
     }
 

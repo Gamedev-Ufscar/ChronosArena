@@ -7,9 +7,9 @@ public class NyarScript : MonoBehaviour
     public static NyarScript NS;
     [HideInInspector]
     private bool anyButtoned = false;
-    private float? masterVolume = null;
-    private float? musicVolume = null;
-    private float? soundVolume = null;
+    private float? masterVolume = 1;
+    private float? musicVolume = 1;
+    private float? soundVolume = 1;
 
     // Start is called before the first frame update
     void Awake()

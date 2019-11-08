@@ -1220,7 +1220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.5803922}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3960,7 +3960,7 @@ RectTransform:
   m_GameObject: {fileID: 513943409}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.25, y: 1.25, z: 1}
   m_Children: []
   m_Father: {fileID: 869476888}
   m_RootOrder: 2
@@ -4011,9 +4011,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1646246bd7f47e644b845de153b442d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  center: 660
+  centerRatio: 0.5
   radius: 70
   option: 0
+  line: {fileID: 698830851}
 --- !u!222 &513943413
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5257,7 +5258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.5803922}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5712,10 +5713,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textList:
   - {fileID: 602969106}
+  - {fileID: 656477742}
+  - {fileID: 1808584119}
   imageList:
   - {fileID: 513943411}
   - {fileID: 637956920}
+  - {fileID: 1277757924}
   - {fileID: 698830853}
+  - {fileID: 1277757924}
+  - {fileID: 1273188578}
 --- !u!114 &814928946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9077,7 +9083,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.5803922}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -9128,7 +9134,7 @@ RectTransform:
   m_GameObject: {fileID: 1277757922}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.25, y: 1.25, z: 1}
   m_Children: []
   m_Father: {fileID: 2028039705}
   m_RootOrder: 2
@@ -9179,9 +9185,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1646246bd7f47e644b845de153b442d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  center: 476
+  centerRatio: 0.375
   radius: 70
   option: 1
+  line: {fileID: 1273188576}
 --- !u!222 &1277757926
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10690,7 +10697,17 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7051b151016b6b644b4c35afcb095fb4, type: 3}
   - {fileID: 21300000, guid: ddffe2bd3ccb8224aa6026ba6fc0e8a1, type: 3}
   - {fileID: 21300000, guid: 2ac1091a77d139f41ad0545cc143264b, type: 3}
-  haroldList: []
+  haroldList:
+  - {fileID: 21300000, guid: 3ca279e4d0e5bb04280cad383112b693, type: 3}
+  - {fileID: 21300000, guid: 63aae7946e92f7645be6f9aecf15b44f, type: 3}
+  - {fileID: 21300000, guid: 26c3a56fbc143cb42b1f553f28efaace, type: 3}
+  - {fileID: 21300000, guid: c3d333636dff0714197632ec1f55470b, type: 3}
+  - {fileID: 21300000, guid: c3d333636dff0714197632ec1f55470b, type: 3}
+  - {fileID: 21300000, guid: c3d333636dff0714197632ec1f55470b, type: 3}
+  - {fileID: 21300000, guid: 7051b151016b6b644b4c35afcb095fb4, type: 3}
+  - {fileID: 21300000, guid: e8e1fd08100e6204b806b831c17fc611, type: 3}
+  - {fileID: 21300000, guid: ddffe2bd3ccb8224aa6026ba6fc0e8a1, type: 3}
+  - {fileID: 21300000, guid: 2ac1091a77d139f41ad0545cc143264b, type: 3}
   ugaList:
   - {fileID: 21300000, guid: 6ab9a3e08d9b17d4f907688c81ad6130, type: 3}
   - {fileID: 21300000, guid: 1313537e1e7a6d240ae9dcd62509b60e, type: 3}
@@ -14485,7 +14502,7 @@ RectTransform:
   m_GameObject: {fileID: 1855353016}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.25, y: 1.25, z: 1}
   m_Children: []
   m_Father: {fileID: 1686905839}
   m_RootOrder: 2
@@ -14536,9 +14553,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1646246bd7f47e644b845de153b442d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  center: 809
+  centerRatio: 0.625
   radius: 70
   option: 2
+  line: {fileID: 101358579}
 --- !u!222 &1855353020
 CanvasRenderer:
   m_ObjectHideFlags: 0

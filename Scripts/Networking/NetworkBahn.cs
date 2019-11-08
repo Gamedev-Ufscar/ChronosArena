@@ -97,10 +97,10 @@ public class NetworkBahn : MonoBehaviour
     }
 
     // SUMMON
-    public void SummonCard(int cardID)
+    public void UnleashCard(int cardID)
     {
         // Summon Card
-        PV.RPC("RPC_summonedCard", RpcTarget.OthersBuffered, (byte)cardID);
+        PV.RPC("RPC_unleashedCard", RpcTarget.OthersBuffered, (byte)cardID);
         Debug.Log("Sent Card");
 
     }
@@ -108,9 +108,7 @@ public class NetworkBahn : MonoBehaviour
     // INTERFACE
     public void SendInterfaceSignal(int interfaceSignalSent)
     {
-
         PV.RPC("RPC_sendInterfaceSignal", RpcTarget.OthersBuffered, (byte)interfaceSignalSent);
-
     }
 
 
@@ -163,21 +161,19 @@ public class NetworkBahn : MonoBehaviour
     }
 
     [PunRPC]
-    public void RPC_summonedCard(byte cardID)
+    public void RPC_unleashedCard(byte cardID)
     {
-        gameOverseer.ReceiveSummon(cardID);
+        gameOverseer.ReceiveUnleash(cardID);
     }
 
     [PunRPC]
     public void RPC_sendInterfaceSignal(byte signalSent)
     {
-        if (gameOverseer.GetEnemyPlayer().GetCardPlayed() != null)
+        if (gameOverseer.GetEnemyPlayer().GetCardPlayed() != null && gameOverseer.GetEnemyPlayer().GetCardPlayed() is Interfacer)
         {
-            if (gameOverseer.GetEnemyPlayer().GetCardPlayed() is Interfacer)
-            {
-                Interfacer cc = (Interfacer)gameOverseer.GetEnemyPlayer().GetCardPlayed();
-                cc.interfaceSignal = (int)signalSent;
-            }
+            Interfacer cc = (Interfacer)gameOverseer.GetEnemyPlayer().GetCardPlayed();
+            cc.interfaceSignal = (int)signalSent;
+            Debug.Log("Signal received");
         }
     }
 }

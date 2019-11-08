@@ -77,6 +77,31 @@ public class CardMaker : MonoBehaviour
         timothyHT.Add(11, new Chronos(0000));
         timothyHT.Add(12, new DejaVuSE(0, SEPhase.Choice));
 
+        // Harold
+        hero = HeroEnum.Harold;
+        haroldHT.Add(0, new Attack(hero, "MINI-LASER", 0, IS.GetImage(hero, 0), "AO ATINGIR LIMITE, AINDA PODE JOGAR d   .",
+            CardTypes.Attack, 1616, 2, false, 1));
+        haroldHT.Add(1, new Defense(hero, "ESCONDERIJO", 1, IS.GetImage(hero, 1), "",
+            CardTypes.Defense, 0808, 1));
+        haroldHT.Add(2, new Charge(hero, "PLANOS MALÉFICOS", 2, IS.GetImage(hero, 2), "",
+            CardTypes.Charge, 1414, 1, 3));
+        haroldHT.Add(3, new Sabotage(hero, "SABOTAGEM", 3, IS.GetImage(hero, 3), "CAUSA 2a      , \\nSE ACERTAR ANULAÇÃO.",
+            CardTypes.Nullification, 0416, 0));
+        haroldHT.Add(4, new Sabotage(hero, "SABOTAGEM", 4, IS.GetImage(hero, 4), "2b   , MESMO SE ERRAR ANULAÇÃO.",
+            CardTypes.Nullification, 0408, 1));
+        haroldHT.Add(5, new SabotageR(hero, "SABOTAGEM", 5, IS.GetImage(hero, 5), "RECUPERA 1 d   , \\nSE ACERTAR ANULAÇÃO.",
+            CardTypes.Nullification, 0419));
+        haroldHT.Add(6, new CloningMachine(hero, "MÁQUINA DE CLONAGEM", 6, IS.GetImage(hero, 6), "COPIA OS EFEITOS DA CARTA INIMIGA.",
+            CardTypes.Skill, 0018));
+        haroldHT.Add(7, new CloningMachine(hero, "MÁQUINA DE CLONAGEM", 7, IS.GetImage(hero, 6), "COPIA OS EFEITOS DA CARTA INIMIGA.",
+            CardTypes.Skill, 0018));
+        haroldHT.Add(8, new PerverseEngineering(hero, "ENGENHARIA MALIGNA", 8, IS.GetImage(hero, 7), "DESCARTA d     OU e     INIMIGA.",
+            CardTypes.Skill, 1818));
+        haroldHT.Add(9, new Catastrophe(hero, "MESTRE DO DESASTRE", 9, IS.GetImage(hero, 8), "RETIRA 2c   E DESCARTA f      \\nINIMIGA DE SUA ESCOLHA.",
+            CardTypes.Ultimate, 1212, false, 2));
+        haroldHT.Add(10, new TemporalShieldTwo(hero, "ESCUDO TEMPORAL 2.0", 10, IS.GetImage(hero, 9), "CONCEDE 2 b   .\\nREAÇÃO.",
+            CardTypes.Ultimate, 0808, true, 1));
+
         // Uga
         hero = HeroEnum.Uga;
         ugaHT.Add(0, new Attack(hero, "PANCADA COM TRONCO", 0, IS.GetImage(hero, 0), "",

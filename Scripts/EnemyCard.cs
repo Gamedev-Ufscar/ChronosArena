@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class EnemyCard : DeckCard, IPointerExitHandler, IPointerEnterHandler
 {
@@ -41,13 +38,20 @@ public class EnemyCard : DeckCard, IPointerExitHandler, IPointerEnterHandler
         //Debug.Log("being held false");
         SetBeingHeld(false);
         OutHover(1f, Constants.cardRiseHeight);
-        UpdateCardPosition();
+        if (!GetIsReaction())
+            UpdateCardPosition();
+        else
+            ChangePosition(GetDeck().GetReactionLocation(0));
     }
 
     // Hover card
     public new void OnPointerEnter(PointerEventData eventData)
     {
         ChangeColor(1f);
+        if (GetIsReaction())
+        {
+
+        }
     }
 
     // Stop Hover Card

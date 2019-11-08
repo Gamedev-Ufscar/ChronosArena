@@ -873,7 +873,7 @@ MonoBehaviour:
   characterList:
   - hero: 1
     profile: {fileID: 21300000, guid: 17ae3813bd178784980e828a452535c6, type: 3}
-    sideListSize: 2
+    sideListSize: 3
     cardCount: 8
     ultiCount: 2
     passiveCount: 0
@@ -898,7 +898,7 @@ MonoBehaviour:
     cardCount: 9
     ultiCount: 2
     passiveCount: 0
-    attackDisableList: 0100000004000000050000000600000007000000
+    attackDisableList: 01000000050000000600000007000000
 --- !u!1 &824459265
 GameObject:
   m_ObjectHideFlags: 0

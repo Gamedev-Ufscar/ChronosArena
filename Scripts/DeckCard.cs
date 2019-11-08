@@ -103,6 +103,11 @@ public abstract class DeckCard : UICard, IPointerExitHandler, IPointerEnterHandl
         return outOfHand;
     }
 
+    /*public bool GetActiveInHand()
+    {
+        return isActiveAndEnabled && !GetIsReaction();
+    }*/
+
     public new void OnPointerEnter(PointerEventData eventData)
     {
         if (!GetInterfaceActive())

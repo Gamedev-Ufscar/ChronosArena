@@ -7,20 +7,26 @@ public class SliderOption : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     private bool isClicking = false;
 
     [SerializeField]
-    private float center;
+    private float centerRatio;
     [SerializeField]
     private float radius;
     [SerializeField]
     private Option option;
+    [SerializeField]
+    private GameObject line;
+
+    float center;
+    float oldWidth;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        UpdateToScreenWidth();
     }
 
     private void OnEnable()
     {
+
         if (option == Option.Master && NyarScript.NS.GetMasterVolume() != null)
         {
             float newX = (float)(NyarScript.NS.GetMasterVolume() * (radius * 2)) - radius + center;
@@ -43,6 +49,13 @@ public class SliderOption : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     // Update is called once per frame
     void Update()
     {
+        // Update to screen width
+        if (Screen.width != oldWidth)
+        {
+            UpdateToScreenWidth();
+        }
+
+        // If holding slider
         if (isClicking)
         {
             float newX = Mathf.Clamp(Input.mousePosition.x, center - radius, center + radius);
@@ -61,6 +74,15 @@ public class SliderOption : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     public void OnPointerUp(PointerEventData eventData)
     {
         isClicking = false;
+    }
+
+    void UpdateToScreenWidth()
+    {
+        center = Screen.width * centerRatio;
+        line.GetComponent<RectTransform>().position = new Vector3(center, line.GetComponent<RectTransform>().position.y);
+        float newX = (float)(NyarScript.NS.GetMasterVolume() * (radius * 2)) - radius + center;
+        GetComponent<RectTransform>().position = new Vector3(newX, GetComponent<RectTransform>().position.y);
+        oldWidth = Screen.width;
     }
 
     void Effect(float value)

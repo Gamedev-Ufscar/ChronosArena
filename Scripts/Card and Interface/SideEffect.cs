@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class SideEffect
 {
@@ -104,10 +102,10 @@ public class DejaVuSE : SideEffect, Effecter
     {
         if (GetValue() >= 2)
         {
-            user.SetPredicted(true);
+            enemy.SetPredicted(true);
         } else if (GetValue() == 1)
         {
-            user.SetPredicted(false);
+            enemy.SetPredicted(false);
         }
         ReduceValue();
     }

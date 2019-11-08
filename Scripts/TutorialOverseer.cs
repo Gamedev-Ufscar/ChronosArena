@@ -587,7 +587,7 @@ public class TutorialOverseer : MonoBehaviour
 
     void SummonCard(int id)
     {
-        gameOverseer.ReceiveSummon(id);
+        gameOverseer.ReceiveUnleash(id);
         gameOverseer.SetEnemyConfirm(true);
     }
 

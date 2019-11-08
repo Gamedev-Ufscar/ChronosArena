@@ -37,11 +37,12 @@ public class WatchAdjustments : Card, ChargeInterface, Limit, Interfacer
     public int limitMax { get; set; }
     public Sprite[] interfaceList { get; set; }
     public string[] textList { get; set; }
-    public int interfaceSignal { get; set; }
+    public int? interfaceSignal { get; set; }
 
     public WatchAdjustments(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
         base(hero, name, cardID, image, text, type, minmax)
-    { }
+    {
+    }
 
     public void SetSignal(int interfaceSignal)
     {
@@ -80,13 +81,14 @@ public class WatchAdjustments : Card, ChargeInterface, Limit, Interfacer
         }
     }
 
-    public void Interfacing(Player user, Player enemy)
+    public void Interfacing(Player user, Player enemy, bool open)
     {
         textList = new string[2];
         textList[0] = "+1c .";
         textList[1] = "+2c , -2g   .";
 
-        user.Interfacing(this, textList, this, 2);
+        if (open)
+            user.Interfacing(this, textList, this, 2);
     }
 
     public override void Effect(Player user, Player enemy, int priority)
@@ -154,7 +156,7 @@ public class ChronosMachine : Card, Interfacer
 {
     public Sprite[] interfaceList { get; set; }
     public string[] textList { get; set; }
-    public int interfaceSignal { get; set; }
+    public int? interfaceSignal { get; set; }
     public bool isChronos { get; set; }
 
     public ChronosMachine(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax, bool isChronos, int cost) :
@@ -169,7 +171,7 @@ public class ChronosMachine : Card, Interfacer
     }
 
     // Two choices
-    public void Interfacing(Player user, Player enemy)
+    public void Interfacing(Player user, Player enemy, bool open)
     {
         if (!isChronos)
         {
@@ -177,7 +179,8 @@ public class ChronosMachine : Card, Interfacer
             textList[0] = "VOLTA O g      DO USUÁRIO.";
             textList[1] = "VOLTA O g      DO INIMIGO.";
 
-            user.Interfacing(this, textList, this, 2);
+            if (open)
+                user.Interfacing(this, textList, this, 2);
         } else
         {
             interfaceSignal = 0;
@@ -215,30 +218,21 @@ public class ChronosMachine : Card, Interfacer
     }
 }
 
-public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
+public class Sabotage : Card, Damage, Protection, NullInterface
 {
     public CardTypes[] nullificationList { get; set; }
     public bool wronged { get; set; }
     public int damage { get; set; }
     public bool isUnblockable { get; set; }
     public int protection { get; set; }
-    public Sprite[] interfaceList { get; set; }
-    public Card[] cardList { get; set; }
-    public int interfaceSignal { get; set; }
-
-    int[] discardedCardList = new int[10]; // Lists the deckList indexes of discarded cards
-    int discardedCount = 0;
 
     public int nullType = 0;
 
-    public Sabotage(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
+    public Sabotage(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax, int nullType) :
         base(hero, name, cardID, image, text, type, minmax)
     {
-    }
-
-    public void SetSignal(int interfaceSignal)
-    {
-        this.interfaceSignal = interfaceSignal;
+        nullificationList = new CardTypes[4] { CardTypes.Charge, CardTypes.Skill, CardTypes.Ultimate, CardTypes.Item };
+        this.nullType = nullType;
     }
 
     public void CauseDamage(int damage, Player target)
@@ -261,55 +255,14 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
         wronged = true;
         for (int i = 0; i < nullificationList.Length; i++)
         {
-            if (target.GetCard(i).GetCardType() == nullificationList[i])
+            if (target.GetCardPlayed().GetCardType() == nullificationList[i])
             {
-                target.GetCard(i).SetIsNullified(true);
+                target.GetCardPlayed().SetIsNullified(true);
                 wronged = false;
             }
         }
     }
-
-    public void Interfacing(Player user, Player enemy)
-    {
-        cardList = new Card[Constants.maxCardAmount];
-        int discardedCount = 0;
-
-
-        if (nullType == 2)
-        {
-            // First check if the Nullification is valid - if yes, proceed
-            wronged = true;
-            for (int i = 0; i < nullificationList.Length; i++) {
-                if (enemy.GetCardPlayed().GetCardType() == nullificationList[i]) {
-                    wronged = false;
-                }
-            }
-
-            if (!wronged)
-            {
-
-                // Run through Deck List, check if there's a disabled nullification card
-                for (int i = 0; i < Constants.maxCardAmount; i++)
-                {
-                    if (user.GetCard(i) != null)
-                    {
-                        if (user.GetCard(i) != this && user.GetDeckCard(i).gameObject.activeInHierarchy == false &&
-                            user.GetCard(i).GetCardType() == CardTypes.Nullification)
-                        {
-                            cardList[discardedCount] = user.GetCard(i);
-                            discardedCardList[discardedCount] = i;
-                            discardedCount++;
-                        }
-                    }
-                }
-
-                // Interface script setup
-                if (discardedCount > 0) {
-                    user.Interfacing(cardList, this, discardedCount);
-                }
-            }
-        }
-    }
+   
 
     public override void Effect(Player user, Player enemy, int priority)
     {
@@ -323,15 +276,107 @@ public class Sabotage : Card, Damage, Protection, NullInterface, Interfacer
                 break;
 
             case 16:
-                if (nullType == 0 && wronged == false) { CauseDamage(damage, enemy); }
+                if (nullType == 0 && !wronged) { CauseDamage(damage, enemy); }
+                break;
+        }
+    }
+}
+
+public class SabotageR : Card, NullInterface, Interfacer
+{
+    public CardTypes[] nullificationList { get; set; }
+    public bool wronged { get; set; }
+    public Sprite[] interfaceList { get; set; }
+    public Card[] cardList { get; set; }
+    public int? interfaceSignal { get; set; }
+
+    int[] discardedCardList = new int[10]; // Lists the deckList indexes of discarded cards
+    int discardedCount = 0;
+
+    public int nullType = 0;
+
+    public SabotageR(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
+        base(hero, name, cardID, image, text, type, minmax)
+    {
+        nullificationList = new CardTypes[4] { CardTypes.Charge, CardTypes.Skill, CardTypes.Ultimate, CardTypes.Item };
+        interfaceSignal = null;
+    }
+
+    public void SetSignal(int interfaceSignal)
+    {
+        this.interfaceSignal = interfaceSignal;
+    }
+
+    public void Nullify(Player target)
+    {
+        wronged = true;
+        for (int i = 0; i < nullificationList.Length; i++)
+        {
+            if (target.GetCardPlayed().GetCardType() == nullificationList[i])
+            {
+                target.GetCardPlayed().SetIsNullified(true);
+                wronged = false;
+            }
+        }
+    }
+
+    public void Interfacing(Player user, Player enemy, bool open)
+    {
+        // Reset Variables
+        cardList = new Card[Constants.maxCardAmount];
+        discardedCount = 0;
+        interfaceSignal = null;
+
+        if (nullType == 2)
+        {
+            // First check if the Nullification is valid - if yes, proceed
+            wronged = true;
+            for (int i = 0; i < nullificationList.Length; i++)
+                if (enemy.GetCardPlayed().GetCardType() == nullificationList[i])
+                    wronged = false;
+
+            if (!wronged)
+            {
+
+                // Run through Deck List, check if there's a disabled nullification card
+                for (int i = 0; i < Constants.maxCardAmount; i++)
+                {
+                    if (user.GetCard(i) != null && user.GetCard(i) != this && !user.GetDeckCard(i).isActiveAndEnabled &&
+                        user.GetCard(i).GetCardType() == CardTypes.Nullification)
+                    {
+                        cardList[discardedCount] = user.GetCard(i);
+                        discardedCardList[discardedCount] = i;
+                        discardedCount++;
+                    }
+                }
+
+                // Interface script setup
+                if (discardedCount > 1)
+                {
+                    if (open)
+                        user.Interfacing(cardList, this, discardedCount);
+                }
+                else
+                    interfaceSignal = 0;
+            }
+        }
+    }
+
+    public override void Effect(Player user, Player enemy, int priority)
+    {
+        switch (priority)
+        {
+            case 4:
+                Nullify(enemy);
                 break;
 
             case 19:
                 // Setup discarded list for enemy
-                if (nullType == 2) { 
-                    if (discardedCount > 0) {
-                        user.RestoreCard(discardedCardList[interfaceSignal]);
-                        Debug.Log("Discarded: " + discardedCardList[interfaceSignal]);
+                if (nullType == 2 && !wronged)
+                {
+                    if (discardedCount > 0)
+                    {
+                        user.RestoreCard(discardedCardList[(int)interfaceSignal]);
                     }
                 }
                 break;
@@ -343,13 +388,13 @@ public class Catastrophe : Card, Interfacer
 {
     public Sprite[] interfaceList { get; set; }
     public Card[] cardList { get; set; }
-    public int interfaceSignal { get; set; }
+    public int? interfaceSignal { get; set; }
 
     int[] ultimateList = new int[3]; // Lists the deckList indexes of ultimate cards
     int ultimateCount = 0;
 
-    public Catastrophe(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
-        base(hero, name, cardID, image, text, type, minmax)
+    public Catastrophe(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax, bool isReaction, int cost) :
+        base(hero, name, cardID, image, text, type, minmax, isReaction, cost)
     { }
 
     public void SetSignal(int interfaceSignal)
@@ -357,34 +402,32 @@ public class Catastrophe : Card, Interfacer
         this.interfaceSignal = interfaceSignal;
     }
 
-    public void Interfacing(Player user, Player enemy)
+    public void Interfacing(Player user, Player enemy, bool open)
     {
+        // Reset Variables
         cardList = new Card[Constants.maxCardAmount];
-        int ultimateCount = 0;
+        ultimateCount = 0;
+        interfaceSignal = null;
 
         // Run through ENEMY Deck List, check if there's an ultimate card
-        for (int i = 0; i < Constants.maxHandSize; i++)
-        {
-            if (enemy.GetCard(i) != null)
-            {
-                if (enemy.GetCard(i) != this && enemy.GetDeckCard(i).gameObject.activeInHierarchy && enemy.GetCard(i).GetCardType() == CardTypes.Ultimate)
-                {
-                    cardList[ultimateCount] = enemy.GetCard(i);
-                    ultimateList[ultimateCount] = i;
-                    ultimateCount++;
-                }
+        for (int i = 0; i < Constants.maxHandSize; i++) {
+            if (enemy.GetCard(i) != null && enemy.GetCard(i) != this && enemy.GetDeckCard(i).isActiveAndEnabled && !enemy.GetDeckCard(i).GetIsReaction() && 
+                enemy.GetCard(i).GetCardType() == CardTypes.Ultimate) {
+                cardList[ultimateCount] = enemy.GetCard(i);
+                ultimateList[ultimateCount] = i;
+                ultimateCount++;
             }
         }
 
         // Interface script setup
         if (ultimateCount > 1)
         {
-            user.Interfacing(cardList, this, ultimateCount);
-        } else {
-            interfaceSignal = 0;
-            // CHECK LATER
-            //GameOverseer.GO.interfaceSignalSent = 0;
+            if (open)
+                user.Interfacing(cardList, this, ultimateCount);
         }
+        else
+            interfaceSignal = 0;
+
     }
 
     public override void Effect(Player user, Player enemy, int priority)
@@ -397,7 +440,7 @@ public class Catastrophe : Card, Interfacer
             case 18:
                 if (ultimateCount > 0)
                 {
-                    enemy.DiscardCard(ultimateList[interfaceSignal]);
+                    enemy.DiscardCard(ultimateList[(int)interfaceSignal]);
                 }
                 this.RaiseCost(1);
                 break;
@@ -409,7 +452,7 @@ public class PerverseEngineering : Card, Interfacer
 {
     public Sprite[] interfaceList { get; set; }
     public Card[] cardList { get; set; }
-    public int interfaceSignal { get; set; }
+    public int? interfaceSignal { get; set; }
 
     int[] ultimateList = new int[7]; // Lists the deckList indexes of relevant cards
 
@@ -417,41 +460,41 @@ public class PerverseEngineering : Card, Interfacer
 
     public PerverseEngineering(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
         base(hero, name, cardID, image, text, type, minmax)
-    { }
+    {
+        interfaceSignal = null;
+    }
 
     public void SetSignal(int interfaceSignal)
     {
         this.interfaceSignal = interfaceSignal;
     }
 
-    public void Interfacing(Player user, Player enemy)
+    public void Interfacing(Player user, Player enemy, bool open)
     {
+        // Reset Variables
         cardList = new Card[Constants.maxCardAmount];
+        specialCount = 0;
+        interfaceSignal = null;
 
         // Run through ENEMY Deck List, check if there's a skill or nullification card
         for (int i = 0; i < Constants.maxCardAmount; i++)
         {
-            if (enemy.GetCard(i) != null)
-            {
-                if (enemy.GetCard(i) != this && enemy.GetDeckCard(i).gameObject.activeInHierarchy == true &&
-                    (enemy.GetCard(i).GetCardType() == CardTypes.Nullification || enemy.GetCard(i).GetCardType() == CardTypes.Skill))
-                {
+            if (enemy.GetCard(i) != null && enemy.GetCard(i) != this && enemy.GetDeckCard(i).isActiveAndEnabled && !enemy.GetDeckCard(i).GetIsReaction() &&
+               (enemy.GetCard(i).GetCardType() == CardTypes.Nullification || enemy.GetCard(i).GetCardType() == CardTypes.Skill)) {
                     cardList[specialCount] = enemy.GetCard(i);
                     ultimateList[specialCount] = i;
                     specialCount++;
-                }
             }
         }
 
         // Interface script setup
         if (specialCount > 1)
         {
-            user.Interfacing(cardList, this, specialCount);
-        } else {
-            interfaceSignal = 0;
-            // CHECK LATER
-            //GameOverseer.GO.interfaceSignalSent = 0;
+            if (open)
+                user.Interfacing(cardList, this, specialCount);
         }
+        else
+            interfaceSignal = 0;
     }
 
     public override void Effect(Player user, Player enemy, int priority)
@@ -459,10 +502,8 @@ public class PerverseEngineering : Card, Interfacer
         switch (priority)
         {
             case 18:
-                if (specialCount > 1)
-                {
-                    enemy.DiscardCard(ultimateList[interfaceSignal]);
-                }
+                if (specialCount > 0)
+                    enemy.DiscardCard(ultimateList[(int)interfaceSignal]);
                 break;
         }
     }
@@ -470,13 +511,13 @@ public class PerverseEngineering : Card, Interfacer
 
 public class TemporalShieldTwo : Card
 {
-    public TemporalShieldTwo(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax) :
-        base(hero, name, cardID, image, text, type, minmax)
+    public TemporalShieldTwo(HeroEnum hero, string name, int cardID, Sprite image, string text, CardTypes type, int minmax, bool isReaction, int cost) :
+        base(hero, name, cardID, image, text, type, minmax, isReaction, cost)
     { }
 
     public override void Effect(Player user, Player enemy, int priority)
     {
-        user.Protect(1);
+        user.Protect(2);
     }
 }
 

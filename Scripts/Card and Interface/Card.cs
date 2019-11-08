@@ -309,9 +309,9 @@ public interface NullInterface
 public interface Interfacer
 {
     Sprite[] interfaceList { get; set; }
-    int interfaceSignal { get; set; }
+    int? interfaceSignal { get; set; }
 
     void SetSignal(int interfaceSignal);
 
-    void Interfacing(Player user, Player enemy);
+    void Interfacing(Player user, Player enemy, bool open);
 }

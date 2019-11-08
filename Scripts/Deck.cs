@@ -83,8 +83,7 @@ public class Deck : MonoBehaviour
 
     public void UnleashedCard(HandCard handCard)
     {
-        if (handCard.GetOutOfHand() && !handCard.GetIsReaction() && handCard.GetCard().GetTurnsTill() <= 0)
-            player.SummonCard(handCard);
+        player.UnleashCard(handCard);
     }
 
     // Manipulate position
@@ -115,7 +114,8 @@ public class Deck : MonoBehaviour
 
     public void UpdateCardPosition(DeckCard card)
     {
-        card.ChangePosition(cardLocations[card.GetIndex()]);
+        if (card.isActiveAndEnabled && !card.GetIsReaction())
+            card.ChangePosition(cardLocations[card.GetIndex()]);
     }
 
     public void Shuffle()
@@ -125,8 +125,8 @@ public class Deck : MonoBehaviour
 
         for (int i = 0; i < Constants.maxHandSize; i++) {
             rando = Random.Range(0, Constants.maxHandSize);
-            if (cardsInDeck[i] != null && cardsInDeck[i].gameObject.activeInHierarchy) {
-                if (cardsInDeck[rando] != null && cardsInDeck[rando].gameObject.activeInHierarchy) {
+            if (cardsInDeck[i] != null && cardsInDeck[i].isActiveAndEnabled && !cardsInDeck[i].GetIsReaction() && !cardsInDeck[i].GetIsReaction()) {
+                if (cardsInDeck[rando] != null && cardsInDeck[rando].isActiveAndEnabled && !cardsInDeck[rando].GetIsReaction() && !cardsInDeck[i].GetIsReaction()) {
                     // Swap randomly
                     helper = cardsInDeck[i].GetIndex();
                     cardsInDeck[i].SetIndex(cardsInDeck[rando].GetIndex());
@@ -155,7 +155,7 @@ public class Deck : MonoBehaviour
     {
         for (int i = 0; i < cardsInDeck.Length; i++)
         {
-            if (cardsInDeck[i] != null && cardsInDeck[i].gameObject.activeInHierarchy) {
+            if (cardsInDeck[i] != null && cardsInDeck[i].isActiveAndEnabled && !cardsInDeck[i].GetIsReaction()) {
                 if (cardsInDeck[i].GetIndex() > cardIndex) {
                     cardsInDeck[i].RecedeIndex();
                     AudioManager.AM.CardSound();

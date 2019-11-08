@@ -62,6 +62,9 @@ public class PlaceCard : MonoBehaviour
         //go.transform.position = Vector3.Lerp(point.position, go.transform.position, Time.deltaTime * 0.1f);
 
         // Gravity pull
+        if (fu) { targetRot = Quaternion.LookRotation(Vector3.back, Vector3.down); }
+           else { targetRot = Quaternion.LookRotation(Vector3.back, Vector3.up); }
+
         go.transform.position = Vector3.MoveTowards(go.transform.position, point.transform.position, Time.deltaTime * speed);
         go.transform.rotation = Quaternion.Lerp(go.transform.rotation, 
                         targetRot, Time.deltaTime * 6f);

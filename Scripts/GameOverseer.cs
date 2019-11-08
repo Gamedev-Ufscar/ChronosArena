@@ -105,9 +105,13 @@ public class GameOverseer : MonoBehaviour
                     break;
 
                 case GameState.Effects:
-                    // Restore Played Card
+                    // Restore played card
                     myPlayer.RestorePlayedCard();
                     enemyPlayer.RestorePlayedCard();
+
+                    // Restore reaction cards
+                    myPlayer.RestoreReactionCard();
+                    enemyPlayer.RestoreReactionCard();
 
                     // Revoke nullification
                     myPlayer.GetCardPlayed().SetIsNullified(false);
@@ -175,14 +179,20 @@ public class GameOverseer : MonoBehaviour
         if (myPlayer.GetCardPlayed() is Interfacer)
         {
             Interfacer inter = (Interfacer)myPlayer.GetCardPlayed();
-            inter.Interfacing(myPlayer, enemyPlayer);
+            inter.Interfacing(myPlayer, enemyPlayer, true);
         } else
         {
             SetMyConfirm(true);
             if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Tutorial)
                 SetEnemyConfirm(true);
         }
-        
+
+        if (enemyPlayer.GetCardPlayed() is Interfacer)
+        {
+            Interfacer inter = (Interfacer)enemyPlayer.GetCardPlayed();
+            inter.Interfacing(enemyPlayer, myPlayer, false);
+        }
+
         // Color
         for (int i = 0; i < Constants.maxCardAmount; i++)
         {
@@ -351,6 +361,14 @@ public class GameOverseer : MonoBehaviour
         SceneManager.LoadScene((int)SceneList.Menu);
     }
 
+    public void ReactionEffect(Player player, Card card)
+    {
+        if (player == myPlayer)
+            card.Effect(myPlayer, enemyPlayer, 0);
+        else
+            card.Effect(enemyPlayer, myPlayer, 0);
+    }
+
     // Healthbar & Chargebar
     public void UpdateBar()
     {
@@ -463,10 +481,10 @@ public class GameOverseer : MonoBehaviour
     }
 
     // Network/Tutorial Sender
-    public void SendSummonCard(int cardID)
+    public void SendUnleashCard(int cardID)
     {
         if (NetworkBahn.networkBahn != null)
-            NetworkBahn.networkBahn.SummonCard(cardID);
+            NetworkBahn.networkBahn.UnleashCard(cardID);
 
         if (SceneManager.GetActiveScene().buildIndex == (int)SceneList.Tutorial)
         {
@@ -543,8 +561,8 @@ public class GameOverseer : MonoBehaviour
         enemyPlayer.ReceiveShuffle(receivedCardIndexes);
     }
 
-    public void ReceiveSummon(int cardID) {
-        enemyPlayer.ReceiveSummon(cardID);
+    public void ReceiveUnleash(int cardID) {
+        enemyPlayer.ReceiveUnleash(cardID);
         Debug.Log("Receive Summon2");
     }
 
