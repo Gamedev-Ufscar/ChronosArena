@@ -4,11 +4,21 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InterfaceCard : UICard, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
+public class InterfaceCard : UICard, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
 {
     private bool isClickable;
     private Interface interfface;
     private int option;
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (GetIsMobile() && Input.GetMouseButtonDown(0) && GetPointerOver())
+            OutHover(1f, Constants.cardRiseHeight(GetIsMobile())/4);
+
+        // Control Position
+        MoveCard();
+    }
 
     public void SetInterface(Interface interfface)
     {
@@ -27,17 +37,23 @@ public class InterfaceCard : UICard, IPointerDownHandler, IPointerEnterHandler, 
 
     public new void OnPointerEnter(PointerEventData eventData)
     {
-        OnHover(7*Constants.cardBigSize/8, 1*Constants.cardRiseHeight/4);
-        ChangeColor(1f);
+        if (!GetIsMobile())
+        {
+            OnHover(7 * Constants.cardBigSize(false)/8, Constants.cardRiseHeight(false)/4);
+            ChangeColor(1f);
+        }
     }
 
     public new void OnPointerExit(PointerEventData eventData)
     {
-        OutHover(1f, Constants.cardRiseHeight / 4);
-        ChangeColor(1f);
+        if (!GetIsMobile())
+        {
+            OutHover(1f, Constants.cardRiseHeight(false)/4);
+            ChangeColor(1f);
+        }
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public new void OnPointerDown(PointerEventData eventData)
     {
         Debug.Log("Clicked");
         if (isClickable)
@@ -45,5 +61,11 @@ public class InterfaceCard : UICard, IPointerDownHandler, IPointerEnterHandler, 
             Debug.Log("Clickable");
             interfface.Close(option);
         }
+    }
+
+    public new void OnPointerUp(PointerEventData eventData)
+    {
+        if (GetIsMobile() && !GetPointerOver())
+            OnHover(Constants.cardBigSize(true), Constants.cardRiseHeight(true)/4);
     }
 }

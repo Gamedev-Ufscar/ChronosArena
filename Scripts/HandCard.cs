@@ -5,21 +5,20 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
 {
     private Vector2 center = new Vector2(0f, 0f);
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
         // Control Position
         if (GetBeingHeld() && !GetIsReaction()) {
             HoldCard();
-
         } else {
             MoveCard();
+
+            if (GetIsMobile() && Input.GetMouseButtonDown(0) && GetPointerOver())
+            {
+                OutHover(1f, Constants.cardRiseHeight(GetIsMobile()));
+                OutHover();
+            }
         }
     }
 
@@ -27,8 +26,14 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
     public void HoldCard()
     {
         // Control offset
-        SetPosition(new Vector3(center.x, center.y) + Input.mousePosition);
-        SetCenter(Vector3.Lerp(center, new Vector3(0f, 0f, 0f), 0.1f));
+        Vector2 inputPosition;
+        if (GetIsMobile() && Input.touchCount > 0)
+            inputPosition = Input.GetTouch(0).position;
+        else
+            inputPosition = Input.mousePosition;
+
+        SetPosition(new Vector2(center.x, center.y) + inputPosition);
+        SetCenter(Vector2.Lerp(center, new Vector2(0f, 0f), 0.1f));
 
         GetDeck().SendCardPosition(GetID(), new Vector2(transform.localPosition.x, transform.localPosition.y-2));
     }
@@ -50,10 +55,20 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
         this.center = center;
     }
 
+    public void OutHover()
+    {
+        GetDeck().SendCardPosition(null, new Vector2(0f, 0f));
+
+        if (GetCard().GetTurnsTill() > 0 || GetDarkened())
+        {
+            ChangeColor(0.3f);
+        }
+    }
+
     // Hover card
     public new void OnPointerEnter(PointerEventData eventData)
     {
-        if (!GetDeck().GetHoldingCard())
+        if (!GetDeck().GetHoldingCard() && !GetIsMobile())
         {
             base.OnPointerEnter(eventData);
             GetDeck().SendCardPosition(this);
@@ -68,40 +83,41 @@ public class HandCard : DeckCard, IPointerDownHandler, IPointerUpHandler, IPoint
     // Stop Hover Card
     public new void OnPointerExit(PointerEventData eventData)
     {
-        base.OnPointerExit(eventData);
-
-        Debug.Log("exit card");
-        GetDeck().SendCardPosition(null, new Vector2(0f, 0f));
-
-        if (GetCard().GetTurnsTill() > 0 || GetDarkened())
+        if (!GetIsMobile())
         {
-            ChangeColor(0.3f);
+            base.OnPointerExit(eventData);
+            OutHover();
         }
     }
 
     // Hold card
-    public void OnPointerDown(PointerEventData eventData)
+    public new void OnPointerDown(PointerEventData eventData)
     {
+        base.OnPointerDown(eventData);
         GetDeck().SetHoldingCard(true);
         SetBeingHeld(true);
         SetCenter(transform.position - Input.mousePosition);
     }
 
-    // CHECK ASAP: Only become First Sibling when gets back to its proper place
-
     // Stop holding card, maybe summon card?
-    public void OnPointerUp(PointerEventData eventData)
+    public new void OnPointerUp(PointerEventData eventData)
     {
-        // Unleashed card
-        GetDeck().UnleashedCard(this);
+        if (GetBeingHeld())
+        {
+            base.OnPointerUp(eventData);
 
-        // Stop with centering
-        UpdateCardPosition();
-        ChangePosition((Vector3)GetTargetPosition() + new Vector3(0f, Constants.cardRiseHeight));
+            // Unleashed card
+            GetDeck().UnleashedCard(this);
 
-        // Control variables and override
-        GetDeck().SetHoldingCard(false);
-        SetBeingHeld(false);
+            // Stop with centering
+            UpdateCardPosition();
+            ChangePosition((Vector3)GetTargetPosition() + new Vector3(0f, Constants.cardRiseHeight(GetIsMobile())));
+
+            // Control variables and override
+            GetDeck().SetHoldingCard(false);
+            SetBeingHeld(false);
+        }
+
     }
 
     public void OnTriggerEnter(Collider other)

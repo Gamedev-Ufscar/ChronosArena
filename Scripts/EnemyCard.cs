@@ -27,21 +27,23 @@ public class EnemyCard : DeckCard, IPointerExitHandler, IPointerEnterHandler
 
     public void EnemyHold(Vector2 newPosition)
     {
-        //Debug.Log("being held true");
-        SetBeingHeld(true);
-        OnHover(Constants.cardBigSize, Constants.cardRiseHeight);
-        ChangePosition(newPosition);
+        if (!GetIsReaction())
+        {
+            SetBeingHeld(true);
+            OnHover(Constants.cardBigSize(GetIsMobile()), Constants.cardRiseHeight(GetIsMobile()));
+            ChangePosition(newPosition);
+        }
     }
 
     public void EnemyRelease()
     {
-        //Debug.Log("being held false");
-        SetBeingHeld(false);
-        OutHover(1f, Constants.cardRiseHeight);
         if (!GetIsReaction())
+        {
+            SetBeingHeld(false);
+            OutHover(1f, Constants.cardRiseHeight(GetIsMobile()));
+
             UpdateCardPosition();
-        else
-            ChangePosition(GetDeck().GetReactionLocation(0));
+        }
     }
 
     // Hover card
@@ -50,7 +52,7 @@ public class EnemyCard : DeckCard, IPointerExitHandler, IPointerEnterHandler
         ChangeColor(1f);
         if (GetIsReaction())
         {
-
+            GetDeck().CreateCardReader(this);
         }
     }
 
@@ -58,5 +60,9 @@ public class EnemyCard : DeckCard, IPointerExitHandler, IPointerEnterHandler
     public new void OnPointerExit(PointerEventData eventData)
     {
         ChangeColor(0.6f);
+        if (GetIsReaction())
+        {
+            GetDeck().DestroyReader();
+        }
     }
 }

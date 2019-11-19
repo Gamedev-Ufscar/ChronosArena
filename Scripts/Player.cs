@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
     // Sending card positions
     void Update()
     {
-        if (time >= 0.2f)
+        if (time >= 0.25f)
         {
             // Check if there's an update
             if (sentCardID != formerCardID || sentCardPosition != formerCardPosition)
@@ -200,8 +200,11 @@ public class Player : MonoBehaviour
 
     public void SummonReaction(DeckCard deckCard, bool received)
     {
-        deckCard.OutHover(1f, Constants.cardRiseHeight);
-        deckCard.ChangePosition(deck.GetReactionLocation(0) + new Vector2(0f, Constants.cardRiseHeight));
+        deckCard.OutHover(1f, Constants.cardRiseHeight(deckCard.GetIsMobile()));
+        if (received) 
+            deckCard.ChangePosition(deck.GetReactionLocation(0));
+        else
+            deckCard.ChangePosition(deck.GetReactionLocation(0) + new Vector2(0f, Constants.cardRiseHeight(deckCard.GetIsMobile())));
         deckCard.SetIsReaction(true);
         gameOverseer.ReactionEffect(this, deckCard.GetCard());
 
@@ -236,7 +239,7 @@ public class Player : MonoBehaviour
     {
         int RestoringCard() {
             cardPlayed.GetThisDeckCard().gameObject.SetActive(true);
-            cardPlayed.GetThisDeckCard().OutHover(1f, Constants.cardRiseHeight);
+            cardPlayed.GetThisDeckCard().OutHover(1f, Constants.cardRiseHeight(cardPlayed.GetThisDeckCard().GetIsMobile()));
             cardPlayed.GetThisDeckCard().UpdateCardPosition();
             AudioManager.AM.CardSound();
             return 0;
@@ -342,6 +345,16 @@ public class Player : MonoBehaviour
         return false;
     }
 
+    // Create Card Reader
+    public void CreateCardReader(DeckCard card)
+    {
+        gameOverseer.CreateCardReader(card);
+    }
+
+    public void DestroyReader()
+    {
+        gameOverseer.DestroyReader();
+    }
 
     // Change Variables
     public void DealDamage(int damage, bool isUnblockable)
@@ -599,7 +612,8 @@ public class Player : MonoBehaviour
     // Shuffle
     public void OnShufflePress()
     {
-        deck.Shuffle();
+        if (gameOverseer.GetMyPlayer() == this)
+            deck.Shuffle();
     }
 
     // Summary

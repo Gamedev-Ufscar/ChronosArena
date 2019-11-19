@@ -20,12 +20,6 @@ public class LibraryHub : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public Interface GetInterface()
     {
         return interfface;

@@ -9,8 +9,28 @@ static class Constants
     public const int maxUltiAreaSize = 3;
     public const int maxSideListSize = 12;
     public const int SpeedOfLight = 300000;
-    public const float cardRiseHeight = 100f;
-    public const float cardBigSize = 2.9f;
+
+    public static float cardBigSize(bool isMobile) {
+        if (isMobile)
+        {
+            return 3.5f;
+        } else
+        {
+            return 2.9f;
+        }
+    }
+
+    public static float cardRiseHeight(bool isMobile)
+    {
+        if (isMobile)
+        {
+            return 130f;
+        }
+        else
+        {
+            return 100f;
+        }
+    }
 }
 
 public enum HeroEnum

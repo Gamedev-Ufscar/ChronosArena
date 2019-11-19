@@ -5,25 +5,48 @@ using UnityEngine.EventSystems;
 public abstract class Button : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler
 {
     bool mouseOver = false;
+    bool isMobile = false;
     float red = 0f;
     float blue = 0f;
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-       
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            isMobile = true;
+        }
     }
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
-        
-    }
+        // Mobile Controls
+        /*if (isMobile && Input.touchCount > 0)
+        {
+            Touch theTouch = Input.GetTouch(0);
+            if (theTouch.phase == TouchPhase.Ended || theTouch.phase == TouchPhase.Canceled)
+            {
+                PointerUp();
+            } else if (InputControl.TouchRaycast())
+            {
+                if (InputControl.IsDoubleTap())
+                    RightPointerDown();
+                else
+                    PointerDown();
+            }
+        }
+    }*/
 
-    // Getter
-    public bool GetMouse()
+// Getter
+public bool GetMouse()
     {
         return mouseOver;
+    }
+
+    public bool GetIsMobile()
+    {
+        return isMobile;
     }
 
     // Setter/Changer
@@ -95,7 +118,7 @@ public abstract class Button : MonoBehaviour, IPointerExitHandler, IPointerEnter
         {
             if (eventData.button == PointerEventData.InputButton.Left)
                 PointerDown();
-            else if (eventData.button == PointerEventData.InputButton.Right)
+            else if ((eventData.button == PointerEventData.InputButton.Right) || (InputControl.IsDoubleTap()))
                 RightPointerDown();
         }
     }

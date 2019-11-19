@@ -6,18 +6,6 @@ public class TutorialButton : Button
 {
     private TutorialOverseer tutorialOverseer = null;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     // Setters
     public void SetTutorialOverseer(TutorialOverseer overseer)
     {

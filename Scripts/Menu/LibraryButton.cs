@@ -17,11 +17,6 @@ public class LibraryButton : MenuButton
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public override void PointerDown()
     {
         libraryOverseer.OpenInfo(hero);

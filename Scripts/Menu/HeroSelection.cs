@@ -22,10 +22,6 @@ public class HeroSelection : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
     public void SetConfirm(bool confirming)
     {

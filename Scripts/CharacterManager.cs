@@ -7,18 +7,6 @@ public class CharacterManager : MonoBehaviour
     [SerializeField]
     public Character[] characterList;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public Character GetCharacter(int index)
     {
         return characterList[index];

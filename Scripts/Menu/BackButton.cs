@@ -11,12 +11,6 @@ public class BackButton : Button
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public override void PointerDown()
     {
         interfface.Close(null);

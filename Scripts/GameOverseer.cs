@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 public class GameOverseer : MonoBehaviour
 {
     [SerializeField]
+    private Camera camera;
+    [SerializeField]
     private Player myPlayer;
     [SerializeField]
     private Player enemyPlayer;
@@ -31,12 +33,15 @@ public class GameOverseer : MonoBehaviour
 
     public GameObject viewCard;
     private GameObject boardCardReader;
-    private List<GameObject> destroyList = new List<GameObject>();
+    private GameObject readerToDestroy;
+
+    bool readingReaction = false;
 
     private GameState state = GameState.Purchase;
 
     private void Awake()
-    {  
+    {
+
     }
 
     private void Start()
@@ -66,8 +71,6 @@ public class GameOverseer : MonoBehaviour
         {
             HoverCarding();
         }
-
-        //Debug.Log("My Conf: " + myConfirm + ", Enemy Conf: " + enemyConfirm);
     }
 
     // State Stuff
@@ -126,7 +129,7 @@ public class GameOverseer : MonoBehaviour
                     // Destroy Board Cards
                     Destroy(myPlayer.GetBoardCard().gameObject);
                     Destroy(enemyPlayer.GetBoardCard().gameObject);
-                    DestroyHoverCards();
+                    DestroyReader();
 
                     ToPurchaseState();
                     break;
@@ -357,6 +360,7 @@ public class GameOverseer : MonoBehaviour
     public void EndGame()
     {
         Destroy(AudioManager.AM.gameObject);
+        CardMaker.CM.Setup();                           // Ensure that Card Maker gets reset
         PhotonNetwork.Disconnect();
         SceneManager.LoadScene((int)SceneList.Menu);
     }
@@ -378,7 +382,7 @@ public class GameOverseer : MonoBehaviour
     // Force Hand Card Hover
     public void ForceHandCardHover(int id)
     {
-        myPlayer.GetDeckCard(id).OnHover(Constants.cardBigSize, Constants.cardRiseHeight);
+        myPlayer.GetDeckCard(id).OnHover(Constants.cardBigSize(myPlayer.GetDeckCard(id).GetIsMobile()), Constants.cardRiseHeight(myPlayer.GetDeckCard(id).GetIsMobile()));
     }
 
 
@@ -403,36 +407,60 @@ public class GameOverseer : MonoBehaviour
         interfface.Setup(cardList, invoker, cardAmount);
     }
 
+
+    // Hovercarding
     public void HoverCarding()
     {
-        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray mouseRay;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            if (Input.touchCount > 0)
+                mouseRay = camera.ScreenPointToRay(Input.GetTouch(0).position);
+            else
+                return;
+        }
+        else
+            mouseRay = camera.ScreenPointToRay(Input.mousePosition);
+
+
         RaycastHit hitInfo;
         Physics.Raycast(mouseRay, out hitInfo, 300, layerMask, QueryTriggerInteraction.Collide);
 
         if (hitInfo.collider != null)
         {
-            if (hitInfo.collider.transform.parent != null && destroyList.Count <= 0)
+            if (hitInfo.collider.transform.parent != null && readerToDestroy == null)
             {
                 Debug.Log("HoverCard");
                 GameObject cardInBoard = hitInfo.collider.transform.parent.gameObject;
 
-                boardCardReader = Instantiate(viewCard, Camera.main.WorldToScreenPoint(hitInfo.collider.transform.position), Quaternion.identity, myPlayer.GetDeck().transform);
-                destroyList.Add(boardCardReader);
+                boardCardReader = Instantiate(viewCard, camera.WorldToScreenPoint(hitInfo.collider.transform.position), Quaternion.identity, myPlayer.GetDeck().transform);
+                readerToDestroy = boardCardReader;
                 boardCardReader.GetComponent<HoverCard>().ConstructHoverCard(cardInBoard);
             }
         }
-        else if (boardCardReader != null)
+        else if (readerToDestroy != null && !readingReaction)
         {
-            DestroyHoverCards();
-            destroyList.Clear();
+            DestroyReader();
         }
     }
 
-    public void DestroyHoverCards()
+    // Create Card Reader
+    public void CreateCardReader(DeckCard card)
     {
-        foreach (GameObject destroyed in destroyList)
+        boardCardReader = Instantiate(viewCard, card.transform.position, Quaternion.identity, myPlayer.GetDeck().transform);
+        readerToDestroy = boardCardReader;
+        readingReaction = true;
+        boardCardReader.GetComponent<HoverCard>().ConstructHoverCard(card);
+        Debug.Log("CardReader");
+    }
+
+    public void DestroyReader()
+    {
+        if (readerToDestroy != null && !readerToDestroy.GetComponent<HoverCard>().GetPointerOver())
         {
-            Destroy(destroyed);
+            Destroy(readerToDestroy);
+            readerToDestroy = null;
+            readingReaction = false;
         }
     }
 

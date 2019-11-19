@@ -18,6 +18,11 @@ public class SliderOption : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     float center;
     float oldWidth;
 
+    private void Awake()
+    {
+        
+    }
+
     // Start is called before the first frame update
     void Start()
     {

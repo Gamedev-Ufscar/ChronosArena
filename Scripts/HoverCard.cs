@@ -6,15 +6,12 @@ using UnityEngine.UI;
 public class HoverCard : UICard
 {
     // Start is called before the first frame update
-    void Start()
+    new void Start()
     {
-        ChangeScale(Constants.cardBigSize);
-    }
+        ChangeScale(Constants.cardBigSize(GetIsMobile()));
+        ChangePosition(transform.localPosition);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        base.Start();
     }
 
     public void ConstructHoverCard(GameObject cardInBoard)
@@ -23,6 +20,16 @@ public class HoverCard : UICard
 
         for (int i = 0; i <= 5; i++) {
             transform.GetChild(i).GetComponent<Text>().text = cardInBoard.transform.GetChild(i).GetComponent<TextMesh>().text;
+        }
+    }
+
+    public void ConstructHoverCard(DeckCard deckCard)
+    {
+        GetComponent<Image>().sprite = deckCard.GetCard().GetImage();
+
+        for (int i = 0; i <= 5; i++)
+        {
+            transform.GetChild(i).GetComponent<Text>().text = deckCard.transform.GetChild(i).GetComponent<Text>().text;
         }
     }
 }

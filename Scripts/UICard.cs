@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
+public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
 {
     private bool pointerOver = false;
     private bool interfaceActive = false;
@@ -12,20 +10,28 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     private float scale;
     private float color;
     private bool darkened = false;
+    private bool isMobile = false;
     private int category;
     private Card card;
 
     private int cardIndex;
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         pointerOver = false;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            isMobile = true;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (isMobile && Input.GetMouseButtonDown(0) && pointerOver)
+            OutHover(1f, Constants.cardRiseHeight(isMobile));
+
         // Control Position
         MoveCard();
     }
@@ -37,19 +43,22 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         if (!(this is EnemyCard))
         {
             gameObject.GetComponent<Image>().sprite = card.GetImage();
-            transform.GetChild(0).GetComponent<Text>().text = card.GetName();
-            transform.GetChild(1).GetComponent<Text>().text = card.typeString(card.GetCardType());
-            transform.GetChild(2).GetComponent<Text>().text = card.GetText().Replace("\\n", "\n");
-            transform.GetChild(3).GetComponent<Text>().text = card.Value(1);
-            transform.GetChild(4).GetComponent<Text>().text = card.Value(2);
-            transform.GetChild(5).GetComponent<Text>().text = card.heroString(card.GetHero());
         }
+        transform.GetChild(0).GetComponent<Text>().text = card.GetName();
+        transform.GetChild(1).GetComponent<Text>().text = card.typeString(card.GetCardType());
+        transform.GetChild(2).GetComponent<Text>().text = card.GetText().Replace("\\n", "\n");
+        transform.GetChild(3).GetComponent<Text>().text = card.Value(1);
+        transform.GetChild(4).GetComponent<Text>().text = card.Value(2);
+        transform.GetChild(5).GetComponent<Text>().text = card.heroString(card.GetHero());
+
+        ChangeScale(1f);
     }
 
     // Position Manipulators
     public void MoveCard()
     {
-        transform.localPosition = Vector2.Lerp(transform.localPosition, targetPosition, 0.1f);
+        if (!(Mathf.Approximately(transform.localPosition.x, targetPosition.x) && Mathf.Approximately(transform.localPosition.y, targetPosition.y)))
+                transform.localPosition = Vector2.Lerp(transform.localPosition, targetPosition, 0.1f);
     }
 
     // Setters/Changers
@@ -172,6 +181,11 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         return interfaceActive;
     }
 
+    public bool GetIsMobile()
+    {
+        return isMobile;
+    }
+
     // On Pointer
     public void OnHover(float size, float rise)
     {
@@ -197,14 +211,31 @@ public class UICard : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         ChangePosition(targetPosition + new Vector3(0f, -rise, 0f));
     }
 
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        OnHover(Constants.cardBigSize, Constants.cardRiseHeight);
+        if (!isMobile && !(this is HoverCard))
+            OnHover(Constants.cardBigSize(isMobile), Constants.cardRiseHeight(isMobile));
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        OutHover(1f, Constants.cardRiseHeight);
+        if (!isMobile)
+            OutHover(1f, Constants.cardRiseHeight(isMobile));
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (isMobile && !pointerOver)
+            OnHover(Constants.cardBigSize(isMobile), Constants.cardRiseHeight(isMobile));
     }
 
 }

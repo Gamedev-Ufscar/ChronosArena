@@ -7,16 +7,6 @@ public class InfoButton : Button
     [SerializeField]
     private SelectionOverseer selectionOverseer;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
     public override void PointerDown() {
         transform.localScale = new Vector2(1.1f, 1.1f);

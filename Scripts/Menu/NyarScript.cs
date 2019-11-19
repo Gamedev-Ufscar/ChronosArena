@@ -24,11 +24,6 @@ public class NyarScript : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public float? GetMasterVolume()
     {
         return masterVolume;

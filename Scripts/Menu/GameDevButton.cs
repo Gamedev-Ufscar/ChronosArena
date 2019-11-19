@@ -10,12 +10,6 @@ public class GameDevButton : Button
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public override void PointerDown()
     {
         ChangeScale(0.9f);

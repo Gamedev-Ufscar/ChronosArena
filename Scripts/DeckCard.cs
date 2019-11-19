@@ -12,17 +12,6 @@ public abstract class DeckCard : UICard, IPointerExitHandler, IPointerEnterHandl
 
     private UltimateCard ultiCard;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     // Setter/Changer
     public new void ChangePosition(Vector2 newPosition)
     {

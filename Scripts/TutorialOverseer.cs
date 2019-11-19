@@ -30,6 +30,7 @@ public class TutorialOverseer : MonoBehaviour
     float? timer = null;
     int cardSent = 0;
     static float timerSet = 0.75f;
+    bool isMobile = false;
 
     int chargeCount = 0;
     bool attacked = false;
@@ -60,6 +61,8 @@ public class TutorialOverseer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        isMobile = (Application.platform == RuntimePlatform.Android) ? true : false;
+
         AudioManager.AM.StopAll();
         AudioManager.AM.Play("BattleTheme");
 
@@ -166,8 +169,7 @@ public class TutorialOverseer : MonoBehaviour
 
     void StateMachine(int? cardID) // null = press textbox; 0-999 = cards; 1000 = confirmButton; 2000 = timer
     {
-
-        Debug.Log("State: " + state);
+        //Debug.Log("State: " + state);
         if (state <= 10)
             switch (state)
             {
@@ -419,6 +421,7 @@ public class TutorialOverseer : MonoBehaviour
                         state++;
                         currentBox = CreateText((tutorialBox)boxHashtable[TutorialBox.PercebaPassiva]);
                         gameOverseer.SetEnemyConfirm(true);
+                        DisableAllCards();
                     }
                     break;
 
@@ -504,6 +507,7 @@ public class TutorialOverseer : MonoBehaviour
                         state++;
                         currentBox = CreateText((tutorialBox)boxHashtable[TutorialBox.MuitoBem]);
                         gameOverseer.SetEnemyConfirm(true);
+                        ActivateAllCards();
                     }
                     break;
 
@@ -560,13 +564,25 @@ public class TutorialOverseer : MonoBehaviour
 
     GameObject CreateText(float x, float y, float scaleX, float scaleY, string text)
     {
+        // Destroy current box to create a new one
         if (currentBox != null) { Destroy(currentBox); }
 
+        // Adjust size to mobile
+        int font = 14;
+        if (isMobile)
+        {
+            scaleX *= 1.4f;
+            scaleY *= 1.4f;
+            font = 21;
+        }
+
+        // Instantiate Text
         GameObject tp = Instantiate(textPrefab, new Vector3(x, y), Quaternion.identity, UITutorial.transform);
         tp.transform.localPosition = new Vector3(x, y);
         tp.GetComponent<RectTransform>().sizeDelta = new Vector2(scaleX, scaleY);
         tp.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(0.875f * scaleX, 0.8f * scaleY);
         tp.GetComponentInChildren<Text>().text = text;
+        tp.GetComponentInChildren<Text>().fontSize = font;
 
         tp.GetComponent<TutorialButton>().SetTutorialOverseer(this);
 
@@ -577,6 +593,17 @@ public class TutorialOverseer : MonoBehaviour
     {
         gameOverseer.ForceHandCardHover(id);
         ActivateCard(id);
+    }
+
+    void ActivateAllCards()
+    {
+        for (int i = 0; i < Constants.maxCardAmount; i++)
+        {
+            if (gameOverseer.GetMyPlayer().GetCard(i) != null)
+            {
+                ActivateCard(i);
+            }
+        }
     }
 
     void ActivateCard(int id)

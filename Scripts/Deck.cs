@@ -166,6 +166,17 @@ public class Deck : MonoBehaviour
         UpdateCardPositions();
     }
 
+    // Create Card Reader
+    public void CreateCardReader(DeckCard card)
+    {
+        player.CreateCardReader(card);
+    }
+
+    public void DestroyReader()
+    {
+        player.DestroyReader();
+    }
+
     // Getters
     public bool GetHoldingCard()
     {
@@ -235,7 +246,6 @@ public class Deck : MonoBehaviour
             EnemyCard ec = (EnemyCard)GetDeckCard((int)hoverCard);
             if (ec != null)
             {
-                ec.SetBeingHeld(true);
                 ec.EnemyHold(new Vector2(-hoverPos.x, -hoverPos.y + 2f));
             }
         }

@@ -19,11 +19,6 @@ public class LibraryOverseer : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public void SetCurrentSheet(int currentSheet)
     {
         this.currentSheet = currentSheet;

@@ -2112,11 +2112,11 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 1280, y: 720}
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -3960,7 +3960,7 @@ RectTransform:
   m_GameObject: {fileID: 513943409}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.25, y: 1.25, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 869476888}
   m_RootOrder: 2
@@ -4250,7 +4250,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: cc0e376746189b646aba31835104ac39, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 43a723c3dce4fbe48bc29c8520acc764, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6214,14 +6214,15 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: "CHRONOS ARENA\n\nEQUIPE PRINCIPAL\nDanilo Isamu Inafuku\nDouglas Chen Ishimoto\nAnderson
     Pinheiro Garrote\nEduardo Ravagnani de Melo\n\nCOLABORADORES\nMateus Souza Silva\nLeonardo
-    \"Ruther\" Del Lama\n\nCOM O TRABALHO DE\nBrackeys\ntrothmaster\nInfo Gamer\nPhoton
-    Unity\nGitHub\n\nFONTES USADAS\nBahnschrift\nJura\nFTY Delirium NCV\n\nAGRADECIMENTOS
-    ESPECIAIS\nGabriel Hammermeister\nCaique Torres\nAndr\xE9 Bariani\nGiovanni Mar\xE7os
-    Rossi\nGabriel Ueji Uema Martin\n\xC1gata Drigo\nBruno Fritoli Carrazza\nLu\xEDs
-    Felipe Dobner Henriques\nWilliam Nalita\nTomiyuki Higuchi\nPedro Henrique Luz
-    Gon\xE7alves\nLuiz Ferreira do Couto M. Castro\nEduardo Funicello Dualibi\nLucas
-    de Melo e Machado\nM\xE1rio Henrique Quintanilha\nAndrei Gobbo\nMajor Asshole\nSmalls
-    the Kobold\nShadow / Neo\n\nAperte ESC para retornar"
+    \"Ruther\" Del Lama\n\nCOM O TRABALHO DE\nBrackeys\ntrothmaster\npedrampk\nInfo
+    Gamer\nPhoton Unity\nGitHub\n\nFONTES USADAS\nBahnschrift\nJura\nFTY Delirium
+    NCV\n\nAGRADECIMENTOS ESPECIAIS\nGabriel Hammermeister\nCaique Torres\nAndr\xE9
+    Bariani\nGiovanni Mar\xE7os Rossi\nGabriel Ueji Uema Martin\n\xC1gata Drigo\nGabriel
+    Goulart Homem\nBruno Fritoli Carrazza\nLu\xEDs Felipe Dobner Henriques\nWilliam
+    Nalita\nTomiyuki Higuchi\nPedro Henrique Luz Gon\xE7alves\nLuiz Ferreira do Couto
+    M. Castro\nEduardo Funicello Dualibi\nLucas de Melo e Machado\nM\xE1rio Henrique
+    Quintanilha\nAndrei Gobbo\nMajor Asshole\nSmalls the Kobold\nShadow / Neo\n\nAperte
+    ESC para retornar"
 --- !u!222 &873517873
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9134,7 +9135,7 @@ RectTransform:
   m_GameObject: {fileID: 1277757922}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.25, y: 1.25, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 2028039705}
   m_RootOrder: 2
@@ -10003,6 +10004,7 @@ GameObject:
   - component: {fileID: 1391546295}
   - component: {fileID: 1391546294}
   - component: {fileID: 1391546293}
+  - component: {fileID: 1391546296}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -10075,6 +10077,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1391546296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391546292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0137b7aae0915c34c9d84d3f3a18a80d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _wantedAspectRatio: 1.777778
+  landscapeModeOnly: 1
 --- !u!1 &1393471533
 GameObject:
   m_ObjectHideFlags: 0
@@ -10893,7 +10909,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 94b631828f671f547af5b07bb45ae28a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 17ae3813bd178784980e828a452535c6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14459,7 +14475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   quickStartButton: {fileID: 0}
   quickCancelButton: {fileID: 0}
-  roomSize: 3
+  roomSize: 2
 --- !u!4 &1852293433
 Transform:
   m_ObjectHideFlags: 0
@@ -14502,7 +14518,7 @@ RectTransform:
   m_GameObject: {fileID: 1855353016}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.25, y: 1.25, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1686905839}
   m_RootOrder: 2
@@ -15541,11 +15557,11 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 1280, y: 720}
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96

@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, IPointerEnterHandler
+public class UltimateCard : UICard, IPointerDownHandler, IPointerExitHandler, IPointerEnterHandler, IPointerUpHandler
 {
     private Card card;
     private UltiArea ultiArea;
@@ -15,10 +12,12 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     private int tempIndex;
 
     // Start is called before the first frame update
-    void Start()
+    new void Start()
     {
         bought = false;
         SetDarkened(false);
+
+        base.Start();
     }
 
     // Update is called once per frame
@@ -26,6 +25,10 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     {
         // Control position
         MoveCard();
+
+        if (GetIsMobile() && Input.GetMouseButtonDown(0) && GetPointerOver())
+            if (!EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+                OutHover();
     }
     
 
@@ -114,35 +117,40 @@ public class UltimateCard : UICard, IPointerClickHandler, IPointerExitHandler, I
     public void OnHover()
     {
         ultiArea.RevealArea();
-        base.OnHover(Constants.cardBigSize, Constants.cardRiseHeight);
+        base.OnHover(Constants.cardBigSize(GetIsMobile()), Constants.cardRiseHeight(GetIsMobile()));
         ultiArea.SetSibling(true);
         UpdateColor();
-
     }
 
     public void OutHover()
     {
-        base.OutHover(1f, Constants.cardRiseHeight);
+        base.OutHover(1f, Constants.cardRiseHeight(GetIsMobile()));
         ultiArea.SetSibling(false);
         ultiArea.HideArea();
         UpdateColor();
-
     }
 
     public new void OnPointerEnter(PointerEventData eventData)
     {
-        if (!GetInterfaceActive())
+        if (!GetIsMobile())
             OnHover();
     }
 
     public new void OnPointerExit(PointerEventData eventData)
     {
-        OutHover();
+        if (!GetIsMobile())
+            OutHover();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public new void OnPointerDown(PointerEventData eventData)
     {
-        ultiArea.UltiBuy(this);
-        Debug.Log(ultiArea.gameObject.name);
+        if (GetPointerOver())
+            ultiArea.UltiBuy(this);
+    }
+
+    public new void OnPointerUp(PointerEventData eventData)
+    {
+        if (GetIsMobile() && !GetPointerOver())
+            OnHover();
     }
 }

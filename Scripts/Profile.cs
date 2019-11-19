@@ -3,19 +3,27 @@ using UnityEngine.UI;
 
 public class Profile : Button
 {
+    static float maxTime = 0.2f;
+
     [SerializeField]
     private Player player;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private float? timeSinceLastTap = null;
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (GetIsMobile() && timeSinceLastTap != null)
+        {
+            if (timeSinceLastTap < maxTime)
+                timeSinceLastTap += Time.deltaTime;
+            else
+            {
+                player.OnShufflePress();
+                timeSinceLastTap = null;
+            }
+
+        }
     }
 
     public void SetImage(Sprite image)
@@ -30,7 +38,21 @@ public class Profile : Button
 
     public override void PointerDown()
     {
-        player.OnShufflePress();
+        if (GetIsMobile())
+        {
+            if (timeSinceLastTap != null && timeSinceLastTap < maxTime)
+            {
+                RightPointerDown();
+                timeSinceLastTap = null;
+            } else
+            {
+                timeSinceLastTap = 0f;
+            }
+        }
+        else
+        {
+            player.OnShufflePress();
+        }
         ChangeScale(0.9f);
     }
 

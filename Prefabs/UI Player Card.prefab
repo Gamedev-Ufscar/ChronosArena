@@ -175,6 +175,7 @@ GameObject:
   - component: {fileID: 2963102717123148622}
   - component: {fileID: 2963102717123148620}
   - component: {fileID: 2963102717123148621}
+  - component: {fileID: 8712679701340183490}
   m_Layer: 5
   m_Name: UI Player Card
   m_TagString: Card in Hand
@@ -323,6 +324,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8712679701340183490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2963102717123148661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates: []
 --- !u!1 &4332846985811635418
 GameObject:
   m_ObjectHideFlags: 0
